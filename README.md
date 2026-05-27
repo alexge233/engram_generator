@@ -211,7 +211,7 @@ Engram Curriculum (373 tasks)
             +-- data_prescription
 ```
 
-Full tree: [SKILL_TREE.txt](SKILL_TREE.txt)
+Full tree: [SKILL_TREE.md](SKILL_TREE.md)
 
 ### Adaptive Difficulty
 
