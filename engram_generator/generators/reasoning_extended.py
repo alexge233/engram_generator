@@ -1123,13 +1123,78 @@ class DeriveIdentityGenerator(StepGenerator):
                 "test_a": 4, "test_b": 2,
                 "lhs_val": 56, "rhs_val": 56,
             },
+            {
+                "name": "perfect square trinomial",
+                "statement": "(a+b)^2 = a^2 + 2ab + b^2",
+                "proof_steps": [
+                    "expand: (a+b)(a+b) = a*a + a*b + b*a + b*b",
+                    "= a^2 + 2ab + b^2",
+                ],
+                "test_a": 3, "test_b": 4,
+                "lhs_val": 49, "rhs_val": 49,
+            },
+            {
+                "name": "sum of arithmetic series",
+                "statement": "1+2+...+n = n(n+1)/2",
+                "proof_steps": [
+                    "S = 1 + 2 + ... + n",
+                    "S = n + (n-1) + ... + 1",
+                    "2S = (n+1) + (n+1) + ... = n(n+1)",
+                    "S = n(n+1)/2",
+                ],
+                "test_a": 10, "test_b": 0,
+                "lhs_val": 55, "rhs_val": 55,
+            },
+            {
+                "name": "geometric sum",
+                "statement": "1 + r + r^2 + ... + r^n = (r^{n+1}-1)/(r-1)",
+                "proof_steps": [
+                    "S = 1 + r + ... + r^n",
+                    "rS = r + r^2 + ... + r^{n+1}",
+                    "rS - S = r^{n+1} - 1",
+                    "S = (r^{n+1}-1)/(r-1)",
+                ],
+                "test_a": 2, "test_b": 4,
+                "lhs_val": 31, "rhs_val": 31,
+            },
+            {
+                "name": "binomial square difference",
+                "statement": "(a+b)(a-b) = a^2 - b^2 (conjugate pair)",
+                "proof_steps": [
+                    "LHS = a^2 - ab + ab - b^2 = a^2 - b^2",
+                ],
+                "test_a": 7, "test_b": 3,
+                "lhs_val": 40, "rhs_val": 40,
+            },
+            {
+                "name": "Cauchy-Schwarz for two terms",
+                "statement": "(a1*b1 + a2*b2)^2 <= (a1^2+a2^2)(b1^2+b2^2)",
+                "proof_steps": [
+                    "expand RHS - LHS",
+                    "= (a1*b2 - a2*b1)^2 >= 0",
+                    "therefore LHS <= RHS always",
+                ],
+                "test_a": 1, "test_b": 2,
+                "lhs_val": 25, "rhs_val": 25,
+            },
+            {
+                "name": "AM-GM for two numbers",
+                "statement": "(a+b)/2 >= sqrt(ab) for a,b >= 0",
+                "proof_steps": [
+                    "equivalent to (a+b)^2 >= 4ab",
+                    "a^2 + 2ab + b^2 >= 4ab",
+                    "a^2 - 2ab + b^2 >= 0",
+                    "(a-b)^2 >= 0, always true",
+                ],
+                "test_a": 3, "test_b": 12,
+                "lhs_val": 8, "rhs_val": 6,
+            },
         ]
+        n = len(identities)
         if difficulty <= 2:
-            return identities[:1]
-        if difficulty <= 4:
-            return identities[:2]
-        if difficulty <= 6:
-            return identities[:3]
+            return identities[:max(3, n // 3)]
+        if difficulty <= 5:
+            return identities[:max(5, 2 * n // 3)]
         return identities
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
