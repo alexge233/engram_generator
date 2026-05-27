@@ -12,3 +12,5 @@ from engram_generator.atoms import logic  # noqa: F401
 from engram_generator.atoms import sets_strings  # noqa: F401
 from engram_generator.atoms import trig_measure_seq  # noqa: F401
 from engram_generator.atoms import applied_domains  # noqa: F401
+from engram_generator.atoms import missing_fill  # noqa: F401
+from engram_generator.atoms import graph_ds_recursion  # noqa: F401
