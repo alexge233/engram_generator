@@ -4,7 +4,92 @@
 
 > This repository contains AI-generated code, reviewed and directed by a human author.
 
-A procedural synthetic dataset generator for training reasoning, logic, and algorithmic learning in neural networks.
+A procedural synthetic dataset generator for training reasoning, logic, and algorithmic learning in neural networks. 373 generators across 11 tiers, backed by 387 knowledge atoms sourced from Wikipedia, ProofWiki, and Wolfram MathWorld. Estimated **333 million** unique problem combinations.
+
+## Combinatorial Space
+
+Not all tasks have the same variety. The generator is procedural, not infinite — its combinatorial space varies by tier.
+
+| Tier | Generators | Est. Unique Combinations | Avg / Generator | Weakest Generator |
+|---|---|---|---|---|
+| 0 | 20 | ~35M | ~1.7M | truth_table (164) |
+| 1 | 36 | ~44M | ~1.2M | fibonacci (23) |
+| 2 | 46 | ~48M | ~1.0M | square_root (59) |
+| 3 | 59 | ~68M | ~1.2M | call_stack_depth (51) |
+| 4 | 57 | ~56M | ~988K | volume_sphere (74) |
+| 5 | 55 | ~35M | ~644K | newton_raphson (51) |
+| 6 | 42 | ~24M | ~561K | derangement (12) |
+| 7 | 18 | ~8M | ~456K | proof_by_induction (98) |
+| 8 | 13 | ~32K | ~2.5K | cross_domain_transfer (58) |
+| 9 | 14 | ~11M | ~773K | complexity_analysis (384) |
+| 10 | 13 | ~4M | ~342K | efficiency_analysis (224) |
+| **Total** | **373** | **~333M** | | |
+
+Tiers 0-6 randomise operands across digit ranges — effectively unlimited unique problems. Tiers 7-10 use parameterised scenario templates — structural templates repeat, but coefficients and variable names change each epoch. Two generators (`derangement`, `fibonacci`) are hard-capped at 12-23 unique outputs by the 512-character target length limit.
+
+At a typical training run (10K steps, batch_size 256 = 2.56M samples), the expected repeat rate is **< 1%**.
+
+## Knowledge Pipeline
+
+The generator's correctness chain runs from authoritative sources down to training samples:
+
+```
+Wikipedia / ProofWiki / Wolfram MathWorld
+    |
+    v
+Knowledge Atoms (387 self-contained units)
+    |  - One theorem, formula, or definition per atom
+    |  - Full source citation and URL
+    |  - Human audit reference (never seen by model)
+    v
+Generators (373 procedural task constructors)
+    |  - Each generator encodes one atom's logic in code
+    |  - Answers computed by Python, not looked up
+    |  - Difficulty-scaled, re-seeded each epoch
+    v
+Training Samples (problem + steps + answer)
+    |  - Natural language input
+    |  - LaTeX problem statement
+    |  - Step-by-step solution chain
+    |  - Deterministically verifiable answer
+    v
+Model Training (character-level tokenizer, <step> masking)
+```
+
+### Knowledge Atoms
+
+387 atoms sourced from:
+
+| Source | Count | Usage |
+|---|---|---|
+| [Wikipedia](https://en.wikipedia.org/) | 385 | Theorems, definitions, formulas — article text fetched via API or manually curated |
+| [ProofWiki](https://proofwiki.org/) | 1 | Power rule derivative proof |
+| [Wolfram MathWorld](https://mathworld.wolfram.com/) | 1 | Second fundamental theorem of calculus |
+
+Each atom is a self-contained unit:
+
+```python
+Atom(
+    atom_type="theorem",
+    name="chain_rule",
+    content="if y=f(g(x)) then dy/dx = f'(g(x)) * g'(x)",
+    tier=5,
+    domain="calculus",
+    source="Wikipedia, 'Chain rule'",
+    source_url="https://en.wikipedia.org/wiki/Chain_rule",
+    prerequisites=["derivative"],
+)
+```
+
+Atoms are **reference material for human auditors**, not training input for the model. The model never sees atom text during training. Atoms exist to document what each generator encodes and provide an audit trail from generated sample back to source material.
+
+### Generators
+
+Each generator turns an atom's mathematical knowledge into procedurally generated problems:
+
+- **Tiers 0-6**: answers computed by Python arithmetic, `math`, `sympy`, or `numpy` — correct by construction
+- **Tiers 7-10**: parameterised scenario templates with randomised coefficients — human-curated with known correct answers
+- All randomisation via `random.Random(seed)` — fully deterministic and reproducible
 
 ## Purpose
 
@@ -12,17 +97,12 @@ Models trained on static datasets learn to pattern-match, not to reason. They me
 
 Engram Generator produces procedurally generated training data that forces models to learn **how to think, not what to answer**:
 
-- **Procedurally generated** — arithmetic and algebra tasks have effectively infinite combinatorial space; higher-tier reasoning tasks use parameterised template pools re-seeded each epoch
+- **Procedurally generated** — ~333M unique combinations, re-seeded each epoch
 - **Step-by-step solution chains** — the model must learn to decompose and reason, not guess
 - **Adaptive difficulty** — escalates as the model improves, always training at the frontier
 - **Prerequisite skill tree** — gates advanced reasoning behind mastery of foundations
 - **Deterministic verification** — every answer is provably correct by construction
-
-The scope spans arithmetic, algebra, calculus, physics, computer science, graph theory, cryptography, formal logic, proof verification, and meta-reasoning. But the goal is not domain coverage. It is to teach a model to **decompose problems into steps, maintain state across those steps, and verify its own work** — the foundation for genuine reasoning.
-
-### Combinatorial space
-
-Not all tasks have the same variety. Arithmetic tasks (tiers 0-2) randomise operands across digit ranges, producing effectively unlimited unique problems. Higher-tier tasks (tiers 7-10) use scenario templates with parameterised values — the structural templates repeat, but coefficients and variable names change each epoch. The generator is re-seeded between epochs to maximise variation within each template pool.
+- **Full source attribution** — 387 atoms linked to Wikipedia, ProofWiki, and Wolfram MathWorld
 
 ## Architecture
 

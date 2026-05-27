@@ -11,11 +11,11 @@ Every knowledge atom (theorem, formula, definition) includes:
 - **`source`**: Citation string identifying the origin (e.g., "Wikipedia contributors, 'Pythagorean theorem', Wikipedia.")
 - **`source_url`**: Direct URL to the source material
 
-**Current source breakdown (319 atoms):**
+**Current source breakdown (387 atoms):**
 
 | Source | Count | Percentage |
 |--------|-------|-----------|
-| Wikipedia | 317 | 99.4% |
+| Wikipedia | 385 | 99.5% |
 | ProofWiki | 1 | 0.3% |
 | Wolfram MathWorld | 1 | 0.3% |
 
@@ -55,7 +55,7 @@ Generators in tiers 7-10 use curated scenario pools (e.g., proof verification, a
 - **Deterministically selected** via seeded random number generator
 - **Not generative** — the generator picks from a fixed pool, it does not compose novel problems
 
-The limitation: these generators have finite variety (typically 3-8 scenarios per generator). They will repeat with enough samples. This is documented and accepted as a tradeoff for correctness.
+These generators now use parameterised templates with randomised coefficients, variable names, and numeric context — typically producing 50-500 unique outputs per 500 samples. Two generators (`derangement`, `fibonacci`) remain capped at 12-23 unique outputs due to the 512-character target length limit.
 
 ## Verification Strategies
 
