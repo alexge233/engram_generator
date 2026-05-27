@@ -200,7 +200,7 @@ class WikipediaFetcher:
 
         try:
             req = urllib.request.Request(url, headers={
-                "User-Agent": "EngramGenerator/0.1 (github.com/alexge233/engram_generator)",
+                "User-Agent": "EngramGenerator/0.1 (www.deepnet.one)",
             })
             with urllib.request.urlopen(req, timeout=10) as response:
                 data = json.loads(response.read())
