@@ -151,12 +151,12 @@ class TestGeneratorContract:
     def test_all_tokenize_cleanly(self, all_generators: list[StepGenerator]) -> None:
         """Verify all samples roundtrip through the tokenizer."""
         tok = CharTokenizer()
+        import re
         for gen in all_generators:
             s = gen.generate(1)[0]
             decoded = tok.decode(tok.encode(s.target_text))
-            clean_target = s.target_text.replace(f" {STEP_TOKEN} ", STEP_TOKEN)
-            clean_decoded = decoded.replace(f" {STEP_TOKEN} ", STEP_TOKEN)
-            assert clean_decoded == clean_target, (
+            normalise = lambda t: re.sub(r'\s*<step>\s*', '<step>', t)
+            assert normalise(decoded) == normalise(s.target_text), (
                 f"{gen.task_name}: roundtrip mismatch"
             )
 
@@ -223,14 +223,14 @@ class TestParallelGenerator:
 
     def test_correct_count(self) -> None:
         """Verify parallel generation produces the right number of samples."""
-        from engram_generator.generators.tier0 import AdditionGenerator
+        from engram_generator.generators.arithmetic_core import AdditionGenerator
         pg = ParallelGenerator(max_workers=2)
         samples = pg.generate(AdditionGenerator, num_samples=100)
         assert len(samples) == 100
 
     def test_all_valid_samples(self) -> None:
         """Verify all parallel samples have valid fields."""
-        from engram_generator.generators.tier0 import AdditionGenerator
+        from engram_generator.generators.arithmetic_core import AdditionGenerator
         pg = ParallelGenerator(max_workers=2)
         samples = pg.generate(AdditionGenerator, num_samples=50)
         for s in samples:
@@ -239,7 +239,7 @@ class TestParallelGenerator:
 
     def test_mixed_generation(self) -> None:
         """Verify mixed parallel generation across task types."""
-        from engram_generator.generators.tier0 import AdditionGenerator, SubtractionGenerator
+        from engram_generator.generators.arithmetic_core import AdditionGenerator, SubtractionGenerator
         pg = ParallelGenerator(max_workers=2)
         samples = pg.generate_mixed(
             [AdditionGenerator, SubtractionGenerator],

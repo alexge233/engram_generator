@@ -240,6 +240,56 @@ strategies vary by tier:
 - **Tier 9**: Empirical testing (proposed algorithm runs correctly)
 - **Tier 10**: Implementation testing (proposed modification benchmarked)
 
+## Testing
+
+```bash
+# Run full test suite
+python -m pytest tests/ -v
+
+# Run with coverage
+python -m pytest tests/ --cov=engram_generator --cov-report=term
+```
+
+185 tests across 12 test modules covering:
+
+- **Structural integrity** — no orphan tasks, no dangling prerequisites, no backwards cross-tier dependencies, no duplicate names
+- **Sample contracts** — every generator produces non-empty input, target, answer, and step tokens
+- **Determinism** — identical seeds produce identical output
+- **Difficulty scaling** — higher difficulty yields harder problems
+- **Skill tree** — mastery tracking, difficulty escalation, prerequisite unlocking, sampling weights
+- **Out-of-set (OOS)** — held-out generators are valid, at tier 99, and separate from training
+- **Knowledge atoms** — 387 atoms loaded, linked to generators, valid fields
+- **Tokenizer** — roundtrip encode/decode, step token handling, vocabulary coverage
+- **LaTeX renderer** — fraction rendering, Unicode conversion, graceful fallback
+- **Parallel generation** — multiprocess correctness, determinism, mixed-task generation
+
+**Coverage: 98%** (17,874 statements, 401 missed)
+
+## Project Structure
+
+```
+engram_generator/
+    __init__.py          # Package init with version and alpha disclaimer
+    base.py              # Sample, Atom, StepGenerator base classes
+    base_domains.py      # Domain-specific base classes (Formula, Scenario, Graph, ...)
+    tokenizer.py         # Character-level tokenizer (75 tokens)
+    latex_render.py      # LaTeX to Unicode terminal renderer
+    parallel.py          # Multiprocess sample generation
+    cli.py               # engram-validate CLI tool
+    curriculum/
+        registry.py      # Generator + OOS registration, prerequisite enrichment
+        skill_tree.py    # Adaptive curriculum with mastery tracking
+    generators/          # 42 domain-named modules, 373 generators
+        arithmetic_core.py, arithmetic_ops.py, geometry.py, logic.py, ...
+        meta_reasoning_t7.py ... meta_reasoning_t10.py
+        oos.py           # Out-of-set held-out evaluation generators
+    atoms/               # 387 knowledge atoms (theorems, definitions, formulas)
+        registry.py      # Atom registration and lookup
+        calculus.py, physics.py, geometry.py, ...
+    validators/          # Sample validation utilities
+tests/                   # 185 tests, 98% coverage
+```
+
 ## License
 
 MIT

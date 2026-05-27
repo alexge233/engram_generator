@@ -6,8 +6,8 @@ import pytest
 
 from engram_generator.base import STEP_TOKEN
 from engram_generator.parallel import ParallelGenerator, _worker_generate
-from engram_generator.generators.tier0 import AdditionGenerator, SubtractionGenerator
-from engram_generator.generators.tier1 import MultiplicationGenerator
+from engram_generator.generators.arithmetic_core import AdditionGenerator, SubtractionGenerator
+from engram_generator.generators.arithmetic_ops import MultiplicationGenerator
 
 
 class TestTrueParallelism:

@@ -23,7 +23,8 @@ class CharTokenizer:
         "0123456789"
         "abcdefghijklmnopqrstuvwxyz"
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-        " +-/*^()[]{}=:;?.,\\_|!&~'<>"
+        " +-/*^()[]{}=:;?.,\\_|!&~'<>%#@\""
+        "$°×—→∩∪"
     )
 
     def __init__(self):
