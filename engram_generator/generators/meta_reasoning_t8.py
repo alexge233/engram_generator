@@ -413,7 +413,7 @@ class CrossDomainTransferGenerator(StepGenerator):
         return "solve by mapping to a different domain"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a problem solvable via domain transfer.
+        """Generate a problem solvable via domain transfer with randomised type.
 
         Args:
             difficulty: Controls problem type and parameter range.
@@ -421,9 +421,13 @@ class CrossDomainTransferGenerator(StepGenerator):
         Returns:
             Tuple of (problem_string, solution_data).
         """
-        problem_type = self._PROBLEM_TYPES.get(difficulty, "arithmetic_series")
+        # Allow any problem type (not just fixed per difficulty) for variety
+        available_types = list(self._PROBLEM_TYPES.values())
+        if difficulty <= 3:
+            available_types = available_types[:4]
+        problem_type = self._rng.choice(available_types)
         lo, hi = self._N_RANGES.get(difficulty, (5, 10))
-        n = self._rng.randint(lo, hi)
+        n = self._rng.randint(lo, hi + difficulty)
         builder = self._get_builder(problem_type)
         return builder(n)
 

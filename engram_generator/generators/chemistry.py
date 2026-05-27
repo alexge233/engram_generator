@@ -50,7 +50,13 @@ class ChemistryGenerator(StepGenerator):
 
 @register
 class MolarMassGenerator(ChemistryGenerator):
-    """Calculate the molar mass of a molecule."""
+    """Calculate the molar mass of a molecule.
+
+    Generates random compound formulas by selecting 2-4 elements
+    from the atomic mass table and assigning random stoichiometric
+    counts, producing a wide variety of unique problems beyond the
+    fixed molecule set.
+    """
 
     @property
     def task_name(self) -> str:
@@ -68,11 +74,32 @@ class MolarMassGenerator(ChemistryGenerator):
         return "calculate molar mass"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        formula, parts = self._rng.choice(
-            self.MOLECULES[:min(len(self.MOLECULES), 3 + difficulty)]
-        )
+        """Generate a molar mass problem with a random compound.
+
+        Selects 2-4 elements and random stoichiometric coefficients
+        to create a unique compound formula each time.
+
+        Args:
+            difficulty: Controls the number of elements and max count.
+
+        Returns:
+            Tuple of (problem_text, solution_data).
+        """
+        elements = list(self.ATOMIC_MASSES.keys())
+        num_elements = self._rng.randint(2, min(4, 2 + difficulty // 2))
+        chosen = self._rng.sample(elements, num_elements)
+        max_count = max(2, 1 + difficulty)
+        parts: list[tuple[str, int]] = []
+        formula = ""
+        for elem in chosen:
+            count = self._rng.randint(1, max_count)
+            parts.append((elem, count))
+            formula += elem + (str(count) if count > 1 else "")
+
         mass = round(sum(self.ATOMIC_MASSES[e] * n for e, n in parts), 3)
-        return f"molar mass of {formula}", {"formula": formula, "parts": parts, "mass": mass}
+        return f"molar mass of {formula}", {
+            "formula": formula, "parts": parts, "mass": mass,
+        }
 
     def _create_steps(self, sd: dict) -> list[str]:
         return [
@@ -86,7 +113,13 @@ class MolarMassGenerator(ChemistryGenerator):
 
 @register
 class BalancingEquationGenerator(ChemistryGenerator):
-    """Balance a simple chemical equation."""
+    """Balance a simple chemical equation.
+
+    Generates randomised combustion reactions of the form
+    C_aH_b + O2 -> CO2 + H2O with random carbon and hydrogen
+    counts, plus the fixed equation set for variety. The balanced
+    form is computed algorithmically.
+    """
 
     @property
     def task_name(self) -> str:
@@ -104,10 +137,65 @@ class BalancingEquationGenerator(ChemistryGenerator):
         return "balance chemical equation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a balancing problem, mixing fixed and random equations.
+
+        With 50% probability uses a randomly generated combustion
+        reaction; otherwise picks from the fixed set.
+
+        Args:
+            difficulty: Controls hydrocarbon size and fixed pool range.
+
+        Returns:
+            Tuple of (problem_text, solution_data).
+        """
+        if self._rng.random() < 0.5:
+            return self._random_combustion(difficulty)
         unbalanced, balanced = self._rng.choice(
             self.EQUATIONS[:min(len(self.EQUATIONS), 2 + difficulty)]
         )
-        return f"balance: {unbalanced}", {"unbalanced": unbalanced, "balanced": balanced}
+        return f"balance: {unbalanced}", {
+            "unbalanced": unbalanced, "balanced": balanced,
+        }
+
+    def _random_combustion(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a random hydrocarbon combustion equation.
+
+        Creates C_aH_b + O2 -> CO2 + H2O with random a and b
+        (b always even for simpler balancing) and computes the
+        balanced coefficients.
+
+        Args:
+            difficulty: Controls the size of the hydrocarbon.
+
+        Returns:
+            Tuple of (problem_text, solution_data).
+        """
+        a = self._rng.randint(1, 2 + difficulty)
+        b = 2 * self._rng.randint(1, 2 + difficulty)
+        fuel = f"C{a}H{b}" if a > 1 else f"CH{b}"
+        co2_coeff = a
+        h2o_coeff = b // 2
+        o2_need = co2_coeff * 2 + h2o_coeff
+        if o2_need % 2 == 0:
+            o2_coeff = o2_need // 2
+            fuel_coeff = 1
+        else:
+            o2_coeff = o2_need
+            fuel_coeff = 2
+            co2_coeff *= 2
+            h2o_coeff *= 2
+
+        def _c(n: int, s: str) -> str:
+            return s if n == 1 else f"{n}{s}"
+
+        unbalanced = f"{fuel} + O2 -> CO2 + H2O"
+        balanced = (
+            f"{_c(fuel_coeff, fuel)} + {_c(o2_coeff, 'O2')} -> "
+            f"{_c(co2_coeff, 'CO2')} + {_c(h2o_coeff, 'H2O')}"
+        )
+        return f"balance: {unbalanced}", {
+            "unbalanced": unbalanced, "balanced": balanced,
+        }
 
     def _create_steps(self, sd: dict) -> list[str]:
         return ["count atoms each side", "adjust coefficients"]
@@ -202,7 +290,12 @@ class MolarityGenerator(ChemistryGenerator):
 
 @register
 class PhCalculationGenerator(ChemistryGenerator):
-    """Calculate pH from hydrogen ion concentration."""
+    """Calculate pH from hydrogen ion concentration.
+
+    Uses continuous concentrations of the form a * 10^(-exp) where
+    a is a random coefficient in [1.0, 9.9], producing a wide range
+    of non-integer pH values via -log10(a * 10^(-exp)).
+    """
 
     @property
     def task_name(self) -> str:
@@ -220,12 +313,33 @@ class PhCalculationGenerator(ChemistryGenerator):
         return "calculate pH"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        exp = -self._rng.randint(1, min(13, 2 + 2 * difficulty))
-        conc = 10.0 ** exp
-        return f"[H+] = {conc}", {"conc": conc, "ph": -exp}
+        """Generate a pH problem with continuous concentration.
+
+        Creates [H+] = a * 10^(-exp) where a is a random mantissa
+        between 1.0 and 9.9 and exp is a random exponent, giving
+        non-integer pH values.
+
+        Args:
+            difficulty: Controls exponent range.
+
+        Returns:
+            Tuple of (problem_text, solution_data).
+        """
+        exp = self._rng.randint(1, min(13, 2 + 2 * difficulty))
+        mantissa = round(self._rng.uniform(1.0, 9.9), 1)
+        conc = mantissa * (10.0 ** (-exp))
+        ph = round(-math.log10(conc), 2)
+        conc_str = f"{mantissa}e-{exp}"
+        return f"[H+] = {conc_str}", {
+            "conc": conc_str, "ph": ph, "mantissa": mantissa, "exp": exp,
+        }
 
     def _create_steps(self, sd: dict) -> list[str]:
-        return [f"pH = -log10([H+])", f"pH = -log10({sd['conc']})"]
+        return [
+            "pH = -log10([H+])",
+            f"pH = -log10({sd['conc']})",
+            f"pH = -log10({sd['mantissa']}) + {sd['exp']}",
+        ]
 
     def _create_answer(self, sd: dict) -> str:
         return str(sd["ph"])

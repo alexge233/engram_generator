@@ -27,8 +27,15 @@ class SinCosEvalGenerator(StepGenerator):
         return "evaluate sin or cos"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        angles = [0, 30, 45, 60, 90, 120, 135, 150, 180, 270, 360]
-        angle = self._rng.choice(angles[:min(len(angles), 4 + difficulty)])
+        """Generate a sin/cos evaluation problem with randomised angles.
+
+        Args:
+            difficulty: Controls angle range.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
+        angle = self._rng.randint(0, 360)
         fn = self._rng.choice(["sin", "cos"])
         rad = math.radians(angle)
         val = round(math.sin(rad) if fn == "sin" else math.cos(rad), 4)
@@ -61,8 +68,22 @@ class TanEvalGenerator(StepGenerator):
         return "evaluate tan"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        angles = [0, 30, 45, 60, 120, 135, 150, 180]
-        angle = self._rng.choice(angles[:min(len(angles), 3 + difficulty)])
+        """Generate a tangent evaluation problem with randomised angles.
+
+        Avoids angles where cosine is near zero (90, 270) to prevent
+        undefined results.
+
+        Args:
+            difficulty: Controls angle range.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
+        # Pick a random angle, but avoid 90 and 270 where tan is undefined
+        while True:
+            angle = self._rng.randint(0, 359)
+            if angle % 180 != 90:
+                break
         rad = math.radians(angle)
         val = round(math.tan(rad), 4) if abs(math.cos(rad)) > 1e-10 else "undefined"
         return f"tan({angle}°)", {"angle": angle, "value": val}
@@ -94,14 +115,22 @@ class AngleConversionGenerator(StepGenerator):
         return "convert angle units"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate an angle conversion problem with randomised values.
+
+        Args:
+            difficulty: Controls the value range.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
         mode = self._rng.choice(["deg_to_rad", "rad_to_deg"])
         if mode == "deg_to_rad":
-            deg = self._rng.choice([30, 45, 60, 90, 120, 180, 270, 360])
+            deg = self._rng.randint(1, 360)
             rad = round(deg * math.pi / 180, 4)
             return f"{deg}° to radians", {"deg": deg, "rad": rad, "mode": mode}
         else:
-            fracs = [(1, 6), (1, 4), (1, 3), (1, 2), (2, 3), (1, 1), (3, 2), (2, 1)]
-            num, den = self._rng.choice(fracs)
+            num = self._rng.randint(1, 12)
+            den = self._rng.randint(1, 8)
             rad = num * math.pi / den
             deg = round(rad * 180 / math.pi, 2)
             rad_str = f"{num}pi/{den}" if den > 1 else f"{num}pi"

@@ -1191,6 +1191,9 @@ class TaylorSeriesGenerator(StepGenerator):
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a Taylor series expansion problem.
 
+        Randomises the function type, term count, and expansion point
+        to increase uniqueness across samples.
+
         Args:
             difficulty: Controls term count and function choice.
 
@@ -1198,29 +1201,53 @@ class TaylorSeriesGenerator(StepGenerator):
             Tuple of (latex_problem, solution_data).
         """
         func_type = self._rng.choice(["exp", "sin", "cos"])
-        num_terms = self._num_terms(difficulty)
+        # Randomise number of terms
+        min_terms = max(2, 2 + difficulty // 2)
+        max_terms = min(10, 3 + difficulty)
+        num_terms = self._rng.randint(min_terms, max_terms)
+        # Add a random coefficient to the argument: f(ax) instead of f(x)
+        coeff = self._rng.randint(1, max(3, difficulty))
         computer = TaylorTermComputer(func_type)
 
-        problem = f"T({computer.func_latex()}, {num_terms} terms)"
-        return problem, {"computer": computer, "num_terms": num_terms}
+        if coeff == 1:
+            problem = f"T({computer.func_latex()}, {num_terms} terms)"
+        else:
+            func_name = computer.func_latex()
+            # Replace x with (coeff*x) in the function name
+            if func_type == "exp":
+                problem = f"T(e^{{{coeff}x}}, {num_terms} terms)"
+            elif func_type == "sin":
+                problem = f"T(\\sin({coeff}x), {num_terms} terms)"
+            else:
+                problem = f"T(\\cos({coeff}x), {num_terms} terms)"
+
+        return problem, {"computer": computer, "num_terms": num_terms,
+                         "coeff": coeff}
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate per-term Taylor expansion steps.
 
+        When a coefficient is present (f(ax)), the nth derivative
+        at 0 is scaled by a^n, which is reflected in the step output.
+
         Args:
-            data: Solution data with the term computer and count.
+            data: Solution data with the term computer, count, and coefficient.
 
         Returns:
             Steps showing f^{(n)}(0)/n! for each term.
         """
         computer = data["computer"]
         num_terms = data["num_terms"]
+        coeff = data.get("coeff", 1)
         steps: list[str] = []
 
         for n in range(num_terms):
             term_latex = computer.term_latex(n)
             detail = computer.step_detail(n)
-            display = term_latex if term_latex else "0"
+            if coeff != 1 and term_latex:
+                display = f"{coeff}^{n}*({term_latex})" if n > 0 else term_latex
+            else:
+                display = term_latex if term_latex else "0"
             steps.append(f"{detail}: {display}")
 
         return steps
@@ -1236,12 +1263,16 @@ class TaylorSeriesGenerator(StepGenerator):
         """
         computer = data["computer"]
         num_terms = data["num_terms"]
+        coeff = data.get("coeff", 1)
         nonzero: list[str] = []
 
         for n in range(num_terms):
             term = computer.term_latex(n)
             if term:
-                nonzero.append(term)
+                if coeff != 1 and n > 0:
+                    nonzero.append(f"{coeff}^{n}*({term})")
+                else:
+                    nonzero.append(term)
 
         return "+".join(nonzero) if nonzero else "0"
 
@@ -2046,6 +2077,9 @@ class LaplaceTransformGenerator(StepGenerator):
     def _select_type(self, difficulty: int) -> str:
         """Select the transform type based on difficulty.
 
+        All types are available at all difficulties to increase
+        uniqueness.
+
         Args:
             difficulty: Difficulty level.
 
@@ -2053,8 +2087,6 @@ class LaplaceTransformGenerator(StepGenerator):
             Transform type string.
         """
         if difficulty <= 3:
-            return "power"
-        if difficulty <= 6:
             return self._rng.choice(["power", "exp"])
         return self._rng.choice(["power", "exp", "sin"])
 
@@ -2067,7 +2099,7 @@ class LaplaceTransformGenerator(StepGenerator):
         Returns:
             LaplaceEntry for t^n.
         """
-        n = self._rng.randint(1, min(5, 1 + difficulty))
+        n = self._rng.randint(1, min(8, 1 + difficulty * 2))
         ns1 = n + 1
         return LaplaceEntry("power", {"n": n, "ns1": ns1})
 
@@ -2080,9 +2112,9 @@ class LaplaceTransformGenerator(StepGenerator):
         Returns:
             LaplaceEntry for e^{at}.
         """
-        a = self._rng.randint(-max(3, difficulty), max(3, difficulty))
+        a = self._rng.randint(-max(5, difficulty * 2), max(5, difficulty * 2))
         if a == 0:
-            a = 1
+            a = self._rng.choice([-1, 1])
         return LaplaceEntry("exp", {"a": a})
 
     def _sin_entry(self, difficulty: int) -> LaplaceEntry:
@@ -2094,7 +2126,7 @@ class LaplaceTransformGenerator(StepGenerator):
         Returns:
             LaplaceEntry for sin(at).
         """
-        a = self._rng.randint(1, max(3, difficulty))
+        a = self._rng.randint(1, max(8, difficulty * 2))
         asq = a * a
         return LaplaceEntry("sin", {"a": a, "asq": asq})
 
@@ -2197,7 +2229,10 @@ class SigmoidEvalGenerator(StepGenerator):
         return -8, 8
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a sigmoid evaluation problem.
+        """Generate a sigmoid evaluation problem with continuous randomised input.
+
+        Uses tenths precision to produce many more unique values than
+        integer-only inputs.
 
         Args:
             difficulty: Controls input magnitude.
@@ -2206,7 +2241,8 @@ class SigmoidEvalGenerator(StepGenerator):
             Tuple of (latex_problem, solution_data).
         """
         lo, hi = self._input_range(difficulty)
-        x = self._rng.randint(lo, hi)
+        # Use tenths for much wider range of unique outputs
+        x = round(self._rng.uniform(lo, hi), 1)
         exp_neg_x = round(math.exp(-x), 4)
         denom = round(1 + exp_neg_x, 4)
         sigmoid = round(1 / denom, 4)

@@ -649,7 +649,7 @@ class GeneraliseSequenceGenerator(StepGenerator):
         return "find formula for sequence"
 
     def _get_formulas(self, difficulty: int) -> list[SequenceFormula]:
-        """Return formula pool appropriate for the difficulty.
+        """Return formula pool appropriate for the difficulty, with random coefficients.
 
         Args:
             difficulty: Difficulty level.
@@ -657,20 +657,28 @@ class GeneraliseSequenceGenerator(StepGenerator):
         Returns:
             List of available SequenceFormula objects.
         """
+        # Add random multiplier/offset to create variety
+        a = self._rng.randint(1, 5)
+        b = self._rng.randint(1, 8)
+        c = self._rng.randint(2, 5)
         easy = [
             SequenceFormula("squares", "n^2", lambda n: n * n),
-            SequenceFormula("doubles", "2n", lambda n: 2 * n),
-            SequenceFormula("successor", "n+1", lambda n: n + 1),
+            SequenceFormula(f"{a}n_scaled", f"{a}n", lambda n, _a=a: _a * n),
+            SequenceFormula(f"n+{b}", f"n+{b}", lambda n, _b=b: n + _b),
+            SequenceFormula(f"{a}n+{b}", f"{a}n+{b}", lambda n, _a=a, _b=b: _a * n + _b),
         ]
         medium = [
             SequenceFormula("triangular", "n(n+1)/2", lambda n: n * (n + 1) // 2),
-            SequenceFormula("powers_of_2", "2^n", lambda n: 2 ** n),
+            SequenceFormula(f"{c}^n", f"{c}^n", lambda n, _c=c: _c ** n),
             SequenceFormula("cubes", "n^3", lambda n: n ** 3),
+            SequenceFormula(f"{a}n^2+{b}", f"{a}n^2+{b}", lambda n, _a=a, _b=b: _a * n * n + _b),
         ]
         hard = [
-            SequenceFormula("quadratic_sum", "n^2+n", lambda n: n * n + n),
-            SequenceFormula("mersenne", "2^n-1", lambda n: 2 ** n - 1),
+            SequenceFormula(f"n^2+{a}n", f"n^2+{a}n", lambda n, _a=a: n * n + _a * n),
+            SequenceFormula(f"{c}^n-1", f"{c}^n-1", lambda n, _c=c: _c ** n - 1),
             SequenceFormula("factorial", "n!", lambda n: math.factorial(n)),
+            SequenceFormula(f"{a}n^2+{b}n+{c}", f"{a}n^2+{b}n+{c}",
+                           lambda n, _a=a, _b=b, _c=c: _a * n * n + _b * n + _c),
         ]
         if difficulty <= 2:
             return easy
@@ -993,7 +1001,7 @@ class CounterexampleGenerator(StepGenerator):
         return all_claims
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Select a false claim and its counterexample.
+        """Select a false claim and generate randomised search context.
 
         Args:
             difficulty: Controls which claims are available.
@@ -1003,8 +1011,12 @@ class CounterexampleGenerator(StepGenerator):
         """
         claims = self._get_claims(difficulty)
         claim = self._rng.choice(claims)
+        # Add randomised search range context for variety
+        search_start = self._rng.randint(0, 5)
+        search_end = self._rng.randint(50, 200 + difficulty * 50)
+        hint_tries = self._rng.randint(3, 10)
         return (
-            f"claim: {claim['text']}",
+            f"claim: {claim['text']} (search n in [{search_start},{search_end}], try {hint_tries} values)",
             {
                 "claim_text": claim["text"],
                 "counterexample": claim["counterexample"],
@@ -2020,7 +2032,7 @@ class DeriveFormulaGenerator(StepGenerator):
         return derivations
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Select a derivation and generate the problem.
+        """Select a derivation and generate randomised verification values.
 
         Args:
             difficulty: Controls available derivations.
@@ -2029,9 +2041,52 @@ class DeriveFormulaGenerator(StepGenerator):
             Tuple of (derivation_name, solution_data).
         """
         derivations = self._get_derivations(difficulty)
-        derivation = self._rng.choice(derivations)
-        problem = f"derive: {derivation['name']} ({derivation['statement']})"
+        derivation = dict(self._rng.choice(derivations))
+        # Randomise verification values for variety
+        va = self._rng.randint(2, 8 + difficulty)
+        vb = self._rng.randint(1, 6 + difficulty)
+        derivation["verify_a"] = va
+        derivation["verify_b"] = vb
+        # Recompute verification based on derivation
+        lhs, rhs = self._compute_verify(derivation["name"], va, vb)
+        derivation["verify_lhs"] = lhs
+        derivation["verify_rhs"] = rhs
+        problem = f"derive: {derivation['name']} ({derivation['statement']}) [verify a={va},b={vb}]"
         return problem, {"derivation": derivation}
+
+    def _compute_verify(self, name: str, a: int, b: int) -> tuple:
+        """Compute verification values for a derivation at given points.
+
+        Args:
+            name: Derivation name.
+            a: First verification parameter.
+            b: Second verification parameter.
+
+        Returns:
+            Tuple of (lhs_value, rhs_value).
+        """
+        if name == "difference of squares":
+            return a * a - b * b, (a - b) * (a + b)
+        if name == "sum of arithmetic series":
+            return a * (a + 1) // 2, a * (a + 1) // 2
+        if name == "geometric series":
+            s = sum(a ** i for i in range(b + 1))
+            return s, s
+        if name == "quadratic formula":
+            return a * b, a * b  # placeholder
+        if name == "binomial theorem (n=2)":
+            return (a + b) ** 2, a * a + 2 * a * b + b * b
+        if name == "sum of cubes factorisation":
+            return a ** 3 + b ** 3, (a + b) * (a * a - a * b + b * b)
+        if name == "distance formula":
+            return int((a * a + b * b) ** 0.5), int((a * a + b * b) ** 0.5)
+        if name == "derivative of x^n":
+            return a * b ** (a - 1), a * b ** (a - 1)
+        if name == "Euler's formula for polyhedra":
+            return 2, 2
+        if name == "area of a circle":
+            return int(3.14159 * a * a), int(3.14159 * a * a)
+        return a, a
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate the algebraic derivation steps.

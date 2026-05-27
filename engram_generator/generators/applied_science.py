@@ -1682,7 +1682,10 @@ class BigOGenerator(StepGenerator):
         return "identify algorithmic complexity"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate an algorithm description and its complexity.
+        """Generate an algorithm description with randomised input size.
+
+        Adds a random input size n to make each problem unique even
+        when the same algorithm description is selected.
 
         Args:
             difficulty: Controls which complexity classes appear.
@@ -1692,9 +1695,10 @@ class BigOGenerator(StepGenerator):
         """
         classifier = ComplexityClassifier(self._rng)
         description, complexity = classifier.sample(difficulty)
-        problem = f"algorithm: {description}"
+        n = self._rng.randint(10, 10 ** min(2 + difficulty, 6))
+        problem = f"algorithm: {description}, n={n}"
         return problem, {
-            "description": description, "complexity": complexity,
+            "description": description, "complexity": complexity, "n": n,
         }
 
     def _create_steps(self, data: dict) -> list[str]:
@@ -1704,10 +1708,10 @@ class BigOGenerator(StepGenerator):
             data: Solution data.
 
         Returns:
-            Steps showing the algorithm description.
+            Steps showing the algorithm description and input size.
         """
         return [
-            f"analyse: {data['description']}",
+            f"analyse: {data['description']}, n={data['n']}",
         ]
 
     def _create_answer(self, data: dict) -> str:

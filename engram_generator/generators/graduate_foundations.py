@@ -1059,11 +1059,6 @@ class CatalanGenerator(StepGenerator):
         'catalan'
     """
 
-    _N_RANGES = {
-        1: (2, 4), 2: (2, 4), 3: (3, 6), 4: (3, 6),
-        5: (5, 8), 6: (5, 8), 7: (6, 10), 8: (6, 10),
-    }
-
     @property
     def task_name(self) -> str:
         """Return the task identifier."""
@@ -1099,7 +1094,8 @@ class CatalanGenerator(StepGenerator):
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        lo, hi = self._N_RANGES.get(difficulty, (3, 6))
+        lo = 2 + difficulty
+        hi = 5 + difficulty * 7
         n = self._rng.randint(lo, hi)
         binom = math.comb(2 * n, n)
         catalan = binom // (n + 1)
@@ -1169,11 +1165,6 @@ class DerangementGenerator(StepGenerator):
         'derangement'
     """
 
-    _N_RANGES = {
-        1: (3, 5), 2: (3, 5), 3: (4, 7), 4: (4, 7),
-        5: (6, 9), 6: (6, 9), 7: (8, 12), 8: (8, 12),
-    }
-
     @property
     def task_name(self) -> str:
         """Return the task identifier."""
@@ -1209,7 +1200,8 @@ class DerangementGenerator(StepGenerator):
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        lo, hi = self._N_RANGES.get(difficulty, (4, 7))
+        lo = 3
+        hi = 14
         n = self._rng.randint(lo, hi)
         sequence = self._compute_derangements(n)
         return f"D({n})", {"n": n, "sequence": sequence}

@@ -358,7 +358,7 @@ class AlgorithmDesignGenerator(StepGenerator):
         return f"design algorithm to {desc}"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate an algorithm design problem.
+        """Generate an algorithm design problem with randomised test inputs.
 
         Args:
             difficulty: Controls pool size — higher difficulty unlocks harder algorithms.
@@ -371,14 +371,44 @@ class AlgorithmDesignGenerator(StepGenerator):
             pool = pool[:6]
         algo_key, description = self._rng.choice(pool)
         template = self._ALGORITHMS[algo_key]
-        test_input = self._TEST_INPUTS.get(algo_key, [1, 2, 3])
+        # Generate randomised test input instead of fixed
+        test_input = self._generate_random_test_input(algo_key, difficulty)
         test_result = self._run_test(algo_key, test_input)
-        problem = f"\\text{{problem: {description}}}"
+        n = len(test_input)
+        problem = f"\\text{{problem: {description} (n={n})}}"
         return problem, {
             "algo_key": algo_key, "description": description,
             "template": template, "test_input": test_input,
             "test_result": test_result,
         }
+
+    def _generate_random_test_input(self, algo_key: str,
+                                     difficulty: int) -> list[int]:
+        """Generate a random test input appropriate for the algorithm.
+
+        Args:
+            algo_key: Algorithm identifier.
+            difficulty: Controls input size and range.
+
+        Returns:
+            Random test input list.
+        """
+        n = self._rng.randint(4, 8 + difficulty)
+        if algo_key in ("find_max", "find_min", "find_median", "second_largest",
+                        "count_inversions", "kadane_max_subarray", "topk_quickselect"):
+            return [self._rng.randint(-20, 50) for _ in range(n)]
+        if algo_key == "binary_search":
+            vals = sorted(self._rng.sample(range(1, 50 + difficulty * 10), n))
+            return vals
+        if algo_key == "merge_sorted":
+            return [self._rng.randint(1, 30) for _ in range(n)]
+        if algo_key == "dutch_flag":
+            return [self._rng.randint(0, 2) for _ in range(n)]
+        if algo_key == "two_sum":
+            return [self._rng.randint(1, 30) for _ in range(n)]
+        if algo_key == "flood_fill":
+            return [self._rng.randint(0, 1) for _ in range(n)]
+        return [self._rng.randint(1, 20) for _ in range(n)]
 
     def _run_test(self, algo_key: str, test_input: list[int]) -> str:
         """Run the algorithm on test input and return the result string.
@@ -653,7 +683,7 @@ class AlgorithmImprovementGenerator(StepGenerator):
         return "improve this algorithm"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate an algorithm improvement problem.
+        """Generate an algorithm improvement problem with randomised test data.
 
         Args:
             difficulty: Controls problem type.
@@ -662,18 +692,52 @@ class AlgorithmImprovementGenerator(StepGenerator):
             Tuple of (naive_algorithm_string, solution_data).
         """
         problem_key = self._rng.choice(list(self._NAIVE.keys()))
-        
+
         naive = self._NAIVE[problem_key]
         improved = self._IMPROVED[problem_key]
         insight = self._INSIGHTS[problem_key]
-        test_input = self._TEST_INPUTS[problem_key]
-        test_result = self._TEST_RESULTS[problem_key]
-        problem = f"improve {problem_key}: {naive.format_pseudocode()} -> {naive.complexity}"
+        # Generate randomised test input
+        n = self._rng.randint(4, 8 + difficulty)
+        test_input, test_result = self._random_test(problem_key, n)
+        problem = f"improve {problem_key} (n={n}): {naive.format_pseudocode()} -> {naive.complexity}"
         return problem, {
             "problem_key": problem_key, "naive": naive,
             "improved": improved, "insight": insight,
             "test_input": test_input, "test_result": test_result,
         }
+
+    def _random_test(self, problem_key: str, n: int) -> tuple[list[int], str]:
+        """Generate random test input and compute expected result.
+
+        Args:
+            problem_key: Algorithm improvement type.
+            n: Input size.
+
+        Returns:
+            Tuple of (test_input, test_result_string).
+        """
+        if problem_key == "duplicate_detection":
+            arr = [self._rng.randint(1, n * 2) for _ in range(n)]
+            dup_val = arr[self._rng.randint(0, n - 2)]
+            arr[self._rng.randint(0, n - 1)] = dup_val
+            return arr, f"True (element {dup_val} repeated)"
+        if problem_key == "max_subarray":
+            arr = [self._rng.randint(-10, 15) for _ in range(n)]
+            best = cur = arr[0]
+            for x in arr[1:]:
+                cur = max(x, cur + x)
+                best = max(best, cur)
+            return arr, f"{best}"
+        if problem_key == "pair_sum":
+            arr = [self._rng.randint(1, 30) for _ in range(n)]
+            target = arr[0] + arr[1]
+            return arr, f"({arr[0]},{arr[1]}) for target={target}"
+        # closest_pair
+        arr = sorted(self._rng.sample(range(1, n * 5), n))
+        diffs = [arr[i + 1] - arr[i] for i in range(len(arr) - 1)]
+        min_d = min(diffs)
+        idx = diffs.index(min_d)
+        return arr, f"{min_d} (pair {arr[idx]},{arr[idx+1]})"
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate improvement reasoning steps.
@@ -816,7 +880,7 @@ class ImpossibilityProofGenerator(StepGenerator):
         return f"prove lower bound for {problem_name}"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a lower bound proof problem.
+        """Generate a lower bound proof problem with randomised input size.
 
         Args:
             difficulty: Controls which proof is selected.
@@ -827,8 +891,21 @@ class ImpossibilityProofGenerator(StepGenerator):
         proof_type = self._rng.choice(list(self._PROBLEMS.keys()))
         problem_name = self._PROBLEMS[proof_type]
         bound = self._BOUNDS[proof_type]
-        proof_steps = self._PROOF_STEPS[proof_type]
-        problem = f"\\text{{lower bound: {problem_name}}}"
+        proof_steps = list(self._PROOF_STEPS[proof_type])
+        # Add randomised concrete example
+        n = self._rng.randint(8, 1024 + difficulty * 256)
+        import math
+        if proof_type == "searching":
+            concrete = f"for n={n}: at least {int(math.log2(max(1, n)))} comparisons"
+        elif proof_type == "comparison_sort":
+            log_n_fact = sum(math.log2(i) for i in range(2, n + 1))
+            concrete = f"for n={n}: at least {int(log_n_fact)} comparisons"
+        elif proof_type == "element_uniqueness":
+            concrete = f"for n={n}: at least {int(n * math.log2(max(1, n)))} comparisons"
+        else:
+            concrete = f"for n={n}: at least {n} comparisons in worst case"
+        proof_steps.append(concrete)
+        problem = f"\\text{{lower bound: {problem_name} (n={n})}}"
         return problem, {
             "proof_type": proof_type, "problem_name": problem_name,
             "bound": bound, "proof_steps": proof_steps,
@@ -971,7 +1048,7 @@ class FailureAnalysisGenerator(StepGenerator):
         return "identify why this algorithm fails"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a failure analysis problem.
+        """Generate a failure analysis problem with randomised parameters.
 
         Args:
             difficulty: Controls failure type.
@@ -980,10 +1057,51 @@ class FailureAnalysisGenerator(StepGenerator):
             Tuple of (algorithm_with_input, solution_data).
         """
         failure_type = self._rng.choice(list(self._ALGORITHMS.keys()))
-        algorithm = self._ALGORITHMS[failure_type]
-        failing_input = self._FAILING_INPUTS[failure_type]
-        explanation = self._FAILURE_EXPLANATIONS[failure_type]
         bug_name = self._BUG_NAMES[failure_type]
+        # Generate randomised context for each failure type
+        if failure_type == "division_by_zero":
+            func_name = self._rng.choice(["average", "mean", "normalize", "scale"])
+            algorithm = f"{func_name}: return sum(list) / len(list)"
+            failing_input = "list = []"
+            explanation = [
+                "len([]) = 0",
+                f"sum([]) / 0 causes division by zero in {func_name}",
+                "fix: check if list is empty before dividing",
+            ]
+        elif failure_type == "empty_list":
+            func_name = self._rng.choice(["find_max", "find_min", "get_first", "pop_top"])
+            algorithm = f"{func_name}: return max(list[0], list[1:]...)"
+            n = self._rng.randint(0, 0)
+            failing_input = f"list = [] (size={n})"
+            explanation = [
+                f"list has {n} elements",
+                f"accessing list[0] raises IndexError in {func_name}",
+                "fix: return None or raise ValueError if list is empty",
+            ]
+        elif failure_type == "integer_overflow":
+            lo = self._rng.randint(1_000_000_000, 1_900_000_000)
+            hi = self._rng.randint(lo + 100_000_000, 2_100_000_000)
+            algorithm = f"binary_search: mid = (lo + hi) / 2"
+            failing_input = f"lo = {lo}, hi = {hi}"
+            total = lo + hi
+            explanation = [
+                f"lo + hi = {lo} + {hi} = {total}",
+                f"{total} exceeds 32-bit signed integer max (2147483647)",
+                "fix: mid = lo + (hi - lo) / 2 avoids overflow",
+            ]
+        else:
+            arr_size = self._rng.randint(4, 10 + difficulty)
+            arr = list(range(1, arr_size + 1))
+            lo_idx = self._rng.randint(0, 1)
+            hi_idx = arr_size
+            algorithm = f"range_sum: for i in range({lo_idx}, {hi_idx}) sum += arr[i]"
+            failing_input = f"arr = {arr}, lo = {lo_idx}, hi = {hi_idx}"
+            explanation = [
+                f"range({lo_idx}, {hi_idx}) includes index {hi_idx - 1}",
+                f"arr[{hi_idx - 1}] = {arr[hi_idx - 1]} is the last element",
+                f"if hi means exclusive end, result is correct",
+                "fix: clarify whether hi is inclusive or exclusive",
+            ]
         problem = f"algorithm: {algorithm}; input: {failing_input}"
         return problem, {
             "failure_type": failure_type, "algorithm": algorithm,
@@ -1389,7 +1507,7 @@ class ComplexityComparisonGenerator(StepGenerator):
         return "which algorithm is faster for this input"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a complexity comparison problem.
+        """Generate a complexity comparison problem with randomised input size.
 
         Args:
             difficulty: Controls comparison type and input size.
@@ -1398,7 +1516,9 @@ class ComplexityComparisonGenerator(StepGenerator):
             Tuple of (problem_description, solution_data).
         """
         comp_type = self._rng.choice(list(self._COMPARISON_TYPES.values()))
-        n = self._INPUT_SIZES.get(difficulty, 16)
+        # Use randomised n instead of fixed per-difficulty
+        base_n = self._INPUT_SIZES.get(difficulty, 16)
+        n = self._rng.randint(max(4, base_n // 2), base_n * 2)
         builder = self._get_comparison_builder(comp_type)
         return builder(n)
 

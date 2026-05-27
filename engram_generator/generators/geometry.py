@@ -783,7 +783,15 @@ class VolumeSphereGenerator(StepGenerator):
         return "find volume of sphere"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        r = self._rng.randint(1, 5 * difficulty)
+        """Generate a sphere volume problem with wider randomised radius.
+
+        Args:
+            difficulty: Controls the radius range.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
+        r = self._rng.randint(1, 10 + difficulty * 8)
         v = round((4 / 3) * math.pi * r ** 3, 2)
         return f"sphere r={r}", {"r": r, "volume": v}
 

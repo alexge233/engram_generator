@@ -1198,7 +1198,7 @@ class DeriveIdentityGenerator(StepGenerator):
         return identities
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Select an identity to prove.
+        """Select an identity and generate randomised test values.
 
         Args:
             difficulty: Controls which identities are available.
@@ -1207,9 +1207,52 @@ class DeriveIdentityGenerator(StepGenerator):
             Tuple of (identity_statement, solution_data).
         """
         pool = self._get_identities(difficulty)
-        identity = self._rng.choice(pool)
-        problem = f"prove: {identity['statement']}"
+        identity = dict(self._rng.choice(pool))
+        # Randomise test values for variety
+        test_a = self._rng.randint(2, 8 + difficulty)
+        test_b = self._rng.randint(1, 6 + difficulty)
+        identity["test_a"] = test_a
+        identity["test_b"] = test_b
+        # Recompute verification values based on identity name
+        identity["lhs_val"], identity["rhs_val"] = self._compute_identity_values(
+            identity["name"], test_a, test_b
+        )
+        problem = f"prove: {identity['statement']} (verify at a={test_a},b={test_b})"
         return problem, {"identity": identity}
+
+    def _compute_identity_values(self, name: str, a: int, b: int) -> tuple:
+        """Compute LHS and RHS values for an identity at given test points.
+
+        Args:
+            name: Identity name.
+            a: First test value.
+            b: Second test value.
+
+        Returns:
+            Tuple of (lhs_value, rhs_value).
+        """
+        if name == "difference of squares":
+            return (a + b) * (a - b), a * a - b * b
+        if name == "square difference":
+            return (a + b) ** 2 - (a - b) ** 2, 4 * a * b
+        if name == "sum of cubes":
+            return a ** 3 + b ** 3, (a + b) * (a * a - a * b + b * b)
+        if name == "difference of cubes":
+            return a ** 3 - b ** 3, (a - b) * (a * a + a * b + b * b)
+        if name == "perfect square trinomial":
+            return (a + b) ** 2, a * a + 2 * a * b + b * b
+        if name == "sum of arithmetic series":
+            return a * (a + 1) // 2, a * (a + 1) // 2
+        if name == "geometric sum":
+            s = sum(a ** i for i in range(b + 1))
+            return s, (a ** (b + 1) - 1) // (a - 1) if a != 1 else b + 1
+        if name == "binomial square difference":
+            return (a + b) * (a - b), a * a - b * b
+        if name == "Cauchy-Schwarz for two terms":
+            return (a * 1 + b * 2) ** 2, (a * a + b * b) * (1 + 4)
+        if name == "AM-GM for two numbers":
+            return (a + b) // 2, int((a * b) ** 0.5)
+        return a, a
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate proof manipulation steps.
@@ -1346,8 +1389,13 @@ class MinimalAxiomsGenerator(StepGenerator):
             return sets[:3]
         return sets
 
+    _VAR_SETS = [
+        ("a", "b", "c"), ("x", "y", "z"), ("p", "q", "r"),
+        ("u", "v", "w"), ("m", "n", "k"), ("s", "t", "r"),
+    ]
+
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate an axiom minimisation problem.
+        """Generate an axiom minimisation problem with randomised variable names.
 
         Args:
             difficulty: Controls axiom set complexity.
@@ -1357,16 +1405,25 @@ class MinimalAxiomsGenerator(StepGenerator):
         """
         pool = self._get_axiom_sets(difficulty)
         axiom_set = self._rng.choice(pool)
-        axiom_strs = [
-            f"A{i + 1}: {ax}" for i, ax in enumerate(axiom_set["axioms"])
+        # Randomise variable names for variety
+        var_set = self._rng.choice(self._VAR_SETS)
+        v1, v2, v3 = var_set
+        axioms = [
+            ax.replace("a", v1).replace("b", v2).replace("c", v3)
+            for ax in axiom_set["axioms"]
         ]
+        derivation = axiom_set["derivation"].replace("a", v1).replace("b", v2).replace("c", v3)
+        label_offset = self._rng.randint(0, 3)
+        labels = [f"A{i + 1 + label_offset}" for i in range(len(axioms))]
+        axiom_strs = [f"{labels[i]}: {ax}" for i, ax in enumerate(axioms)]
+        redundant_name = labels[axiom_set["redundant_idx"]]
         problem = f"axioms: {', '.join(axiom_strs)}"
         return problem, {
-            "axioms": axiom_set["axioms"],
+            "axioms": axioms,
             "redundant_idx": axiom_set["redundant_idx"],
-            "redundant_name": axiom_set["redundant_name"],
-            "derivation": axiom_set["derivation"],
-            "minimal": axiom_set["minimal"],
+            "redundant_name": redundant_name,
+            "derivation": derivation,
+            "minimal": [ax for i, ax in enumerate(axioms) if i != axiom_set["redundant_idx"]],
         }
 
     def _create_steps(self, data: dict) -> list[str]:
@@ -1849,7 +1906,7 @@ class ReductionGenerator(StepGenerator):
         return f"show {red['to']} is at least as hard as {red['from']}"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a reduction proof problem.
+        """Generate a reduction proof problem with randomised test inputs.
 
         Args:
             difficulty: Controls reduction type.
@@ -1859,12 +1916,45 @@ class ReductionGenerator(StepGenerator):
         """
         rtype = self._rng.choice(list(self._REDUCTIONS.keys()))
         red = self._REDUCTIONS[rtype]
-        problem = f"reduce {red['from']} to {red['to']}"
+        # Generate randomised test inputs based on reduction type
+        n = self._rng.randint(4, 10 + difficulty * 2)
+        test_input, test_result = self._randomise_test(rtype, n)
+        problem = f"reduce {red['from']} to {red['to']} (n={n})"
         return problem, {
             "from_problem": red["from"], "to_problem": red["to"],
             "proof_steps": red["steps"], "bound": red["bound"],
-            "test_input": red["test_input"], "test_result": red["test_result"],
+            "test_input": test_input, "test_result": test_result,
         }
+
+    def _randomise_test(self, rtype: str, n: int) -> tuple[str, str]:
+        """Generate randomised test input/result for a reduction type.
+
+        Args:
+            rtype: Reduction type key.
+            n: Problem size parameter.
+
+        Returns:
+            Tuple of (test_input, test_result) strings.
+        """
+        if rtype == "sort_to_uniqueness":
+            arr = [self._rng.randint(1, n * 2) for _ in range(n)]
+            dup_idx = self._rng.randint(0, n - 2)
+            arr[dup_idx + 1] = arr[dup_idx]
+            s = sorted(arr)
+            return f"{arr}", f"sort->{s}->duplicate found"
+        if rtype == "sat_to_cover":
+            clauses = self._rng.randint(2, 4 + n // 2)
+            verts = clauses * 3 + n
+            return (f"({clauses} clauses, {n} variables)",
+                    f"{clauses} triangles + {n} variable pairs -> {verts} vertices")
+        if rtype == "sort_to_closest":
+            arr = sorted(self._rng.sample(range(1, n * 5), n))
+            diffs = [arr[i + 1] - arr[i] for i in range(len(arr) - 1)]
+            min_d = min(diffs)
+            idx = diffs.index(min_d)
+            return f"{arr}", f"closest pair: ({arr[idx]},{arr[idx+1]}), distance={min_d}"
+        # matmul_to_reach
+        return f"{n}x{n} adjacency matrix", f"A^2 gives 2-hop reachability for {n} nodes"
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate reduction proof steps.
@@ -2200,8 +2290,49 @@ class HypothesisDesignGenerator(StepGenerator):
         """
         return "design experiment to test this hypothesis"
 
+    _HYPOTHESIS_TEMPLATES = {
+        "learning_rate": {
+            "hyp_tpl": "learning rate {lr1} gives lower final loss than {lr2} on {task}",
+            "control": "fix architecture, data, batch size, epochs",
+            "variable_tpl": "learning rate: {{{lr1}, {lr2}}}",
+            "measure_tpl": "validation loss after {epochs} epochs",
+            "criterion_tpl": "lr={lr1} wins if val_loss lower by > {margin}%",
+            "conditions": 2,
+        },
+        "architecture": {
+            "hyp_tpl": "deeper network ({deep} layers) outperforms shallow ({shallow} layers) on {task}",
+            "control": "fix total parameter count, learning rate, data",
+            "variable_tpl": "depth: {{{shallow} layers, {deep} layers}}",
+            "measure": "test accuracy after convergence",
+            "criterion_tpl": "deep wins if accuracy > {margin}% higher",
+            "conditions": 2,
+        },
+        "augmentation": {
+            "hyp_tpl": "data augmentation improves generalisation on {task} with {n} samples",
+            "control": "fix model, learning rate, training epochs",
+            "variable": "augmentation: {none, random crop + flip}",
+            "measure_tpl": "gap between train and test accuracy after {epochs} epochs",
+            "criterion_tpl": "augmentation helps if gap shrinks by > {margin}%",
+            "conditions": 2,
+        },
+        "multi_factor": {
+            "hyp_tpl": "batch size and learning rate interact for {task} training",
+            "control": "fix architecture, data, epochs",
+            "variable_tpl": "batch_size x lr: {{{bs1}, {bs2}}} x {{{lr1}, {lr2}}}",
+            "measure": "final validation loss for each combination",
+            "criterion": "interaction if best lr differs between batch sizes",
+            "conditions": 4,
+        },
+    }
+
+    _TASK_NAMES = [
+        "image classification", "text generation", "machine translation",
+        "sentiment analysis", "object detection", "speech recognition",
+        "question answering", "summarisation",
+    ]
+
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate an experiment design problem.
+        """Generate an experiment design problem with randomised parameters.
 
         Args:
             difficulty: Controls experiment type.
@@ -2209,10 +2340,35 @@ class HypothesisDesignGenerator(StepGenerator):
         Returns:
             Tuple of (hypothesis_string, solution_data).
         """
-        etype = self._rng.choice(list(self._EXPERIMENTS.keys()))
-        exp = self._EXPERIMENTS[etype]
+        etype = self._rng.choice(list(self._HYPOTHESIS_TEMPLATES.keys()))
+        tpl = self._HYPOTHESIS_TEMPLATES[etype]
+        task = self._rng.choice(self._TASK_NAMES)
+        lr1 = round(self._rng.choice([0.0001, 0.0005, 0.001, 0.005, 0.01]), 4)
+        lr2 = round(lr1 * self._rng.choice([5, 10, 20]), 4)
+        epochs = self._rng.choice([50, 100, 200, 500])
+        margin = round(self._rng.uniform(0.3, 3.0), 1)
+        deep = self._rng.randint(4, 12 + difficulty)
+        shallow = self._rng.randint(2, max(3, deep // 2))
+        n = self._rng.choice([1000, 5000, 10000, 50000])
+        bs1 = self._rng.choice([16, 32, 64])
+        bs2 = self._rng.choice([128, 256, 512])
+        fmt = dict(task=task, lr1=lr1, lr2=lr2, epochs=epochs,
+                   margin=margin, deep=deep, shallow=shallow, n=n,
+                   bs1=bs1, bs2=bs2)
+        hypothesis = tpl["hyp_tpl"].format(**fmt)
+        variable = tpl.get("variable_tpl", tpl.get("variable", "")).format(**fmt)
+        measure = tpl.get("measure_tpl", tpl.get("measure", "")).format(**fmt)
+        criterion = tpl.get("criterion_tpl", tpl.get("criterion", "")).format(**fmt)
+        exp = {
+            "hypothesis": hypothesis,
+            "control": tpl["control"],
+            "variable": variable,
+            "measure": measure,
+            "criterion": criterion,
+            "conditions": tpl["conditions"],
+        }
         problem = f"hypothesis: {exp['hypothesis']}"
-        return problem, dict(exp)
+        return problem, exp
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate experiment design steps.
@@ -2562,7 +2718,7 @@ class RepresentationChoiceGenerator(StepGenerator):
         return "choose best representation for this problem"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a representation choice problem.
+        """Generate a representation choice problem with randomised size params.
 
         Args:
             difficulty: Controls comparison type.
@@ -2571,9 +2727,20 @@ class RepresentationChoiceGenerator(StepGenerator):
             Tuple of (problem_description, solution_data).
         """
         ctype = self._rng.choice(list(self._CHOICES.keys()))
-        choice = self._CHOICES[ctype]
-        problem = f"problem: {choice['problem']}"
-        return problem, dict(choice)
+        choice = dict(self._CHOICES[ctype])
+        n = self._rng.randint(100, 10000 + difficulty * 5000)
+        e = self._rng.randint(n, n * 3)
+        ops = self._rng.randint(1000, 100000)
+        # Add context with random parameters to the problem description
+        context = self._rng.choice([
+            f" (n={n} elements, {ops} operations)",
+            f" ({n} items, {e} relationships)",
+            f" (dataset of {n} entries)",
+            f" (n={n}, expected {ops} queries)",
+        ])
+        problem = f"problem: {choice['problem']}{context}"
+        choice["problem"] = choice["problem"] + context
+        return problem, choice
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate representation analysis steps.
@@ -3110,8 +3277,35 @@ class DataPrescriptionGenerator(StepGenerator):
         """
         return "prescribe training data to fix this weakness"
 
+    _PRESCRIPTION_TEMPLATES = {
+        "carry_arithmetic": {
+            "weakness_tpl": "model fails on {n}-digit addition with carries (accuracy {acc}%)",
+            "root_cause": "insufficient carry propagation examples in training",
+            "data_type": "addition problems where sum digits require carrying",
+            "spec_tpl": "a+b where a,b in [{lo},{hi}] and digit sum >= 10 in each column",
+        },
+        "multi_step": {
+            "weakness_tpl": "model fails when solution requires > {n} reasoning steps (accuracy {acc}%)",
+            "root_cause": "training data biased toward 1-2 step solutions",
+            "data_type_tpl": "problems requiring {min_s}-{max_s} explicit reasoning steps",
+            "spec": "chain computations: a op b op c op d with intermediate verification",
+        },
+        "distribution_shift": {
+            "weakness_tpl": "model accuracy drops to {acc}% on inputs {scale}x larger than training range",
+            "root_cause": "training data concentrated on small inputs",
+            "data_type_tpl": "problems with operands {scale}x-{scale2}x larger than current training max",
+            "spec_tpl": "same task types but with operands in [{lo}, {hi}]",
+        },
+        "edge_cases": {
+            "weakness_tpl": "model fails on {n} of {total} boundary conditions (zero, negative, overflow)",
+            "root_cause": "edge cases underrepresented in training data",
+            "data_type": "problems involving 0, -1, MAX_INT, and boundary values",
+            "spec": "targeted examples: x*0, x+(-x), operations near integer limits",
+        },
+    }
+
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a data prescription problem.
+        """Generate a data prescription problem with randomised parameters.
 
         Args:
             difficulty: Controls weakness type.
@@ -3119,10 +3313,32 @@ class DataPrescriptionGenerator(StepGenerator):
         Returns:
             Tuple of (weakness_description, solution_data).
         """
-        wtype = self._rng.choice(list(self._PRESCRIPTIONS.keys()))
-        prescription = self._PRESCRIPTIONS[wtype]
+        wtype = self._rng.choice(list(self._PRESCRIPTION_TEMPLATES.keys()))
+        tpl = self._PRESCRIPTION_TEMPLATES[wtype]
+        n = self._rng.randint(2, 6 + difficulty)
+        acc = self._rng.randint(5, 40)
+        lo = self._rng.choice([100, 1000, 10000])
+        hi = lo * self._rng.randint(5, 20)
+        scale = self._rng.choice([10, 50, 100])
+        scale2 = scale * self._rng.randint(2, 10)
+        total = self._rng.randint(10, 50)
+        min_s = n + 1
+        max_s = min_s + self._rng.randint(1, 4)
+        quantity = self._rng.choice([500, 1000, 2000, 3000, 5000, 10000])
+        fmt = dict(n=n, acc=acc, lo=lo, hi=hi, scale=scale, scale2=scale2,
+                   total=total, min_s=min_s, max_s=max_s)
+        weakness = tpl["weakness_tpl"].format(**fmt)
+        data_type = tpl.get("data_type_tpl", tpl.get("data_type", "")).format(**fmt)
+        spec = tpl.get("spec_tpl", tpl.get("spec", "")).format(**fmt)
+        prescription = {
+            "weakness": weakness,
+            "root_cause": tpl["root_cause"],
+            "data_type": data_type,
+            "quantity": quantity,
+            "spec": spec,
+        }
         problem = f"weakness: {prescription['weakness']}"
-        return problem, dict(prescription)
+        return problem, prescription
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate prescription steps.

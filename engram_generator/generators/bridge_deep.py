@@ -181,19 +181,57 @@ class SeparationOfVariablesGenerator(StepGenerator):
         return "solve separable ODE"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a separable ODE with randomised coefficients.
+
+        Args:
+            difficulty: Controls ODE form variety and coefficient range.
+
+        Returns:
+            Tuple of (ode_string, solution_data).
+        """
+        a = self._rng.randint(1, max(1, difficulty + 2))
+        b = self._rng.randint(1, max(1, difficulty + 1))
+        n = self._rng.choice([2, 3])
+
         cases = [
-            ("dy/dx = ky", "y = Ce^{kx}", "exponential growth"),
-            ("dy/dx = -ky", "y = Ce^{-kx}", "exponential decay"),
-            ("dy/dx = y/x", "y = Cx", "proportional"),
-            ("dy/dx = x/y", "y^2 = x^2 + C", "implicit"),
+            (f"dy/dx = {a}y",
+             f"y = Ce^{{{a}x}}",
+             "exponential growth"),
+            (f"dy/dx = -{a}y",
+             f"y = Ce^{{-{a}x}}",
+             "exponential decay"),
+            (f"dy/dx = {a}y/x",
+             f"y = Cx^{{{a}}}",
+             "power law"),
+            (f"dy/dx = {a}x/y",
+             f"y^2 = {a}x^2 + C",
+             "implicit quadratic"),
+            (f"dy/dx = {a}x^{n}",
+             f"y = {a}x^{{{n + 1}}}/{n + 1} + C",
+             "polynomial"),
+            (f"dy/dx = {a}y^2",
+             f"y = -1/({a}x + C)",
+             "reciprocal"),
+            (f"dy/dx = {a}*sqrt(y)",
+             f"2*sqrt(y) = {a}x + C",
+             "square root"),
+            (f"dy/dx = {a}e^{{-{b}x}}",
+             f"y = -{a}/{b}*e^{{-{b}x}} + C",
+             "exponential RHS"),
+            (f"dy/dx = {a}/(1 + x^2)",
+             f"y = {a}*arctan(x) + C",
+             "arctangent"),
+            (f"dy/dx = {a}*y*x",
+             f"y = Ce^{{{a}x^2/2}}",
+             "Gaussian growth"),
         ]
-        ode, solution, name = self._rng.choice(cases[:min(len(cases), 2 + difficulty)])
-        k = self._rng.randint(1, max(1, difficulty))
-        ode_sub = ode.replace("k", str(k))
-        sol_sub = solution.replace("k", str(k))
+        ode, solution, name = self._rng.choice(
+            cases[:min(len(cases), 3 + difficulty)]
+        )
         return (
-            f"solve: {ode_sub}",
-            {"ode": ode_sub, "solution": sol_sub, "method": "separation", "name": name},
+            f"solve: {ode}",
+            {"ode": ode, "solution": solution,
+             "method": "separation", "name": name},
         )
 
     def _create_steps(self, sd: dict) -> list[str]:
@@ -223,15 +261,85 @@ class IntegratingFactorGenerator(StepGenerator):
         return "solve ODE with integrating factor"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        cases = [
-            ("dy/dx + y = e^x", "e^x", "y = (e^{2x}/2 + C)/e^x", "simple"),
-            ("dy/dx + 2y = x", "e^{2x}", "y = (x/2 - 1/4) + Ce^{-2x}", "polynomial RHS"),
-            ("dy/dx - y = 1", "e^{-x}", "y = -1 + Ce^x", "constant RHS"),
+        """Generate an integrating factor ODE with randomised coefficients.
+
+        Args:
+            difficulty: Controls variety of ODE forms.
+
+        Returns:
+            Tuple of (ode_string, solution_data).
+        """
+        a = self._rng.randint(1, 6)
+        b = self._rng.randint(1, 6)
+        sign = self._rng.choice(["+", "-"])
+        a_sign = a if sign == "+" else -a
+
+        templates = [
+            # dy/dx + ay = e^{bx}
+            {
+                "ode": f"dy/dx + {a}y = e^{{{b}x}}",
+                "mu": f"e^{{{a}x}}",
+                "solution": (f"y = (e^{{{a + b}x}}/{a + b} + C)/e^{{{a}x}}"
+                             if a + b != 0 else f"y = (x + C)/e^{{{a}x}}"),
+                "name": "exponential RHS",
+            },
+            # dy/dx - ay = b
+            {
+                "ode": f"dy/dx - {a}y = {b}",
+                "mu": f"e^{{-{a}x}}",
+                "solution": f"y = -{b}/{a} + Ce^{{{a}x}}",
+                "name": "constant RHS",
+            },
+            # dy/dx + ay = bx
+            {
+                "ode": f"dy/dx + {a}y = {b}x",
+                "mu": f"e^{{{a}x}}",
+                "solution": f"y = ({b}x/{a} - {b}/{a**2}) + Ce^{{-{a}x}}",
+                "name": "polynomial RHS",
+            },
+            # dy/dx + ay = b*sin(x)
+            {
+                "ode": f"dy/dx + {a}y = {b}*sin(x)",
+                "mu": f"e^{{{a}x}}",
+                "solution": (f"y = {b}*({a}*sin(x) - cos(x))/({a**2}+1) "
+                             f"+ Ce^{{-{a}x}}"),
+                "name": "trig RHS",
+            },
+            # dy/dx + (a/x)y = b*x^2
+            {
+                "ode": f"dy/dx + ({a}/x)y = {b}*x^2",
+                "mu": f"x^{{{a}}}",
+                "solution": f"y = {b}*x^3/({a}+3) + C/x^{{{a}}}",
+                "name": "variable coeff",
+            },
+            # dy/dx - ay = e^{ax}  (resonance)
+            {
+                "ode": f"dy/dx - {a}y = e^{{{a}x}}",
+                "mu": f"e^{{-{a}x}}",
+                "solution": f"y = x*e^{{{a}x}} + Ce^{{{a}x}}",
+                "name": "resonance",
+            },
+            # dy/dx + ay = b*e^{-ax}
+            {
+                "ode": f"dy/dx + {a}y = {b}*e^{{-{a}x}}",
+                "mu": f"e^{{{a}x}}",
+                "solution": f"y = {b}*x*e^{{-{a}x}} + Ce^{{-{a}x}}",
+                "name": "matching exponential",
+            },
+            # dy/dx + ay = b*x^2
+            {
+                "ode": f"dy/dx + {a}y = {b}*x^2",
+                "mu": f"e^{{{a}x}}",
+                "solution": (f"y = {b}*(x^2/{a} - 2x/{a**2} + 2/{a**3}) "
+                             f"+ Ce^{{-{a}x}}"),
+                "name": "quadratic RHS",
+            },
         ]
-        ode, mu, solution, name = self._rng.choice(cases[:min(len(cases), 1 + difficulty)])
+        case = self._rng.choice(templates[:min(len(templates), 2 + difficulty)])
         return (
-            f"solve: {ode}",
-            {"ode": ode, "mu": mu, "solution": solution, "name": name},
+            f"solve: {case['ode']}",
+            {"ode": case["ode"], "mu": case["mu"],
+             "solution": case["solution"], "name": case["name"]},
         )
 
     def _create_steps(self, sd: dict) -> list[str]:
@@ -265,25 +373,36 @@ class CharacteristicEquationGenerator(StepGenerator):
         return "solve via characteristic equation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a characteristic equation ODE with randomised roots.
+
+        Args:
+            difficulty: Controls coefficient ranges.
+
+        Returns:
+            Tuple of (ode_string, solution_data).
+        """
         root_type = self._rng.choice(["distinct", "repeated", "complex"])
+        max_coeff = min(3 + difficulty, 8)
         if root_type == "distinct":
-            r1 = self._rng.randint(-3, 3)
-            r2 = r1 + self._rng.randint(1, 3)
+            r1 = self._rng.randint(-max_coeff, max_coeff)
+            offset = self._rng.randint(1, max(1, max_coeff))
+            r2 = r1 + offset
             a, b, c = 1, -(r1 + r2), r1 * r2
             solution = f"y = C1*e^{{{r1}x}} + C2*e^{{{r2}x}}"
         elif root_type == "repeated":
-            r = self._rng.randint(-3, 3)
+            r = self._rng.randint(-max_coeff, max_coeff)
             a, b, c = 1, -2 * r, r * r
             solution = f"y = (C1 + C2*x)*e^{{{r}x}}"
         else:
-            alpha = self._rng.randint(-2, 2)
-            beta = self._rng.randint(1, 3)
+            alpha = self._rng.randint(-max_coeff, max_coeff)
+            beta = self._rng.randint(1, max(1, max_coeff))
             a, b, c = 1, -2 * alpha, alpha * alpha + beta * beta
             solution = f"y = e^{{{alpha}x}}(C1*cos({beta}x) + C2*sin({beta}x))"
 
         ode = f"{a}y'' + {b}y' + {c}y = 0"
         char_eq = f"{a}r^2 + {b}r + {c} = 0"
-        return ode, {"ode": ode, "char_eq": char_eq, "root_type": root_type, "solution": solution}
+        return ode, {"ode": ode, "char_eq": char_eq,
+                     "root_type": root_type, "solution": solution}
 
     def _create_steps(self, sd: dict) -> list[str]:
         return [
@@ -460,25 +579,101 @@ class DirectProofGenerator(StepGenerator):
         return "construct direct proof"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a direct proof with randomised variables and constants.
+
+        Args:
+            difficulty: Controls which proof templates are accessible.
+
+        Returns:
+            Tuple of (claim_string, proof_data).
+        """
+        var = self._rng.choice(["n", "m", "k", "x", "j"])
+        v2 = self._rng.choice(["a", "b", "p", "q", "u", "v"])
+        v3 = self._rng.choice(["c", "d", "r", "s", "w", "t"])
+        while v3 == v2:
+            v3 = self._rng.choice(["c", "d", "r", "s", "w", "t"])
+        exp = self._rng.choice([2, 3])
+        c = self._rng.randint(2, 7)
+        d = self._rng.choice([3, 5, 7])
+
         proofs = [
             {
-                "claim": "if n is even, n^2 is even",
-                "steps": ["assume n = 2k", "n^2 = (2k)^2 = 4k^2 = 2(2k^2)", "2k^2 is integer, so n^2 is even"],
+                "claim": f"if {var} is even, {var}^{exp} is even",
+                "steps": [
+                    f"assume {var} = 2k",
+                    f"{var}^{exp} = (2k)^{exp} = {2**exp}*k^{exp} = 2*({2**(exp-1)}*k^{exp})",
+                    f"{2**(exp-1)}*k^{exp} is integer, so {var}^{exp} is even",
+                ],
             },
             {
-                "claim": "sum of two even numbers is even",
-                "steps": ["let a = 2m, b = 2n", "a + b = 2m + 2n = 2(m+n)", "m+n is integer, so sum is even"],
+                "claim": f"sum of two even numbers is even",
+                "steps": [
+                    f"let {v2} = 2m, {v3} = 2n",
+                    f"{v2} + {v3} = 2m + 2n = 2(m+n)",
+                    f"m+n is integer, so sum is even",
+                ],
             },
             {
-                "claim": "product of two odd numbers is odd",
-                "steps": ["let a = 2m+1, b = 2n+1", "ab = 4mn + 2m + 2n + 1 = 2(2mn+m+n) + 1", "this is odd"],
+                "claim": f"product of two odd numbers is odd",
+                "steps": [
+                    f"let {v2} = 2m+1, {v3} = 2n+1",
+                    f"{v2}*{v3} = 4mn + 2m + 2n + 1 = 2(2mn+m+n) + 1",
+                    f"this is odd",
+                ],
             },
             {
-                "claim": "if n^2 is odd, n is odd",
-                "steps": ["contrapositive: if n is even, n^2 is even", "n = 2k implies n^2 = 4k^2 = 2(2k^2)", "done by contrapositive"],
+                "claim": f"if {var}^{exp} is odd, {var} is odd",
+                "steps": [
+                    f"contrapositive: if {var} is even, {var}^{exp} is even",
+                    f"{var} = 2k implies {var}^{exp} = {2**exp}*k^{exp} = 2*({2**(exp-1)}*k^{exp})",
+                    f"done by contrapositive",
+                ],
+            },
+            {
+                "claim": f"if {var} is divisible by {c}, then {var}^2 is divisible by {c**2}",
+                "steps": [
+                    f"assume {var} = {c}*k",
+                    f"{var}^2 = ({c}*k)^2 = {c**2}*k^2",
+                    f"so {var}^2 is divisible by {c**2}",
+                ],
+            },
+            {
+                "claim": (f"sum of {c} consecutive integers starting at {var} "
+                          f"is divisible by {c} when {c} is odd"),
+                "steps": [
+                    f"sum = {c}*{var} + (0+1+...+{c - 1}) = {c}*{var} + {c * (c - 1) // 2}",
+                    f"= {c}*({var} + {(c - 1) // 2})",
+                    f"divisible by {c}",
+                ],
+            },
+            {
+                "claim": f"for any integer {var}, {c}*{var} + {c + 1} is odd iff {var} is even",
+                "steps": [
+                    f"if {var} even: {var}=2k, {c}*2k + {c + 1} = {2 * c}k + {c + 1}",
+                    f"{2 * c}k is even, {c + 1} is {'even' if (c + 1) % 2 == 0 else 'odd'}, "
+                    f"sum is {'even' if (c + 1) % 2 == 0 else 'odd'}",
+                    f"verified for even case",
+                ],
+            },
+            {
+                "claim": (f"the square of any integer {var} "
+                          f"leaves remainder 0 or 1 when divided by 4"),
+                "steps": [
+                    f"if {var} is even: {var}=2k, {var}^2=4k^2, remainder 0",
+                    f"if {var} is odd: {var}=2k+1, {var}^2=4k^2+4k+1=4(k^2+k)+1, remainder 1",
+                    f"only remainders 0 and 1 are possible",
+                ],
+            },
+            {
+                "claim": f"({v2}+{v3})^2 = {v2}^2 + 2*{v2}*{v3} + {v3}^2",
+                "steps": [
+                    f"({v2}+{v3})^2 = ({v2}+{v3})*({v2}+{v3})",
+                    f"= {v2}^2 + {v2}*{v3} + {v3}*{v2} + {v3}^2",
+                    f"= {v2}^2 + 2*{v2}*{v3} + {v3}^2",
+                ],
             },
         ]
-        proof = self._rng.choice(proofs[:min(len(proofs), 2 + difficulty)])
+        proof = self._rng.choice(proofs[:min(len(proofs), 3 + difficulty)])
         return f"prove: {proof['claim']}", proof
 
     def _create_steps(self, sd: dict) -> list[str]:
@@ -508,27 +703,188 @@ class ProofByContradictionGenerator(StepGenerator):
         return "proof by contradiction"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a proof by contradiction with randomised parameters.
+
+        Every template embeds randomised numbers or variables so that
+        repeated generation produces distinct output strings.
+
+        Args:
+            difficulty: Controls which proof templates are accessible.
+
+        Returns:
+            Tuple of (claim_string, proof_data).
+        """
+        p = self._rng.choice([2, 3, 5, 7, 11, 13, 17, 19, 23])
+        n_val = self._rng.randint(3, 30)
+        k_val = self._rng.randint(2, 12)
+        m_val = self._rng.randint(2, 15)
+        exp = self._rng.choice([2, 3, 4])
+        var = self._rng.choice(["a", "b", "c", "m", "n", "x", "y"])
+
         proofs = [
             {
-                "claim": "sqrt(2) is irrational",
-                "assumption": "assume sqrt(2) = a/b in lowest terms",
-                "steps": ["2b^2 = a^2, so a is even", "let a = 2k, then 2b^2 = 4k^2, so b is even"],
-                "contradiction": "both a and b are even, contradicting 'lowest terms'",
+                "claim": f"sqrt({p}) is irrational",
+                "assumption": f"assume sqrt({p}) = {var}/b in lowest terms",
+                "steps": [
+                    f"{p}*b^2 = {var}^2, so {p} divides {var}",
+                    f"let {var} = {p}*k, then {p}*b^2 = {p}^2*k^2, so {p} divides b",
+                ],
+                "contradiction": (
+                    f"both {var} and b are divisible by {p}, "
+                    f"contradicting 'lowest terms'"
+                ),
             },
             {
-                "claim": "there are infinitely many primes",
-                "assumption": "assume finitely many primes: p1, p2, ..., pn",
-                "steps": ["let N = p1*p2*...*pn + 1", "N is not divisible by any pi"],
-                "contradiction": "N is either prime or has a prime factor not in the list",
+                "claim": (
+                    f"in a set of {n_val} integers, not all can have "
+                    f"distinct remainders mod {n_val - 1}"
+                ),
+                "assumption": (
+                    f"assume all {n_val} integers have distinct "
+                    f"remainders mod {n_val - 1}"
+                ),
+                "steps": [
+                    f"there are only {n_val - 1} possible remainders: 0..{n_val - 2}",
+                    f"but we have {n_val} integers",
+                ],
+                "contradiction": (
+                    f"by pigeonhole, two must share a remainder, contradiction"
+                ),
             },
             {
-                "claim": "there is no largest integer",
-                "assumption": "assume M is the largest integer",
-                "steps": ["consider M + 1", "M + 1 > M"],
-                "contradiction": "M + 1 is larger than M, contradicting 'M is largest'",
+                "claim": (
+                    f"there is no largest multiple of {k_val}"
+                ),
+                "assumption": (
+                    f"assume M = {k_val}*{m_val} is the largest multiple of {k_val}"
+                ),
+                "steps": [
+                    f"consider M + {k_val} = {k_val}*{m_val} + {k_val} = {k_val}*{m_val + 1}",
+                    f"M + {k_val} > M and is a multiple of {k_val}",
+                ],
+                "contradiction": (
+                    f"M + {k_val} = {k_val * (m_val + 1)} is a larger multiple "
+                    f"of {k_val}, contradicting 'M is largest'"
+                ),
+            },
+            {
+                "claim": f"log_{p}({p ** exp + 1}) is irrational",
+                "assumption": (
+                    f"assume log_{p}({p ** exp + 1}) = {var}/b for integers {var},b"
+                ),
+                "steps": [
+                    f"{p}^({var}/b) = {p ** exp + 1}",
+                    f"{p}^{var} = {p ** exp + 1}^b, but {p}^{var} is a power of {p}",
+                ],
+                "contradiction": (
+                    f"{p ** exp + 1}^b is not a power of {p}, contradiction"
+                ),
+            },
+            {
+                "claim": (
+                    f"if {var}^{exp} is divisible by {p} then {var} "
+                    f"is divisible by {p}"
+                ),
+                "assumption": (
+                    f"assume {var}^{exp} is divisible by {p} but {var} is not"
+                ),
+                "steps": [
+                    f"since {p} is prime, {p} | {var}^{exp} implies {p} | {var}",
+                    f"by Euclid's lemma on prime factorisation",
+                ],
+                "contradiction": (
+                    f"we assumed {var} is not divisible by {p}, contradiction"
+                ),
+            },
+            {
+                "claim": (
+                    f"{k_val}*irrational is irrational"
+                ),
+                "assumption": (
+                    f"assume {k_val}*x = {var}/b where x is irrational, "
+                    f"{var}/b is rational"
+                ),
+                "steps": [
+                    f"x = {var}/({k_val}*b)",
+                    f"ratio of integers is rational",
+                ],
+                "contradiction": (
+                    f"x = {var}/({k_val}*b) is rational, contradicting "
+                    f"x being irrational"
+                ),
+            },
+            {
+                "claim": (
+                    f"there is no smallest positive rational greater "
+                    f"than 1/{m_val}"
+                ),
+                "assumption": (
+                    f"assume r > 1/{m_val} is the smallest such rational"
+                ),
+                "steps": [
+                    f"consider (r + 1/{m_val})/2",
+                    f"1/{m_val} < (r + 1/{m_val})/2 < r",
+                ],
+                "contradiction": (
+                    f"(r + 1/{m_val})/2 is a smaller rational above 1/{m_val}, "
+                    f"contradiction"
+                ),
+            },
+            {
+                "claim": (
+                    f"in a group of {n_val} people, not everyone can have "
+                    f"a different number of friends (within the group)"
+                ),
+                "assumption": (
+                    f"assume all {n_val} people have different friend counts"
+                ),
+                "steps": [
+                    f"friend counts range 0..{n_val - 1}",
+                    f"if someone has 0 friends, no one can have {n_val - 1}",
+                ],
+                "contradiction": (
+                    f"cannot use both 0 and {n_val - 1}, pigeonhole violation"
+                ),
+            },
+            {
+                "claim": (
+                    f"there is no integer {var} such that "
+                    f"{var}^2 - {var} = {p * k_val + 1}"
+                ),
+                "assumption": (
+                    f"assume {var}^2 - {var} = {p * k_val + 1}"
+                ),
+                "steps": [
+                    f"{var}({var}-1) = {p * k_val + 1}",
+                    f"consecutive integers {var} and {var}-1 multiply to "
+                    f"{p * k_val + 1}",
+                ],
+                "contradiction": (
+                    f"product of consecutive integers is even, but "
+                    f"{p * k_val + 1} is odd, contradiction"
+                ),
+            },
+            {
+                "claim": (
+                    f"no integer {var} satisfies "
+                    f"{var} mod {k_val} = 0 and {var} mod {k_val} = {k_val - 1} "
+                    f"simultaneously"
+                ),
+                "assumption": (
+                    f"assume {var} mod {k_val} = 0 and "
+                    f"{var} mod {k_val} = {k_val - 1}"
+                ),
+                "steps": [
+                    f"from first: {var} = {k_val}*q for some integer q",
+                    f"from second: {var} = {k_val}*q' + {k_val - 1}",
+                ],
+                "contradiction": (
+                    f"0 != {k_val - 1}, so {var} cannot have two distinct "
+                    f"remainders mod {k_val}"
+                ),
             },
         ]
-        proof = self._rng.choice(proofs[:min(len(proofs), 1 + difficulty)])
+        proof = self._rng.choice(proofs[:min(len(proofs), 3 + difficulty)])
         return f"prove: {proof['claim']}", proof
 
     def _create_steps(self, sd: dict) -> list[str]:
@@ -558,30 +914,91 @@ class ProofByCasesGenerator(StepGenerator):
         return "proof by cases"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a proof by cases with randomised parameters.
+
+        Args:
+            difficulty: Controls which proof templates are accessible.
+
+        Returns:
+            Tuple of (claim_string, proof_data).
+        """
+        var = self._rng.choice(["n", "m", "k", "x", "j"])
+        d = self._rng.choice([2, 3, 5])
+        exp = self._rng.choice([2, 3])
+        c = self._rng.randint(2, 10)
+
         proofs = [
             {
-                "claim": "|n| >= 0 for all integers n",
+                "claim": f"|{var}| >= 0 for all integers {var}",
                 "cases": [
-                    ("n >= 0", "|n| = n >= 0"),
-                    ("n < 0", "|n| = -n > 0 >= 0"),
+                    (f"{var} >= 0", f"|{var}| = {var} >= 0"),
+                    (f"{var} < 0", f"|{var}| = -{var} > 0 >= 0"),
                 ],
             },
             {
-                "claim": "n^2 - n is even for all integers n",
+                "claim": f"{var}^2 - {var} is even for all integers {var}",
                 "cases": [
-                    ("n even: n = 2k", "n^2 - n = 4k^2 - 2k = 2(2k^2 - k), even"),
-                    ("n odd: n = 2k+1", "n^2 - n = (2k+1)^2 - (2k+1) = 4k^2+2k = 2(2k^2+k), even"),
+                    (f"{var} even: {var} = 2k",
+                     f"{var}^2 - {var} = 4k^2 - 2k = 2(2k^2 - k), even"),
+                    (f"{var} odd: {var} = 2k+1",
+                     f"{var}^2 - {var} = (2k+1)^2 - (2k+1) = 4k^2+2k = 2(2k^2+k), even"),
                 ],
             },
             {
-                "claim": "max(a,b) + min(a,b) = a + b",
+                "claim": f"max(a,b) + min(a,b) = a + b",
                 "cases": [
                     ("a >= b", "max=a, min=b, a+b=a+b"),
                     ("a < b", "max=b, min=a, b+a=a+b"),
                 ],
             },
+            {
+                "claim": (f"{var}^{exp} mod {d} has at most "
+                          f"{d} distinct residues"),
+                "cases": [
+                    (f"{var} mod {d} = {r}",
+                     f"{var}^{exp} mod {d} = {r**exp % d}")
+                    for r in range(d)
+                ],
+            },
+            {
+                "claim": f"|{var} * {c}| = |{var}| * {c} for all integers {var}",
+                "cases": [
+                    (f"{var} >= 0",
+                     f"|{var}*{c}| = {var}*{c} = |{var}|*{c}"),
+                    (f"{var} < 0",
+                     f"|{var}*{c}| = -{var}*{c} = |{var}|*{c}"),
+                ],
+            },
+            {
+                "claim": (f"for all integers {var}, {var}^2 + {var} "
+                          f"is even"),
+                "cases": [
+                    (f"{var} even: {var} = 2k",
+                     f"{var}^2 + {var} = 4k^2 + 2k = 2(2k^2 + k), even"),
+                    (f"{var} odd: {var} = 2k+1",
+                     f"{var}^2 + {var} = 4k^2 + 4k + 2 = 2(2k^2 + 2k + 1), even"),
+                ],
+            },
+            {
+                "claim": (f"{var}({var}+1)({var}+2) is divisible "
+                          f"by 6 for all integers {var}"),
+                "cases": [
+                    (f"{var} mod 3 = 0", f"{var} divisible by 3, product divisible by 6"),
+                    (f"{var} mod 3 = 1", f"{var}+2 divisible by 3, product divisible by 6"),
+                    (f"{var} mod 3 = 2", f"{var}+1 divisible by 3, product divisible by 6"),
+                ],
+            },
+            {
+                "claim": f"floor({var}/{d}) + ceil({var}/{d}) >= 2*{var}/{d} for integer {var}",
+                "cases": [
+                    (f"{var} mod {d} = 0",
+                     f"floor = ceil = {var}/{d}, sum = 2*{var}/{d}"),
+                    (f"{var} mod {d} != 0",
+                     f"ceil > {var}/{d} > floor, sum > 2*floor >= 2*{var}/{d} - 1"),
+                ],
+            },
         ]
-        proof = self._rng.choice(proofs[:min(len(proofs), 1 + difficulty)])
+        proof = self._rng.choice(proofs[:min(len(proofs), 2 + difficulty)])
         return f"prove: {proof['claim']}", proof
 
     def _create_steps(self, sd: dict) -> list[str]:
@@ -615,21 +1032,95 @@ class StrongInductionGenerator(StepGenerator):
         return "proof by strong induction"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a strong induction proof with randomised parameters.
+
+        Args:
+            difficulty: Controls which proof templates are accessible.
+
+        Returns:
+            Tuple of (claim_string, proof_data).
+        """
+        # Randomised parameters for template variety
+        stamp_a = self._rng.choice([3, 5, 7])
+        stamp_b = stamp_a + self._rng.choice([2, 4])
+        min_amount = stamp_a + stamp_b
+        fib_start_a = self._rng.randint(1, 5)
+        fib_start_b = fib_start_a + self._rng.randint(1, 5)
+        exp_base = self._rng.choice([2, 3, 5])
+        bound = self._rng.choice([3, 4, 5, 6])
+        divisor = self._rng.choice([2, 3, 6])
+
         proofs = [
             {
                 "claim": "every integer >= 2 has a prime factorisation",
                 "base": "2 is prime, so 2 = 2 (trivial factorisation)",
                 "inductive": "assume all integers 2..n-1 have prime factorisations",
-                "step": "if n is prime, done. If n = ab where 2 <= a,b < n, by hypothesis a and b have factorisations, so n does too.",
+                "step": ("if n is prime, done. If n = ab where 2 <= a,b < n, "
+                         "by hypothesis a and b have factorisations, so n does too."),
             },
             {
-                "claim": "every amount >= 8 cents can be made with 3c and 5c stamps",
-                "base": "8=3+5, 9=3+3+3, 10=5+5",
-                "inductive": "assume all amounts 8..n-1 can be made",
-                "step": "for n >= 11: n-3 >= 8, so n-3 can be made, add one 3c stamp.",
+                "claim": (f"every amount >= {min_amount} cents can be made "
+                          f"with {stamp_a}c and {stamp_b}c stamps"),
+                "base": (f"{min_amount}={stamp_a}+{stamp_b}, "
+                         f"{min_amount+1} verified, "
+                         f"{min_amount+2} verified"),
+                "inductive": f"assume all amounts {min_amount}..n-1 can be made",
+                "step": (f"for n >= {min_amount + stamp_a}: n-{stamp_a} >= "
+                         f"{min_amount}, so n-{stamp_a} can be made, add one "
+                         f"{stamp_a}c stamp."),
+            },
+            {
+                "claim": (f"F(n) < {exp_base}^n for all n >= 1 "
+                          f"(Fibonacci with F(1)={fib_start_a}, F(2)={fib_start_b})"),
+                "base": (f"F(1)={fib_start_a} < {exp_base}^1={exp_base}, "
+                         f"F(2)={fib_start_b} < {exp_base}^2={exp_base**2}"),
+                "inductive": f"assume F(k) < {exp_base}^k for all k < n",
+                "step": (f"F(n) = F(n-1) + F(n-2) < {exp_base}^(n-1) + "
+                         f"{exp_base}^(n-2) = {exp_base}^(n-2)*({exp_base}+1) "
+                         f"<= {exp_base}^n"),
+            },
+            {
+                "claim": (f"every integer >= {bound} can be written as "
+                          f"sum of {divisor}s and {divisor + 1}s"),
+                "base": (f"{bound}={divisor}*{bound // divisor} + "
+                         f"{bound % divisor}*({divisor + 1}) verified for "
+                         f"{bound}..{bound + divisor}"),
+                "inductive": f"assume all integers {bound}..n-1 decompose",
+                "step": (f"for n >= {bound + divisor}: n-{divisor} >= {bound}, "
+                         f"by hypothesis n-{divisor} decomposes, add one {divisor}."),
+            },
+            {
+                "claim": f"every n >= 2 can be expressed as product of at most n primes",
+                "base": "2 = 2 (one prime factor)",
+                "inductive": "assume true for all 2 <= k < n",
+                "step": ("if n is prime, done (1 factor <= n). "
+                         "If n = ab with 2 <= a,b < n, a uses <= a factors, "
+                         "b uses <= b factors, total <= a+b <= n."),
+            },
+            {
+                "claim": (f"a binary tree with n internal nodes has "
+                          f"n+1 leaves"),
+                "base": "n=0: tree is a single leaf, 0+1=1 leaf",
+                "inductive": "assume true for all trees with < n internal nodes",
+                "step": ("remove root: left subtree has k internal nodes, "
+                         "right has n-1-k. By hypothesis: k+1 + (n-1-k)+1 = n+1 leaves."),
+            },
+            {
+                "claim": (f"every {divisor}-regular graph on n >= {divisor + 1} "
+                          f"vertices has a Hamiltonian cycle"),
+                "base": f"K_{divisor+1} has a Hamiltonian cycle",
+                "inductive": "assume true for all such graphs with < n vertices",
+                "step": "by Dirac's theorem (degree >= n/2), Hamiltonian cycle exists.",
+            },
+            {
+                "claim": f"2^n > n^{exp_base} for all n >= {exp_base * 4}",
+                "base": f"2^{exp_base * 4} = {2**(exp_base * 4)} > {(exp_base * 4)**exp_base} = ({exp_base * 4})^{exp_base}",
+                "inductive": f"assume 2^k > k^{exp_base} for all {exp_base * 4} <= k < n",
+                "step": (f"2^n = 2 * 2^(n-1) > 2 * (n-1)^{exp_base} "
+                         f"> n^{exp_base} for large n"),
             },
         ]
-        proof = self._rng.choice(proofs[:min(len(proofs), 1 + difficulty)])
+        proof = self._rng.choice(proofs[:min(len(proofs), 2 + difficulty)])
         return f"prove by strong induction: {proof['claim']}", proof
 
     def _create_steps(self, sd: dict) -> list[str]:

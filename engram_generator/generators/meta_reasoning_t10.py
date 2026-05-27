@@ -1352,7 +1352,7 @@ class SuccessorDesignGenerator(StepGenerator):
         return f"this model has a problem: {limitation}. propose a fix"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a successor design problem.
+        """Generate a successor design problem with randomised model specs.
 
         Args:
             difficulty: Controls limitation type.
@@ -1366,7 +1366,13 @@ class SuccessorDesignGenerator(StepGenerator):
         proposal = self._PROPOSALS[lim_type]
         new_prop = self._NEW_PROPERTIES[lim_type]
         tradeoff = self._TRADEOFFS[lim_type]
-        problem = f"limitation: {limitation}"
+        # Add randomised model specification context
+        d_model = self._rng.choice([256, 512, 768, 1024, 2048])
+        layers = self._rng.randint(6, 48)
+        seq_len = self._rng.choice([128, 256, 512, 1024, 2048, 4096, 8192])
+        params_m = self._rng.choice([7, 13, 30, 70, 175, 350])
+        model_spec = f"d_model={d_model}, {layers} layers, seq_len={seq_len}, ~{params_m}M params"
+        problem = f"limitation: {limitation} (model: {model_spec})"
         return problem, {
             "lim_type": lim_type, "limitation": limitation,
             "bottleneck": bottleneck, "proposal": proposal,

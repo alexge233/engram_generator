@@ -213,27 +213,6 @@ class IntegrationByPartsGenerator(StepGenerator):
         'integration_by_parts'
     """
 
-    _TEMPLATES = [
-        {
-            "label": "x*e^x",
-            "u": "x", "dv": "e^x dx", "du": "1 dx", "v": "e^x",
-            "uv": "x e^x", "remainder": "e^x",
-            "answer": "x e^x - e^x + C",
-        },
-        {
-            "label": "x*sin(x)",
-            "u": "x", "dv": "\\sin(x) dx", "du": "1 dx", "v": "-\\cos(x)",
-            "uv": "-x \\cos(x)", "remainder": "-\\cos(x)",
-            "answer": "-x \\cos(x) + \\sin(x) + C",
-        },
-        {
-            "label": "x*cos(x)",
-            "u": "x", "dv": "\\cos(x) dx", "du": "1 dx", "v": "\\sin(x)",
-            "uv": "x \\sin(x)", "remainder": "\\sin(x)",
-            "answer": "x \\sin(x) + \\cos(x) + C",
-        },
-    ]
-
     @property
     def task_name(self) -> str:
         """Return the task identifier."""
@@ -260,53 +239,85 @@ class IntegrationByPartsGenerator(StepGenerator):
         """
         return "integrate by parts"
 
-    def _select_template(self, difficulty: int) -> dict:
-        """Choose a template based on difficulty.
-
-        Args:
-            difficulty: Difficulty level.
-
-        Returns:
-            Template dictionary with all formula parts.
-        """
-        if difficulty <= 3:
-            return self._TEMPLATES[0]
-        idx = self._rng.randint(1, 2)
-        return self._TEMPLATES[idx]
-
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate an integration by parts problem.
+        """Generate an integration by parts problem with random parameters.
+
+        Randomises both the polynomial exponent on u and an overall
+        coefficient, and selects among e^(ax), sin(bx), cos(bx) as
+        the dv component with random frequency parameters.
 
         Args:
-            difficulty: Controls product form selection.
+            difficulty: Controls exponent, coefficient, and frequency ranges.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        coeff = self._rng.randint(1, max(1, difficulty))
-        tmpl = self._select_template(difficulty)
-        if coeff == 1:
-            problem = f"\\int {tmpl['label']} dx"
+        coeff = self._rng.randint(1, 2 + difficulty)
+        power = self._rng.randint(1, min(3, 1 + difficulty // 2))
+
+        if difficulty <= 3:
+            func_type = "exp"
         else:
-            problem = f"\\int {coeff}{tmpl['label']} dx"
-        return problem, {"template": tmpl, "coeff": coeff}
+            func_type = self._rng.choice(["exp", "sin", "cos"])
+
+        freq = self._rng.randint(1, 2 + difficulty // 2)
+
+        u_str = "x" if power == 1 else f"x^{{{power}}}"
+        du_coeff = power
+        du_str = f"{du_coeff}" if power > 1 else "1"
+        du_power = f"x^{{{power - 1}}}" if power > 2 else ("x" if power == 2 else "")
+        du_full = f"{du_str}{du_power} dx" if power > 1 else "1 dx"
+
+        freq_str = f"{freq}" if freq != 1 else ""
+        freq_x = f"{freq}x" if freq != 1 else "x"
+
+        if func_type == "exp":
+            dv_str = f"e^{{{freq_x}}} dx"
+            v_str = f"\\frac{{1}}{{{freq}}}e^{{{freq_x}}}" if freq != 1 else f"e^{{{freq_x}}}"
+            uv_str = f"{u_str} \\cdot {v_str}"
+            remainder = v_str
+            ans_core = f"{u_str} \\cdot {v_str} - \\int {du_full.replace(' dx', '')} \\cdot {v_str} dx"
+        elif func_type == "sin":
+            dv_str = f"\\sin({freq_x}) dx"
+            v_str = f"-\\frac{{1}}{{{freq}}}\\cos({freq_x})" if freq != 1 else f"-\\cos({freq_x})"
+            uv_str = f"{u_str} \\cdot ({v_str})"
+            remainder = v_str
+            ans_core = f"{uv_str} - \\int {du_full.replace(' dx', '')} \\cdot ({v_str}) dx"
+        else:
+            dv_str = f"\\cos({freq_x}) dx"
+            v_str = f"\\frac{{1}}{{{freq}}}\\sin({freq_x})" if freq != 1 else f"\\sin({freq_x})"
+            uv_str = f"{u_str} \\cdot {v_str}"
+            remainder = v_str
+            ans_core = f"{uv_str} - \\int {du_full.replace(' dx', '')} \\cdot {v_str} dx"
+
+        coeff_str = f"{coeff}" if coeff != 1 else ""
+        integrand = f"{u_str}e^{{{freq_x}}}" if func_type == "exp" else (
+            f"{u_str}\\sin({freq_x})" if func_type == "sin" else f"{u_str}\\cos({freq_x})"
+        )
+        problem = f"\\int {coeff_str}{integrand} dx"
+
+        return problem, {
+            "coeff": coeff, "u": u_str, "dv": dv_str,
+            "du": du_full, "v": v_str, "uv": uv_str,
+            "remainder": remainder, "ans_core": ans_core,
+            "func_type": func_type, "freq": freq, "power": power,
+        }
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate the integration by parts steps.
 
         Args:
-            data: Solution data with template and coefficient.
+            data: Solution data with u, dv, du, v and coefficient.
 
         Returns:
             Steps showing u, dv identification and formula application.
         """
-        t = data["template"]
         c = data["coeff"]
         prefix = f"{c}" if c > 1 else ""
         steps = [
-            f"u={t['u']}, dv={t['dv']}",
-            f"du={t['du']}, v={t['v']}",
-            f"uv - \\int v du = {prefix}{t['uv']} - {prefix}\\int {t['remainder']} dx",
+            f"u={data['u']}, dv={data['dv']}",
+            f"du={data['du']}, v={data['v']}",
+            f"uv - \\int v du = {prefix}{data['ans_core']}",
         ]
         return steps
 
@@ -319,11 +330,11 @@ class IntegrationByPartsGenerator(StepGenerator):
         Returns:
             LaTeX answer string.
         """
-        t = data["template"]
         c = data["coeff"]
+        core = f"{data['uv']} + C"
         if c == 1:
-            return t["answer"]
-        return f"{c}({t['answer']})"
+            return core
+        return f"{c}({core})"
 
 
 @register
@@ -543,25 +554,6 @@ class SeriesConvergenceGenerator(StepGenerator):
         'series_convergence'
     """
 
-    _GEOMETRIC = [
-        {"r_num": 1, "r_den": 2, "converges": True},
-        {"r_num": 1, "r_den": 3, "converges": True},
-        {"r_num": 2, "r_den": 3, "converges": True},
-        {"r_num": 1, "r_den": 4, "converges": True},
-        {"r_num": 3, "r_den": 2, "converges": False},
-        {"r_num": 2, "r_den": 1, "converges": False},
-        {"r_num": 5, "r_den": 4, "converges": False},
-    ]
-
-    _PSERIES = [
-        {"p_num": 2, "p_den": 1, "converges": True},
-        {"p_num": 3, "p_den": 1, "converges": True},
-        {"p_num": 3, "p_den": 2, "converges": True},
-        {"p_num": 1, "p_den": 1, "converges": False},
-        {"p_num": 1, "p_den": 2, "converges": False},
-        {"p_num": 2, "p_den": 3, "converges": False},
-    ]
-
     @property
     def task_name(self) -> str:
         """Return the task identifier."""
@@ -589,7 +581,10 @@ class SeriesConvergenceGenerator(StepGenerator):
         return "determine series convergence"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a convergence problem from known series.
+        """Generate a convergence problem with randomised parameters.
+
+        Randomly generates the ratio (geometric) or exponent (p-series)
+        and adds a random leading coefficient for extra variety.
 
         Args:
             difficulty: Controls series type selection.
@@ -598,35 +593,60 @@ class SeriesConvergenceGenerator(StepGenerator):
             Tuple of (latex_problem, solution_data).
         """
         if difficulty <= 3:
-            return self._geometric_problem()
-        return self._pseries_problem()
+            return self._geometric_problem(difficulty)
+        return self._pseries_problem(difficulty)
 
-    def _geometric_problem(self) -> tuple[str, dict]:
+    def _geometric_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a geometric series convergence problem.
 
+        Randomises numerator and denominator of the common ratio
+        and adds a scalar coefficient.
+
+        Args:
+            difficulty: Controls denominator range.
+
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        entry = self._rng.choice(self._GEOMETRIC)
-        r = Fraction(entry["r_num"], entry["r_den"])
-        problem = f"\\sum_{{n=0}}^{{\\infty}} ({r})^n"
+        den = self._rng.randint(2, 4 + difficulty)
+        num = self._rng.randint(1, den + difficulty)
+        while num == den:
+            num = self._rng.randint(1, den + difficulty)
+        r = Fraction(num, den)
+        converges = abs(r) < 1
+        coeff = self._rng.randint(1, 3 + difficulty)
+        coeff_str = f"{coeff}" if coeff != 1 else ""
+        problem = f"\\sum_{{n=0}}^{{\\infty}} {coeff_str}({r})^n"
         return problem, {
             "type": "geometric", "r": r,
-            "converges": entry["converges"],
+            "converges": converges,
         }
 
-    def _pseries_problem(self) -> tuple[str, dict]:
+    def _pseries_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a p-series convergence problem.
+
+        Randomises the exponent p as a fraction and adds a scalar
+        coefficient.
+
+        Args:
+            difficulty: Controls denominator and numerator range.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        entry = self._rng.choice(self._PSERIES)
-        p = Fraction(entry["p_num"], entry["p_den"])
-        problem = f"\\sum_{{n=1}}^{{\\infty}} \\frac{{1}}{{n^{{{p}}}}}"
+        den = self._rng.randint(1, 3 + difficulty)
+        num = self._rng.randint(1, 2 * den + difficulty)
+        p = Fraction(num, den)
+        converges = p > 1
+        coeff = self._rng.randint(1, 3 + difficulty)
+        coeff_str = f"{coeff}" if coeff != 1 else ""
+        problem = (
+            f"\\sum_{{n=1}}^{{\\infty}} "
+            f"\\frac{{{coeff_str}}}{{n^{{{p}}}}}"
+        )
         return problem, {
             "type": "p-series", "p": p,
-            "converges": entry["converges"],
+            "converges": converges,
         }
 
     def _create_steps(self, data: dict) -> list[str]:
@@ -718,13 +738,6 @@ class DeMoivreGenerator(StepGenerator):
         'de_moivre'
     """
 
-    _BASES = [
-        {"a": 1, "b": 1, "r_sq": 2, "theta_label": "\\pi/4"},
-        {"a": 1, "b": -1, "r_sq": 2, "theta_label": "-\\pi/4"},
-        {"a": 0, "b": 1, "r_sq": 1, "theta_label": "\\pi/2"},
-        {"a": -1, "b": 0, "r_sq": 1, "theta_label": "\\pi"},
-    ]
-
     @property
     def task_name(self) -> str:
         """Return the task identifier."""
@@ -751,19 +764,6 @@ class DeMoivreGenerator(StepGenerator):
         """
         return "apply de moivre theorem"
 
-    def _select_base(self, difficulty: int) -> dict:
-        """Choose a complex base from the table.
-
-        Args:
-            difficulty: Difficulty level.
-
-        Returns:
-            Base dictionary with components and polar form.
-        """
-        if difficulty <= 3:
-            return self._rng.choice(self._BASES[:2])
-        return self._rng.choice(self._BASES)
-
     def _select_power(self, difficulty: int) -> int:
         """Choose the exponent n.
 
@@ -780,32 +780,44 @@ class DeMoivreGenerator(StepGenerator):
         return self._rng.randint(4, 8)
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a De Moivre problem.
+        """Generate a De Moivre problem with randomised base.
+
+        Generates a random complex number a+bi with small integer
+        components scaled by difficulty, computes its polar form,
+        and raises it to a random power.
 
         Args:
-            difficulty: Controls base and power.
+            difficulty: Controls component range and power.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        base = self._select_base(difficulty)
+        bound = max(2, 1 + difficulty)
+        a = self._rng.randint(-bound, bound)
+        b = self._rng.randint(-bound, bound)
+        while a == 0 and b == 0:
+            a = self._rng.randint(-bound, bound)
+            b = self._rng.randint(-bound, bound)
+
         n = self._select_power(difficulty)
-        a, b = base["a"], base["b"]
 
         theta = math.atan2(b, a)
-        r = math.sqrt(a * a + b * b)
+        r_sq = a * a + b * b
+        r = math.sqrt(r_sq)
         r_n = r ** n
         n_theta = n * theta
         result_a = round(r_n * math.cos(n_theta))
         result_b = round(r_n * math.sin(n_theta))
 
+        theta_str = f"{theta:.4f}".rstrip("0").rstrip(".")
+
         z_str = self._complex_latex(a, b)
         problem = f"({z_str})^{{{n}}}"
 
         return problem, {
-            "a": a, "b": b, "n": n, "r_sq": base["r_sq"],
-            "theta_label": base["theta_label"],
-            "r_n": r_n, "n_theta_label": f"{n}{base['theta_label']}",
+            "a": a, "b": b, "n": n, "r_sq": r_sq,
+            "theta_label": theta_str,
+            "r_n": r_n, "n_theta_label": f"{n}\\cdot{theta_str}",
             "result_a": result_a, "result_b": result_b,
         }
 
@@ -1590,8 +1602,11 @@ class FourierCoefficientGenerator(StepGenerator):
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a Fourier coefficient problem.
 
+        Randomises the harmonic number and amplitude scaling factor
+        to produce a wide variety of coefficient values.
+
         Args:
-            difficulty: Controls wave type.
+            difficulty: Controls wave type and harmonic range.
 
         Returns:
             Tuple of (latex_problem, solution_data).
@@ -1601,49 +1616,57 @@ class FourierCoefficientGenerator(StepGenerator):
         return self._triangle_wave_problem(difficulty)
 
     def _square_wave_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a square wave b_n problem.
+        """Generate a square wave b_n problem with random amplitude.
 
         Args:
-            difficulty: Controls n range.
+            difficulty: Controls n range and amplitude scale.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        if difficulty <= 3:
-            n = self._rng.choice([1, 3, 5, 7])
-        else:
-            n = self._rng.randint(1, 8)
+        n = self._rng.randint(1, 4 + 2 * difficulty)
+        amplitude = self._rng.randint(1, 3 + difficulty)
 
         cos_n_pi = (-1) ** n
-        coeff_num = 2 * (1 - cos_n_pi)
+        coeff_num = 2 * amplitude * (1 - cos_n_pi)
         coeff_den = n
 
-        problem = f"b_{{{n}}} \\text{{ for square wave, period }} 2\\pi"
+        amp_str = f", A={amplitude}" if amplitude != 1 else ""
+        problem = (
+            f"b_{{{n}}} \\text{{ for square wave{amp_str},"
+            f" period }} 2\\pi"
+        )
         return problem, {
             "wave": "square", "coeff_type": "b", "n": n,
             "cos_n_pi": cos_n_pi, "coeff_num": coeff_num,
-            "coeff_den": coeff_den,
+            "coeff_den": coeff_den, "amplitude": amplitude,
         }
 
     def _triangle_wave_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a triangle wave a_n problem.
+        """Generate a triangle wave a_n problem with random amplitude.
 
         Args:
-            difficulty: Controls n range.
+            difficulty: Controls n range and amplitude scale.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        n = self._rng.choice([1, 3, 5, 7])
+        n = self._rng.choice(list(range(1, 4 + 2 * difficulty, 2)))
+        amplitude = self._rng.randint(1, 3 + difficulty)
 
         sign = (-1) ** ((n - 1) // 2)
-        coeff_num = 8 * sign
+        coeff_num = 8 * amplitude * sign
         coeff_den = n * n
 
-        problem = f"a_{{{n}}} \\text{{ for triangle wave, period }} 2\\pi"
+        amp_str = f", A={amplitude}" if amplitude != 1 else ""
+        problem = (
+            f"a_{{{n}}} \\text{{ for triangle wave{amp_str},"
+            f" period }} 2\\pi"
+        )
         return problem, {
             "wave": "triangle", "coeff_type": "a", "n": n,
             "coeff_num": coeff_num, "coeff_den": coeff_den,
+            "amplitude": amplitude,
         }
 
     def _create_steps(self, data: dict) -> list[str]:
@@ -1671,10 +1694,12 @@ class FourierCoefficientGenerator(StepGenerator):
         n = data["n"]
         cos_val = data["cos_n_pi"]
         factor = 1 - cos_val
+        amp = data.get("amplitude", 1)
+        amp_prefix = f"{amp}\\cdot" if amp != 1 else ""
         return [
-            f"b_{{{n}}} = \\frac{{2}}{{\\pi}} \\int_0^{{\\pi}} \\sin({n}x) dx",
-            f"= \\frac{{2}}{{{n}\\pi}}[-\\cos({n}x)]_0^{{\\pi}}",
-            f"= \\frac{{2}}{{{n}\\pi}}(1-({cos_val})) = \\frac{{2}}{{{n}\\pi}}({factor})",
+            f"b_{{{n}}} = {amp_prefix}\\frac{{2}}{{\\pi}} \\int_0^{{\\pi}} \\sin({n}x) dx",
+            f"= {amp_prefix}\\frac{{2}}{{{n}\\pi}}[-\\cos({n}x)]_0^{{\\pi}}",
+            f"= {amp_prefix}\\frac{{2}}{{{n}\\pi}}(1-({cos_val})) = \\frac{{{2 * amp * factor}}}{{{n}\\pi}}",
         ]
 
     def _triangle_steps(self, data: dict) -> list[str]:
@@ -1689,8 +1714,10 @@ class FourierCoefficientGenerator(StepGenerator):
         n = data["n"]
         num = data["coeff_num"]
         den = data["coeff_den"]
+        amp = data.get("amplitude", 1)
+        amp_prefix = f"{amp}\\cdot" if amp != 1 else ""
         return [
-            f"a_{{{n}}} = \\frac{{8}}{{n^2 \\pi^2}} (-1)^{{(n-1)/2}} for odd n",
+            f"a_{{{n}}} = {amp_prefix}\\frac{{8}}{{n^2 \\pi^2}} (-1)^{{(n-1)/2}} for odd n",
             f"n={n}: (-1)^{{{(n - 1) // 2}}}={(-1) ** ((n - 1) // 2)}",
             f"a_{{{n}}} = \\frac{{{num}}}{{{den}\\pi^2}}",
         ]
@@ -1924,23 +1951,50 @@ class PauliProductGenerator(StepGenerator):
         n2 = self._rng.choice(names)
         return n1, n2
 
-    def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a Pauli product problem.
+    def _scale_matrix(self, matrix: PauliMatrix,
+                      factor: int) -> PauliMatrix:
+        """Scale all entries of a PauliMatrix by an integer factor.
 
         Args:
-            difficulty: Controls matrix selection.
+            matrix: The matrix to scale.
+            factor: Integer multiplier.
+
+        Returns:
+            New PauliMatrix with all entries scaled.
+        """
+        entries = []
+        for i in range(2):
+            for j in range(2):
+                r, im = matrix.entry(i, j)
+                entries.append((r * factor, im * factor))
+        return PauliMatrix(entries[0], entries[1], entries[2], entries[3])
+
+    def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a Pauli product problem with random scalar prefactors.
+
+        Multiplies each chosen Pauli matrix by a random integer
+        scalar to increase the variety of unique outputs beyond
+        the 16 bare Pauli pair combinations.
+
+        Args:
+            difficulty: Controls matrix selection and scalar range.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
         n1, n2 = self._select_pair(difficulty)
-        m1 = self._PAULIS[n1]
-        m2 = self._PAULIS[n2]
+        s1 = self._rng.randint(1, 2 + difficulty)
+        s2 = self._rng.randint(1, 2 + difficulty)
+        m1 = self._scale_matrix(self._PAULIS[n1], s1)
+        m2 = self._scale_matrix(self._PAULIS[n2], s2)
         product = m1.multiply(m2)
 
-        problem = f"{n1} \\cdot {n2}"
+        s1_str = f"{s1}" if s1 != 1 else ""
+        s2_str = f"{s2}" if s2 != 1 else ""
+        problem = f"{s1_str}{n1} \\cdot {s2_str}{n2}"
         return problem, {
             "n1": n1, "n2": n2, "m1": m1, "m2": m2, "product": product,
+            "s1": s1, "s2": s2,
         }
 
     def _create_steps(self, data: dict) -> list[str]:
@@ -2024,42 +2078,8 @@ class BlochCoordsGenerator(StepGenerator):
         'bloch_coords'
     """
 
-    _STATES = [
-        {
-            "alpha": "1", "beta": "0",
-            "alpha_mod": "1", "theta": "0", "phi": "0",
-            "label": "|0\\rangle",
-        },
-        {
-            "alpha": "0", "beta": "1",
-            "alpha_mod": "0", "theta": "\\pi", "phi": "0",
-            "label": "|1\\rangle",
-        },
-        {
-            "alpha": "\\frac{1}{\\sqrt{2}}", "beta": "\\frac{1}{\\sqrt{2}}",
-            "alpha_mod": "\\frac{1}{\\sqrt{2}}",
-            "theta": "\\frac{\\pi}{2}", "phi": "0",
-            "label": "|+\\rangle",
-        },
-        {
-            "alpha": "\\frac{1}{\\sqrt{2}}", "beta": "-\\frac{1}{\\sqrt{2}}",
-            "alpha_mod": "\\frac{1}{\\sqrt{2}}",
-            "theta": "\\frac{\\pi}{2}", "phi": "\\pi",
-            "label": "|-\\rangle",
-        },
-        {
-            "alpha": "\\frac{1}{\\sqrt{2}}", "beta": "\\frac{i}{\\sqrt{2}}",
-            "alpha_mod": "\\frac{1}{\\sqrt{2}}",
-            "theta": "\\frac{\\pi}{2}", "phi": "\\frac{\\pi}{2}",
-            "label": "|+i\\rangle",
-        },
-        {
-            "alpha": "\\frac{1}{\\sqrt{2}}", "beta": "\\frac{-i}{\\sqrt{2}}",
-            "alpha_mod": "\\frac{1}{\\sqrt{2}}",
-            "theta": "\\frac{\\pi}{2}", "phi": "-\\frac{\\pi}{2}",
-            "label": "|-i\\rangle",
-        },
-    ]
+    _THETA_DENOMS: list[int] = [1, 2, 3, 4, 6]
+    _PHI_DENOMS: list[int] = [1, 2, 3, 4, 6]
 
     @property
     def task_name(self) -> str:
@@ -2087,30 +2107,102 @@ class BlochCoordsGenerator(StepGenerator):
         """
         return "compute bloch coordinates"
 
-    def _select_state(self, difficulty: int) -> dict:
-        """Choose a qubit state based on difficulty.
+    def _random_frac_angle(self, max_num: int,
+                           denoms: list[int]) -> tuple[str, float]:
+        """Generate a random angle as a fraction of pi.
 
         Args:
-            difficulty: Difficulty level.
+            max_num: Maximum numerator value.
+            denoms: Allowed denominator values.
 
         Returns:
-            State dictionary.
+            Tuple of (LaTeX label, numeric radians).
         """
-        if difficulty <= 3:
-            return self._rng.choice(self._STATES[:4])
-        return self._rng.choice(self._STATES)
+        den = self._rng.choice(denoms)
+        num = self._rng.randint(0, max_num * den)
+        rad = num * math.pi / den
+        if num == 0:
+            return "0", 0.0
+        frac = Fraction(num, den)
+        if frac == 1:
+            return "\\pi", math.pi
+        if frac.denominator == 1:
+            return f"{frac.numerator}\\pi", float(frac.numerator) * math.pi
+        return f"\\frac{{{frac.numerator}\\pi}}{{{frac.denominator}}}", rad
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a Bloch sphere coordinate problem.
+        """Generate a Bloch sphere coordinate problem with random angles.
+
+        Generates random theta in [0, pi] and phi in [0, 2*pi) as
+        fractions of pi, computes the corresponding qubit state
+        amplitudes, and formats everything in LaTeX.
 
         Args:
-            difficulty: Controls state selection.
+            difficulty: Controls the range of denominators used.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        state = self._select_state(difficulty)
-        problem = f"{state['alpha']}|0\\rangle + {state['beta']}|1\\rangle"
+        if difficulty <= 3:
+            denoms = self._THETA_DENOMS[:3]
+        else:
+            denoms = self._THETA_DENOMS
+
+        theta_den = self._rng.choice(denoms)
+        theta_num = self._rng.randint(0, theta_den)
+        theta_rad = theta_num * math.pi / theta_den
+        theta_frac = Fraction(theta_num, theta_den)
+        if theta_frac == 0:
+            theta_label = "0"
+        elif theta_frac == 1:
+            theta_label = "\\pi"
+        elif theta_frac.denominator == 1:
+            theta_label = f"{theta_frac.numerator}\\pi"
+        else:
+            theta_label = (
+                f"\\frac{{{theta_frac.numerator}\\pi}}"
+                f"{{{theta_frac.denominator}}}"
+            )
+
+        phi_den = self._rng.choice(denoms)
+        phi_num = self._rng.randint(0, 2 * phi_den - 1)
+        phi_rad = phi_num * math.pi / phi_den
+        phi_frac = Fraction(phi_num, phi_den)
+        if phi_frac == 0:
+            phi_label = "0"
+        elif phi_frac == 1:
+            phi_label = "\\pi"
+        elif phi_frac.denominator == 1:
+            phi_label = f"{phi_frac.numerator}\\pi"
+        else:
+            phi_label = (
+                f"\\frac{{{phi_frac.numerator}\\pi}}"
+                f"{{{phi_frac.denominator}}}"
+            )
+
+        alpha_mod = round(math.cos(theta_rad / 2), 6)
+        alpha_mod_str = f"{alpha_mod:.4f}".rstrip("0").rstrip(".")
+        if abs(alpha_mod - 1.0) < 1e-9:
+            alpha_mod_str = "1"
+        elif abs(alpha_mod) < 1e-9:
+            alpha_mod_str = "0"
+
+        alpha_label = alpha_mod_str
+        beta_mod = round(math.sin(theta_rad / 2), 6)
+        beta_mod_str = f"{beta_mod:.4f}".rstrip("0").rstrip(".")
+        if abs(beta_mod) < 1e-9:
+            beta_label = "0"
+        elif abs(phi_rad) < 1e-9:
+            beta_label = beta_mod_str
+        else:
+            beta_label = f"{beta_mod_str}e^{{i{phi_label}}}"
+
+        problem = f"{alpha_label}|0\\rangle + {beta_label}|1\\rangle"
+        state = {
+            "alpha_mod": alpha_mod_str,
+            "theta": theta_label,
+            "phi": phi_label,
+        }
         return problem, {"state": state}
 
     def _create_steps(self, data: dict) -> list[str]:

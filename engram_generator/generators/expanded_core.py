@@ -345,7 +345,15 @@ class SquareRootGenerator(StepGenerator):
         return "compute square root"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        root = self._rng.randint(2, 10 + difficulty * 3)
+        """Generate a square root problem with wider randomised range.
+
+        Args:
+            difficulty: Controls the root range.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
+        root = self._rng.randint(2, 20 + difficulty * 5)
         n = root * root
         problem = f"\\sqrt{{{n}}}"
         return problem, {"n": n, "root": root}
@@ -548,16 +556,47 @@ class ProductNotationGenerator(StepGenerator):
         return "compute product"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        a = self._rng.randint(1, 3)
-        b = a + min(1 + difficulty // 2, 5)
-        terms = list(range(a, b + 1))
+        """Generate a product notation problem with randomised ranges and expressions.
+
+        Args:
+            difficulty: Controls the range and expression type.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
+        a = self._rng.randint(1, 5)
+        b = a + self._rng.randint(1, min(2 + difficulty, 6))
+        expr_type = self._rng.choice(["i", "i+c", "c*i", "i^2"])
+
+        if expr_type == "i":
+            terms = list(range(a, b + 1))
+            problem = f"\\prod_{{i={a}}}^{{{b}}} i"
+        elif expr_type == "i+c":
+            c = self._rng.randint(1, 5)
+            terms = [i + c for i in range(a, b + 1)]
+            problem = f"\\prod_{{i={a}}}^{{{b}}} (i+{c})"
+        elif expr_type == "c*i":
+            c = self._rng.randint(2, 4)
+            terms = [c * i for i in range(a, b + 1)]
+            problem = f"\\prod_{{i={a}}}^{{{b}}} {c}i"
+        else:
+            terms = [i * i for i in range(a, b + 1)]
+            problem = f"\\prod_{{i={a}}}^{{{b}}} i^2"
+
         result = 1
         for t in terms:
             result *= t
-        problem = f"\\prod_{{i={a}}}^{{{b}}} i"
         return problem, {"a": a, "b": b, "terms": terms, "result": result}
 
     def _create_steps(self, sd: dict) -> list[str]:
+        """Generate step-by-step product computation.
+
+        Args:
+            sd: Solution data with terms.
+
+        Returns:
+            Steps showing running product.
+        """
         running = 1
         steps = []
         for t in sd["terms"]:
@@ -566,6 +605,14 @@ class ProductNotationGenerator(StepGenerator):
         return steps
 
     def _create_answer(self, sd: dict) -> str:
+        """Return the product result.
+
+        Args:
+            sd: Solution data.
+
+        Returns:
+            String representation of the product.
+        """
         return str(sd["result"])
 
 
@@ -1009,8 +1056,16 @@ class LogarithmGenerator(StepGenerator):
         return "evaluate logarithm"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        base = self._rng.choice([2, 10])
-        exp = self._rng.randint(1, min(3 + difficulty, 10))
+        """Generate a logarithm evaluation problem with randomised base and exponent.
+
+        Args:
+            difficulty: Controls exponent range and base variety.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
+        base = self._rng.choice([2, 3, 4, 5, 7, 8, 10])
+        exp = self._rng.randint(1, min(4 + difficulty, 10))
         value = base ** exp
         problem = f"\\log_{{{base}}}({value})"
         return problem, {"base": base, "value": value, "exp": exp}
@@ -1130,8 +1185,19 @@ class SystemODEGenerator(StepGenerator):
         return "solve ODE system"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        a = self._rng.randint(-3, -1) if self._rng.random() < 0.5 else self._rng.randint(1, 3)
-        b = self._rng.randint(1, 3)
+        """Generate a first-order ODE problem with randomised coefficients.
+
+        Args:
+            difficulty: Controls coefficient range.
+
+        Returns:
+            Tuple of (problem_string, solution_data).
+        """
+        max_coeff = min(2 + difficulty, 8)
+        a = self._rng.randint(-max_coeff, max_coeff)
+        if a == 0:
+            a = self._rng.choice([-1, 1])
+        b = self._rng.randint(1, max(3, 2 * difficulty))
         problem = f"dx/dt = {a}x, x(0) = {b}"
         solution = f"{b}e^{{{a}t}}"
         return problem, {"a": a, "b": b, "solution": solution}

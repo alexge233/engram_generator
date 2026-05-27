@@ -738,22 +738,68 @@ class EulerFormulaGenerator(StepGenerator):
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate an Euler formula evaluation problem.
 
+        Multiplies the base angle by a random integer coefficient
+        to produce a wider variety of unique angles while still
+        using exact trigonometric values.
+
         Args:
-            difficulty: Controls angle selection.
+            difficulty: Controls angle selection and multiplier range.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
         table = AngleTable()
         pool = self._angle_pool(difficulty)
-        angle = self._rng.choice(pool)
-        cos_str = table.cos_str(angle)
-        sin_str = table.sin_str(angle)
+        base_angle = self._rng.choice(pool)
+        base_rad = table._NUMERIC_ANGLES[base_angle]
+        multiplier = self._rng.randint(1, 4 + difficulty)
 
-        problem = f"e^{{i{angle}}}"
+        total_rad = multiplier * base_rad
+        cos_val = round(math.cos(total_rad), 6)
+        sin_val = round(math.sin(total_rad), 6)
+        cos_str = self._format_trig_value(cos_val)
+        sin_str = self._format_trig_value(sin_val)
+
+        if multiplier == 1:
+            angle_label = base_angle
+        else:
+            angle_label = f"{multiplier}\\cdot{base_angle}"
+
+        problem = f"e^{{i({angle_label})}}"
         return problem, {
-            "angle": angle, "cos_str": cos_str, "sin_str": sin_str,
+            "angle": angle_label, "cos_str": cos_str, "sin_str": sin_str,
         }
+
+    def _format_trig_value(self, val: float) -> str:
+        """Format a numeric trigonometric value as a clean string.
+
+        Recognises common exact values and rounds others to 4
+        decimal places.
+
+        Args:
+            val: Numeric trigonometric value.
+
+        Returns:
+            String representation of the value.
+        """
+        if abs(val) < 1e-9:
+            return "0"
+        if abs(val - 1.0) < 1e-9:
+            return "1"
+        if abs(val + 1.0) < 1e-9:
+            return "-1"
+        if abs(abs(val) - 0.5) < 1e-9:
+            return "\\frac{1}{2}" if val > 0 else "-\\frac{1}{2}"
+        sqrt2_2 = math.sqrt(2) / 2
+        if abs(abs(val) - sqrt2_2) < 1e-6:
+            prefix = "" if val > 0 else "-"
+            return f"{prefix}\\frac{{\\sqrt{{2}}}}{{2}}"
+        sqrt3_2 = math.sqrt(3) / 2
+        if abs(abs(val) - sqrt3_2) < 1e-6:
+            prefix = "" if val > 0 else "-"
+            return f"{prefix}\\frac{{\\sqrt{{3}}}}{{2}}"
+        formatted = f"{val:.4f}".rstrip("0").rstrip(".")
+        return formatted
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate formula substitution steps.
@@ -865,25 +911,32 @@ class QubitMeasureGenerator(StepGenerator):
         return problem, {"qubit": qubit}
 
     def _sample_qubit(self, difficulty: int) -> QubitState:
-        """Sample a valid normalised qubit state.
+        """Sample a valid normalised qubit state with randomised amplitudes.
+
+        Generates a random denominator and numerator pair such that
+        alpha_sq + beta_sq = 1, producing a wide variety of fractional
+        amplitudes beyond the fixed pool.
 
         Args:
-            difficulty: Controls amplitude complexity.
+            difficulty: Controls denominator range for amplitudes.
 
         Returns:
             A QubitState instance with normalised amplitudes.
         """
-        pairs = QubitState.valid_pairs()
         if difficulty <= 4:
-            pairs = [p for p in pairs if p[0][1] == Fraction(1, 2)]
+            max_den = 4 + difficulty
         elif difficulty <= 6:
-            pairs = [
-                p for p in pairs
-                if p[0][1] in (Fraction(1, 2), Fraction(1, 4), Fraction(3, 4))
-            ]
-        chosen = self._rng.choice(pairs)
+            max_den = 8 + difficulty
+        else:
+            max_den = 16 + difficulty
+        den = self._rng.randint(2, max_den)
+        num = self._rng.randint(0, den)
+        alpha_sq = Fraction(num, den)
+        beta_sq = Fraction(1, 1) - alpha_sq
+        alpha_label = f"\\sqrt{{{alpha_sq}}}" if alpha_sq != 0 else "0"
+        beta_label = f"\\sqrt{{{beta_sq}}}" if beta_sq != 0 else "0"
         return QubitState(
-            chosen[0][0], chosen[1][0], chosen[0][1], chosen[1][1],
+            alpha_label, beta_label, alpha_sq, beta_sq,
         )
 
     def _format_fraction(self, f: Fraction) -> str:
@@ -994,8 +1047,17 @@ class QuantumGateGenerator(StepGenerator):
         """
         return "apply quantum gate to qubit"
 
+    _GATE_POOL: list[tuple[str, list[list[int]], str]] = [
+        ("X", [[0, 1], [1, 0]], "1"),
+        ("Z", [[1, 0], [0, -1]], "1"),
+        ("H", [[1, 1], [1, -1]], "\\frac{1}{\\sqrt{2}}"),
+    ]
+
     def _select_gate(self, difficulty: int) -> QuantumGate:
         """Select a quantum gate based on difficulty.
+
+        At lower difficulties only simpler gates are available; at
+        higher difficulties all three gates are used.
 
         Args:
             difficulty: Difficulty level.
@@ -1004,34 +1066,47 @@ class QuantumGateGenerator(StepGenerator):
             A QuantumGate instance.
         """
         if difficulty <= 3:
-            return QuantumGate("X", [[0, 1], [1, 0]])
-        if difficulty <= 5:
-            return QuantumGate("Z", [[1, 0], [0, -1]])
-        return QuantumGate(
-            "H", [[1, 1], [1, -1]], "\\frac{1}{\\sqrt{2}}",
-        )
+            pool = self._GATE_POOL[:1]
+        elif difficulty <= 5:
+            pool = self._GATE_POOL[:2]
+        else:
+            pool = self._GATE_POOL
+        name, matrix, scale = self._rng.choice(pool)
+        return QuantumGate(name, matrix, scale)
 
-    def _select_input(self) -> tuple[list[int], str]:
-        """Select an input basis state |0> or |1>.
+    def _select_input(self, difficulty: int) -> tuple[list[int], str]:
+        """Select a random integer input state vector.
+
+        Generates a 2-element integer vector with components scaled
+        by difficulty, providing far more unique problem instances
+        than the fixed basis states |0> and |1>.
+
+        Args:
+            difficulty: Controls magnitude of vector components.
 
         Returns:
             Tuple of (vector, ket_label).
         """
-        if self._rng.random() < 0.5:
-            return [1, 0], "|0\\rangle"
-        return [0, 1], "|1\\rangle"
+        bound = max(2, difficulty)
+        a = self._rng.randint(-bound, bound)
+        b = self._rng.randint(-bound, bound)
+        while a == 0 and b == 0:
+            a = self._rng.randint(-bound, bound)
+            b = self._rng.randint(-bound, bound)
+        ket = f"\\begin{{pmatrix}} {a} \\\\ {b} \\end{{pmatrix}}"
+        return [a, b], ket
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a gate application problem.
 
         Args:
-            difficulty: Controls gate selection.
+            difficulty: Controls gate selection and input state.
 
         Returns:
             Tuple of (latex_problem, solution_data).
         """
         gate = self._select_gate(difficulty)
-        vector, ket = self._select_input()
+        vector, ket = self._select_input(difficulty)
         result = gate.apply_to(vector)
 
         problem = f"{gate.name}{ket}"

@@ -4,7 +4,7 @@
 
 > This repository contains AI-generated code, reviewed and directed by a human author.
 
-An infinite synthetic dataset generator for training reasoning, logic, and algorithmic learning in neural networks.
+A procedural synthetic dataset generator for training reasoning, logic, and algorithmic learning in neural networks.
 
 ## Purpose
 
@@ -12,13 +12,17 @@ Models trained on static datasets learn to pattern-match, not to reason. They me
 
 Engram Generator produces procedurally generated training data that forces models to learn **how to think, not what to answer**:
 
-- **Infinite non-repeating data** — every sample is unique, memorisation is impossible
+- **Procedurally generated** — arithmetic and algebra tasks have effectively infinite combinatorial space; higher-tier reasoning tasks use parameterised template pools re-seeded each epoch
 - **Step-by-step solution chains** — the model must learn to decompose and reason, not guess
 - **Adaptive difficulty** — escalates as the model improves, always training at the frontier
 - **Prerequisite skill tree** — gates advanced reasoning behind mastery of foundations
 - **Deterministic verification** — every answer is provably correct by construction
 
 The scope spans arithmetic, algebra, calculus, physics, computer science, graph theory, cryptography, formal logic, proof verification, and meta-reasoning. But the goal is not domain coverage. It is to teach a model to **decompose problems into steps, maintain state across those steps, and verify its own work** — the foundation for genuine reasoning.
+
+### Combinatorial space
+
+Not all tasks have the same variety. Arithmetic tasks (tiers 0-2) randomise operands across digit ranges, producing effectively unlimited unique problems. Higher-tier tasks (tiers 7-10) use scenario templates with parameterised values — the structural templates repeat, but coefficients and variable names change each epoch. The generator is re-seeded between epochs to maximise variation within each template pool.
 
 ## Architecture
 

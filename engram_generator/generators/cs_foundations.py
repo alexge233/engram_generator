@@ -428,7 +428,12 @@ class BooleanAlgebraGenerator(StepGenerator):
         return "simplify boolean expression"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a boolean expression to simplify.
+        """Generate a boolean expression to simplify with randomised variables.
+
+        Replaces the standard single-letter variable names A, B with
+        randomly chosen variable names to increase uniqueness. Uses
+        regex word-boundary matching to avoid corrupting keywords like
+        AND, OR, NOT.
 
         Args:
             difficulty: Controls expression complexity.
@@ -436,10 +441,27 @@ class BooleanAlgebraGenerator(StepGenerator):
         Returns:
             Tuple of (expression_string, solution_data).
         """
+        import re
+
         pool = BooleanExpressionPool(self._rng)
         expr = pool.sample(difficulty)
-        return expr.original, {
-            "expression": expr,
+
+        # Randomise variable names to create more unique problems
+        var_pool = ["P", "Q", "R", "S", "X", "Y", "Z", "W",
+                    "M", "K", "L", "V"]
+        self._rng.shuffle(var_pool)
+        var_a = var_pool[0]
+        var_b = var_pool[1]
+
+        # Use word-boundary regex to avoid replacing A in AND/NAND etc.
+        original = re.sub(r'\bA\b', var_a, expr.original)
+        original = re.sub(r'\bB\b', var_b, original)
+        simplified = re.sub(r'\bA\b', var_a, expr.simplified)
+        simplified = re.sub(r'\bB\b', var_b, simplified)
+
+        new_expr = BooleanExpression(original, simplified, expr.law)
+        return new_expr.original, {
+            "expression": new_expr,
         }
 
     def _create_steps(self, data: dict) -> list[str]:
