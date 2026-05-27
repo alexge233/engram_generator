@@ -1,0 +1,23 @@
+"""Task generators organised by tier."""
+from engram_generator.generators import tier0  # noqa: F401
+from engram_generator.generators import tier1  # noqa: F401
+from engram_generator.generators import tier2  # noqa: F401
+from engram_generator.generators import tier3  # noqa: F401
+from engram_generator.generators import tier4  # noqa: F401
+from engram_generator.generators import tier5  # noqa: F401
+from engram_generator.generators import tier6  # noqa: F401
+from engram_generator.generators import tier7  # noqa: F401
+from engram_generator.generators import tier8  # noqa: F401
+from engram_generator.generators import tier9  # noqa: F401
+from engram_generator.generators import tier10  # noqa: F401
+from engram_generator.generators import physics  # noqa: F401
+from engram_generator.generators import statistics  # noqa: F401
+from engram_generator.generators import advanced_math  # noqa: F401
+from engram_generator.generators import quantum  # noqa: F401
+from engram_generator.generators import computer_science  # noqa: F401
+from engram_generator.generators import science_extended  # noqa: F401
+from engram_generator.generators import reasoning_extended  # noqa: F401
+from engram_generator.generators import math_extended  # noqa: F401
+from engram_generator.generators import ai_ml  # noqa: F401
+from engram_generator.generators import expanded  # noqa: F401
+from engram_generator.generators import expanded_upper  # noqa: F401

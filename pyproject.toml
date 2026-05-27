@@ -1,0 +1,53 @@
+[project]
+name = "engram-generator"
+version = "0.1.0"
+description = "Infinite synthetic dataset generator for reasoning, logic, and algorithmic learning — 247 tasks across 11 tiers"
+requires-python = ">=3.10"
+authors = [
+    {name = "Alex Giokas"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+keywords = ["machine-learning", "curriculum", "reasoning", "logic", "synthetic-data", "infinite-dataset"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Programming Language :: Python :: 3.10",
+]
+dependencies = [
+    "sympy>=1.12",
+    "numpy>=1.24",
+    "rich>=13.0",
+    "pylatexenc>=2.10",
+    "unicodeit>=0.7",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov",
+    "ruff",
+]
+atoms = [
+    "requests>=2.28",
+    "beautifulsoup4>=4.12",
+]
+
+[project.scripts]
+engram-validate = "engram_generator.cli:main"
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["engram_generator*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
