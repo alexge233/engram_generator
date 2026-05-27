@@ -259,6 +259,56 @@ class AlgorithmDesignGenerator(StepGenerator):
              "return result"],
             "O(n + m)",
         ),
+        "count_inversions": AlgorithmTemplate(
+            "count_inversions",
+            ["modify merge sort to count swaps",
+             "during merge, when right element is placed before left",
+             "add (len(left) - i) to inversion count",
+             "return total inversions"],
+            "O(n log n)",
+        ),
+        "dutch_flag": AlgorithmTemplate(
+            "dutch_flag",
+            ["three pointers: lo=0, mid=0, hi=n-1",
+             "while mid <= hi",
+             "if arr[mid]==0: swap(arr[lo],arr[mid]), lo++, mid++",
+             "if arr[mid]==1: mid++",
+             "if arr[mid]==2: swap(arr[mid],arr[hi]), hi--"],
+            "O(n)",
+        ),
+        "two_sum": AlgorithmTemplate(
+            "two_sum",
+            ["create hash map",
+             "for each element x in array",
+             "if (target - x) in hash map, return pair",
+             "else add x to hash map"],
+            "O(n)",
+        ),
+        "kadane_max_subarray": AlgorithmTemplate(
+            "kadane_max_subarray",
+            ["current_sum = 0, max_sum = -infinity",
+             "for each element x",
+             "current_sum = max(x, current_sum + x)",
+             "max_sum = max(max_sum, current_sum)",
+             "return max_sum"],
+            "O(n)",
+        ),
+        "topk_quickselect": AlgorithmTemplate(
+            "topk_quickselect",
+            ["pick random pivot, partition array",
+             "if pivot position == k, return left partition",
+             "if pivot position < k, recurse on right",
+             "else recurse on left"],
+            "O(n) average",
+        ),
+        "flood_fill": AlgorithmTemplate(
+            "flood_fill",
+            ["start at (r, c) with target colour",
+             "if out of bounds or wrong colour, return",
+             "set current cell to new colour",
+             "recurse on all 4 neighbours"],
+            "O(n*m)",
+        ),
     }
 
     _TEST_INPUTS: dict[str, list[int]] = {
@@ -268,6 +318,12 @@ class AlgorithmDesignGenerator(StepGenerator):
         "second_largest": [3, 1, 4, 1, 5, 9, 2, 6],
         "binary_search": [1, 3, 5, 7, 9, 11, 13],
         "merge_sorted": [1, 4, 7, 2, 5, 8],
+        "count_inversions": [2, 4, 1, 3, 5],
+        "dutch_flag": [0, 2, 1, 0, 2, 1],
+        "two_sum": [2, 7, 11, 15],
+        "kadane_max_subarray": [-2, 1, -3, 4, -1, 2, 1, -5, 4],
+        "topk_quickselect": [3, 2, 1, 5, 6, 4],
+        "flood_fill": [1, 1, 0, 1, 1, 1],
     }
 
     @property
