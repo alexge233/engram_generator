@@ -657,8 +657,8 @@ class AlgorithmImprovementGenerator(StepGenerator):
         Returns:
             Tuple of (naive_algorithm_string, solution_data).
         """
-        keys = list(self._IMPROVEMENTS.values())
-        problem_key = self._rng.choice(keys)
+        problem_key = self._rng.choice(list(self._NAIVE.keys()))
+        
         naive = self._NAIVE[problem_key]
         improved = self._IMPROVED[problem_key]
         insight = self._INSIGHTS[problem_key]
@@ -807,7 +807,7 @@ class ImpossibilityProofGenerator(StepGenerator):
         Returns:
             Natural language description.
         """
-        proof_type = self._PROOF_TYPES.get(difficulty, "searching")
+        proof_type = self._rng.choice(list(self._PROBLEMS.keys()))
         problem_name = self._PROBLEMS[proof_type]
         return f"prove lower bound for {problem_name}"
 
@@ -1086,7 +1086,7 @@ class InvariantDiscoveryGenerator(StepGenerator):
         Returns:
             Tuple of (transformation_description, solution_data).
         """
-        inv_type = self._INVARIANT_TYPES.get(difficulty, "sum_swap")
+        inv_type = self._rng.choice(list(self._INVARIANT_TYPES.values()))
         builder = self._get_builder(inv_type)
         return builder(difficulty)
 
@@ -1393,7 +1393,7 @@ class ComplexityComparisonGenerator(StepGenerator):
         Returns:
             Tuple of (problem_description, solution_data).
         """
-        comp_type = self._COMPARISON_TYPES.get(difficulty, "linear_vs_binary")
+        comp_type = self._rng.choice(list(self._COMPARISON_TYPES.values()))
         n = self._INPUT_SIZES.get(difficulty, 16)
         builder = self._get_comparison_builder(comp_type)
         return builder(n)

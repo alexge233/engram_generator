@@ -3119,7 +3119,7 @@ class DataPrescriptionGenerator(StepGenerator):
         Returns:
             Tuple of (weakness_description, solution_data).
         """
-        wtype = self._rng.choice(list(self._WEAKNESSES.keys()))
+        wtype = self._rng.choice(list(self._PRESCRIPTIONS.keys()))
         prescription = self._PRESCRIPTIONS[wtype]
         problem = f"weakness: {prescription['weakness']}"
         return problem, dict(prescription)

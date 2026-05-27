@@ -199,6 +199,18 @@ SuccessorDesignGenerator._PROPOSALS.update({
     "mode_collapse": "use minibatch discrimination + diverse training objectives",
     "gradient_starvation": "use GradNorm or uncertainty weighting to balance loss components",
 })
+SuccessorDesignGenerator._NEW_PROPERTIES.update({
+    "poor_calibration": "calibrated softmax with learned temperature per class",
+    "catastrophic_forgetting": "elastic weight consolidation with Fisher information matrix",
+    "mode_collapse": "diversity-promoting generator with minibatch features",
+    "gradient_starvation": "multi-objective optimizer with per-loss adaptive weights",
+})
+SuccessorDesignGenerator._TRADEOFFS.update({
+    "poor_calibration": "accuracy may decrease slightly; inference cost +1 scalar multiply",
+    "catastrophic_forgetting": "slower training due to Fisher computation; memory for old task weights",
+    "mode_collapse": "higher compute per batch; may reduce sample quality for diversity",
+    "gradient_starvation": "extra parameters for weight learning; may oscillate if alpha too high",
+})
 
 
 # ── MinimalAxioms: extend axiom sets ──────────────────────────────
@@ -415,10 +427,9 @@ DataPrescriptionGenerator._WEAKNESS_TYPES.update({
     8: "domain_gap",
 })
 
-DataPrescriptionGenerator._WEAKNESSES = getattr(
-    DataPrescriptionGenerator, '_WEAKNESSES', {}
-)
-DataPrescriptionGenerator._WEAKNESSES.update({
+# DataPrescription: sync _PRESCRIPTIONS and _WEAKNESSES
+# Add new entries to _PRESCRIPTIONS (the dict _create_problem actually uses)
+DataPrescriptionGenerator._PRESCRIPTIONS.update({
     "class_imbalance": {
         "weakness": "model ignores minority class (1% of data)",
         "root_cause": "severe class imbalance in training data",
