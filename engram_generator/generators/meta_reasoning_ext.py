@@ -3168,10 +3168,13 @@ class EfficiencyAnalysisGenerator(StepGenerator):
         <step> FFN``
 
     Difficulty scaling:
-        Difficulty 1-2: small model (d=256).
-        Difficulty 3-4: medium model (d=512).
-        Difficulty 5-6: large model (d=1024).
-        Difficulty 7-8: very large with long sequences.
+        Each difficulty level defines ranges for d_model, d_ff multiplier,
+        seq_len, and n_heads. Parameters are sampled randomly within
+        those ranges, producing combinatorial variety per difficulty.
+        Difficulty 1-2: small models (d_model 128-256).
+        Difficulty 3-4: medium models (d_model 256-512).
+        Difficulty 5-6: large models (d_model 512-1024).
+        Difficulty 7-8: very large with long sequences (d_model 1024-4096).
 
     Prerequisites:
         architecture_analysis.
@@ -3183,15 +3186,15 @@ class EfficiencyAnalysisGenerator(StepGenerator):
         'efficiency_analysis'
     """
 
-    _CONFIGS = {
-        1: {"d_model": 256, "d_ff": 1024, "seq_len": 64, "n_heads": 4},
-        2: {"d_model": 256, "d_ff": 1024, "seq_len": 128, "n_heads": 4},
-        3: {"d_model": 512, "d_ff": 2048, "seq_len": 128, "n_heads": 8},
-        4: {"d_model": 512, "d_ff": 2048, "seq_len": 256, "n_heads": 8},
-        5: {"d_model": 1024, "d_ff": 4096, "seq_len": 256, "n_heads": 16},
-        6: {"d_model": 1024, "d_ff": 4096, "seq_len": 512, "n_heads": 16},
-        7: {"d_model": 2048, "d_ff": 8192, "seq_len": 512, "n_heads": 16},
-        8: {"d_model": 2048, "d_ff": 8192, "seq_len": 1024, "n_heads": 32},
+    _CONFIG_RANGES = {
+        1: {"d_model": [128, 256], "d_ff_mult": [2, 4], "seq_len": [32, 64, 128], "n_heads": [2, 4]},
+        2: {"d_model": [128, 256], "d_ff_mult": [2, 4, 8], "seq_len": [64, 128, 256], "n_heads": [2, 4, 8]},
+        3: {"d_model": [256, 512], "d_ff_mult": [2, 4], "seq_len": [64, 128, 256], "n_heads": [4, 8]},
+        4: {"d_model": [256, 512], "d_ff_mult": [2, 4, 8], "seq_len": [128, 256, 512], "n_heads": [4, 8, 16]},
+        5: {"d_model": [512, 1024], "d_ff_mult": [2, 4], "seq_len": [128, 256, 512], "n_heads": [8, 16]},
+        6: {"d_model": [512, 1024], "d_ff_mult": [2, 4, 8], "seq_len": [256, 512, 1024], "n_heads": [8, 16, 32]},
+        7: {"d_model": [1024, 2048], "d_ff_mult": [2, 4], "seq_len": [256, 512, 1024], "n_heads": [16, 32]},
+        8: {"d_model": [1024, 2048, 4096], "d_ff_mult": [2, 4, 8], "seq_len": [512, 1024, 2048], "n_heads": [16, 32, 64]},
     }
 
     @property
@@ -3223,17 +3226,24 @@ class EfficiencyAnalysisGenerator(StepGenerator):
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a FLOP analysis problem.
 
+        Randomly samples d_model, d_ff multiplier, seq_len, and n_heads
+        from the ranges defined for the given difficulty level, producing
+        combinatorial variety instead of a single fixed config.
+
         Args:
-            difficulty: Controls model configuration.
+            difficulty: Controls the parameter ranges to sample from.
 
         Returns:
             Tuple of (config_string, solution_data).
         """
-        config = self._CONFIGS.get(difficulty, self._CONFIGS[3])
-        d = config["d_model"]
-        d_ff = config["d_ff"]
-        seq = config["seq_len"]
-        heads = config["n_heads"]
+        ranges = self._CONFIG_RANGES.get(difficulty, self._CONFIG_RANGES[3])
+        d = self._rng.choice(ranges["d_model"])
+        d_ff = d * self._rng.choice(ranges["d_ff_mult"])
+        seq = self._rng.choice(ranges["seq_len"])
+        heads = self._rng.choice(ranges["n_heads"])
+        # Ensure heads divides d_model
+        while d % heads != 0:
+            heads = self._rng.choice(ranges["n_heads"])
         counter = FlopCounter()
         attn_flops = counter.attention_flops(seq, d, heads)
         ffn_flops = counter.ffn_flops(d, d_ff, seq)
@@ -3247,7 +3257,7 @@ class EfficiencyAnalysisGenerator(StepGenerator):
             f"seq_len={seq}, heads={heads}"
         )
         return problem, {
-            "config": config,
+            "config": {"d_model": d, "d_ff": d_ff, "seq_len": seq, "n_heads": heads},
             "attn_flops": attn_flops, "ffn_flops": ffn_flops,
             "total": total, "attn_pct": attn_pct, "ffn_pct": ffn_pct,
             "bottleneck": bottleneck, "bottleneck_pct": bottleneck_pct,

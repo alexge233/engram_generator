@@ -466,6 +466,11 @@ class CaesarGenerator(StepGenerator):
         """Return the skill tree tier."""
         return 1
 
+    @property
+    def prerequisites(self) -> list[str]:
+        """Return required prerequisite tasks."""
+        return ["addition"]
+
     def task_description(self, difficulty: int) -> str:
         """Generate a natural language task description.
 
@@ -599,6 +604,11 @@ class RunLengthGenerator(StepGenerator):
     def tier(self) -> int:
         """Return the skill tree tier."""
         return 1
+
+    @property
+    def prerequisites(self) -> list[str]:
+        """Return required prerequisite tasks."""
+        return ["counting"]
 
     def task_description(self, difficulty: int) -> str:
         """Generate a natural language task description.

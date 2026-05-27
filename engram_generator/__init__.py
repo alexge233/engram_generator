@@ -2,7 +2,7 @@
 
 Alpha Version — Not yet tested at scale. Not yet fully reviewed.
 
-376 tasks across 11 tiers (0-10), from basic arithmetic to self-architecture.
+373 tasks across 11 tiers (0-10), from basic arithmetic to self-architecture.
 Procedurally generated with LaTeX notation, step-by-step solution chains,
 and adaptive difficulty via a prerequisite skill tree.
 """

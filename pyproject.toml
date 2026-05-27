@@ -1,7 +1,7 @@
 [project]
 name = "engram-generator"
 version = "0.1.0a1"
-description = "Infinite synthetic dataset generator for reasoning, logic, and algorithmic learning — 376 tasks across 11 tiers (alpha)"
+description = "Infinite synthetic dataset generator for reasoning, logic, and algorithmic learning — 373 tasks across 11 tiers (alpha)"
 requires-python = ">=3.10"
 authors = [
     {name = "Alex Giokas"},

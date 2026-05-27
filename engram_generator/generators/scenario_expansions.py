@@ -650,15 +650,9 @@ AlgorithmImprovementGenerator._TEST_RESULTS.update({
     "interval_merge": "merged: [1,6],[8,10]", "prefix_sum": "sum(2..4)=9",
 })
 
-# EfficiencyAnalysis: add via _CONFIGS expansion
-# This generator uses int-keyed _CONFIGS, so we add more config entries
-from engram_generator.generators.meta_reasoning_ext import EfficiencyAnalysisGenerator
-EfficiencyAnalysisGenerator._CONFIGS.update({
-    9: {"arch": "GPT-3 175B", "d_model": 12288, "n_layers": 96, "n_heads": 96, "seq_len": 2048, "vocab": 50257},
-    10: {"arch": "BERT-base", "d_model": 768, "n_layers": 12, "n_heads": 12, "seq_len": 512, "vocab": 30522},
-    11: {"arch": "ViT-L/16", "d_model": 1024, "n_layers": 24, "n_heads": 16, "seq_len": 196, "vocab": 1000},
-    12: {"arch": "Mamba-1.4B", "d_model": 2048, "n_layers": 48, "n_heads": 1, "seq_len": 8192, "vocab": 50280},
-})
+# EfficiencyAnalysis: _CONFIG_RANGES already provides combinatorial variety
+# per difficulty level via random sampling of d_model, d_ff_mult, seq_len,
+# and n_heads. No additional expansion needed.
 
 # LossDesign: already at 8 — _BEHAVIOURS has 8 entries and generic builder works
 # The issue is that problem text is "desired: {behaviour}" which can collide on RNG

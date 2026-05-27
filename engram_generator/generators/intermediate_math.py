@@ -1085,7 +1085,7 @@ class GraphReachGenerator(StepGenerator):
     @property
     def prerequisites(self) -> list[str]:
         """Return required prerequisite tasks."""
-        return ["logic"]
+        return ["boolean_eval"]
 
     def task_description(self, difficulty: int) -> str:
         """Generate a natural language task description.

@@ -123,6 +123,11 @@ class AbsoluteValueGenerator(StepGenerator):
     def tier(self) -> int:
         return 1
 
+    @property
+    def prerequisites(self) -> list[str]:
+        """Return required prerequisite tasks."""
+        return ["subtraction"]
+
     def task_description(self, difficulty: int) -> str:
         return "compute absolute value"
 
@@ -155,6 +160,11 @@ class FloorCeilGenerator(StepGenerator):
     @property
     def tier(self) -> int:
         return 1
+
+    @property
+    def prerequisites(self) -> list[str]:
+        """Return required prerequisite tasks."""
+        return ["division"]
 
     def task_description(self, difficulty: int) -> str:
         return "compute floor or ceiling"
@@ -226,6 +236,11 @@ class SequenceNextGenerator(StepGenerator):
     @property
     def tier(self) -> int:
         return 1
+
+    @property
+    def prerequisites(self) -> list[str]:
+        """Return required prerequisite tasks."""
+        return ["addition"]
 
     def task_description(self, difficulty: int) -> str:
         return "find next in sequence"
