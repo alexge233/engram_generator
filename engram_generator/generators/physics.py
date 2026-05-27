@@ -9,7 +9,7 @@ import math
 
 from engram_generator.base import StepGenerator
 from engram_generator.curriculum.registry import register
-from engram_generator.generators.tier4 import PhysicsParameterSampler
+from engram_generator.generators.applied_math import PhysicsParameterSampler
 
 
 class ScientificFormatter:

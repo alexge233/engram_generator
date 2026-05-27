@@ -12,7 +12,7 @@ from fractions import Fraction
 
 from engram_generator.base import StepGenerator
 from engram_generator.curriculum.registry import register
-from engram_generator.generators.tier4 import PhysicsParameterSampler
+from engram_generator.generators.applied_math import PhysicsParameterSampler
 from engram_generator.generators.physics import ScientificFormatter
 from engram_generator.generators.statistics import FractionFormatter
 

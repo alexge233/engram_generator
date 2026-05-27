@@ -6,7 +6,7 @@ run-length encoding, and expression simplification.
 """
 from engram_generator.base import StepGenerator
 from engram_generator.curriculum.registry import register
-from engram_generator.generators.tier0 import DigitDecomposer
+from engram_generator.generators.arithmetic_core import DigitDecomposer
 
 
 @register
