@@ -23,7 +23,7 @@ class BayesChainGenerator(StepGenerator):
 
     @property
     def tier(self) -> int:
-        return 4
+        return 6
 
     @property
     def prerequisites(self) -> list[str]:
@@ -605,7 +605,7 @@ class StrongInductionGenerator(StepGenerator):
 
     @property
     def tier(self) -> int:
-        return 5
+        return 7
 
     @property
     def prerequisites(self) -> list[str]:

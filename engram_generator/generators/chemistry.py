@@ -210,7 +210,7 @@ class PhCalculationGenerator(ChemistryGenerator):
 
     @property
     def tier(self) -> int:
-        return 3
+        return 5
 
     @property
     def prerequisites(self) -> list[str]:

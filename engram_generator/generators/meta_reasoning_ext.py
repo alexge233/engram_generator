@@ -696,7 +696,7 @@ class ComplexityAnalysisGenerator(StepGenerator):
         Difficulty 7-8: cubic vs quadratic (n=20..50).
 
     Prerequisites:
-        algorithm_design.
+        algorithm_design (tier 9).
 
     Example:
         >>> gen = ComplexityAnalysisGenerator(min_difficulty=1, max_difficulty=1, seed=42)
@@ -725,7 +725,7 @@ class ComplexityAnalysisGenerator(StepGenerator):
     @property
     def tier(self) -> int:
         """Return the skill tree tier."""
-        return 7
+        return 9
 
     @property
     def prerequisites(self) -> list[str]:

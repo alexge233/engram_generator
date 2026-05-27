@@ -56,7 +56,7 @@ class GeometricSequenceGenerator(StepGenerator):
 
     @property
     def tier(self) -> int:
-        return 1
+        return 2
 
     @property
     def prerequisites(self) -> list[str]:

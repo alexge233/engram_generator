@@ -21,7 +21,7 @@ class AreaRectangleGenerator(StepGenerator):
 
     @property
     def tier(self) -> int:
-        return 0
+        return 1
 
     @property
     def prerequisites(self) -> list[str]:
@@ -88,7 +88,7 @@ class PythagoreanGenerator(StepGenerator):
 
     @property
     def tier(self) -> int:
-        return 0
+        return 1
 
     @property
     def prerequisites(self) -> list[str]:

@@ -191,16 +191,16 @@ step_mask = tok.get_step_mask(ids)  # True where <step> tokens are
 
 | Tier | Description | Tasks |
 |---|---|---|
-| 0 | Basic arithmetic (addition, subtraction, sorting) | 22 |
-| 1 | Operations (multiplication, division, basic equations) | 35 |
-| 2 | Intermediate (polynomials, number theory, graphs) | 45 |
-| 3 | Advanced (calculus, probability, linear algebra) | 60 |
-| 4 | Applied (physics, quantum mechanics, advanced algebra) | 58 |
+| 0 | Basic arithmetic (addition, subtraction, sorting) | 20 |
+| 1 | Operations (multiplication, division, basic equations) | 36 |
+| 2 | Intermediate (polynomials, number theory, graphs) | 46 |
+| 3 | Advanced (calculus, probability, linear algebra) | 59 |
+| 4 | Applied (physics, quantum mechanics, advanced algebra) | 57 |
 | 5 | Expert (PDEs, transforms, neural network mathematics) | 55 |
-| 6 | Graduate (tensors, differential geometry, information theory) | 41 |
+| 6 | Graduate (tensors, differential geometry, information theory) | 42 |
 | 7 | Meta-reasoning (proofs, error detection, multi-domain synthesis) | 18 |
 | 8 | Creative (abstraction, conjecture, self-evaluation) | 13 |
-| 9 | Research (algorithm design, architecture analysis, learning theory) | 13 |
+| 9 | Research (algorithm design, architecture analysis, learning theory) | 14 |
 | 10 | Self-architecture (gradient analysis, successor design, failure diagnosis) | 13 |
 | **Total** | | **373** |
 
