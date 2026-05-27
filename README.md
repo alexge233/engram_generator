@@ -1,5 +1,7 @@
 # Engram Generator
 
+> **Alpha Version** — Not yet tested at scale. Not yet fully reviewed. Use at your own peril.
+
 > This repository contains AI-generated code, reviewed and directed by a human author.
 
 An infinite synthetic dataset generator for training reasoning, logic, and algorithmic learning in neural networks.

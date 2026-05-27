@@ -204,9 +204,13 @@ class AlgorithmDesignGenerator(StepGenerator):
         3: ("find_median", "find median of N elements"),
         4: ("second_largest", "find second largest in list of N elements"),
         5: ("binary_search", "search for target in sorted list"),
-        6: ("binary_search", "search for target in sorted list"),
-        7: ("merge_sorted", "merge two sorted lists into one"),
-        8: ("merge_sorted", "merge two sorted lists into one"),
+        6: ("merge_sorted", "merge two sorted lists into one"),
+        7: ("count_inversions", "count inversions in an array"),
+        8: ("dutch_flag", "partition array into three groups"),
+        9: ("two_sum", "find two numbers that sum to target"),
+        10: ("kadane_max_subarray", "find contiguous subarray with maximum sum"),
+        11: ("topk_quickselect", "find k smallest elements"),
+        12: ("flood_fill", "fill a connected region"),
     }
 
     _ALGORITHMS: dict[str, AlgorithmTemplate] = {
@@ -664,7 +668,7 @@ class AlgorithmImprovementGenerator(StepGenerator):
         insight = self._INSIGHTS[problem_key]
         test_input = self._TEST_INPUTS[problem_key]
         test_result = self._TEST_RESULTS[problem_key]
-        problem = f"naive: {naive.format_pseudocode()} -> {naive.complexity}"
+        problem = f"improve {problem_key}: {naive.format_pseudocode()} -> {naive.complexity}"
         return problem, {
             "problem_key": problem_key, "naive": naive,
             "improved": improved, "insight": insight,

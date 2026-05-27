@@ -754,7 +754,26 @@ class LossDesignGenerator(StepGenerator):
             "kl_divergence": self._build_kl_divergence,
             "multi_objective": self._build_multi_objective,
         }
-        return builders[loss_type]
+        return builders.get(loss_type, self._build_generic_loss)
+
+    def _build_generic_loss(self, difficulty: int,
+                            behaviour: str) -> tuple[str, dict]:
+        """Build a generic loss design problem for extended loss types.
+
+        Args:
+            difficulty: Controls parameter values.
+            behaviour: Desired behaviour description.
+
+        Returns:
+            Tuple of (problem_text, solution_data).
+        """
+        alpha = round(self._rng.uniform(0.01, 1.0), 2)
+        problem = f"desired: {behaviour}"
+        return problem, {
+            "base_loss": "cross-entropy on primary task",
+            "penalty": f"{behaviour} (weight={alpha})",
+            "formula": f"L = CE(y, y_hat) + {alpha} * auxiliary_term",
+        }
 
     def _build_length_penalty(self, difficulty: int,
                               behaviour: str) -> tuple[str, dict]:
