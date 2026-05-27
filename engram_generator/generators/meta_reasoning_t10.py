@@ -355,7 +355,7 @@ class GradientAnalysisGenerator(StepGenerator):
         Returns:
             Tuple of (computation_description, solution_data).
         """
-        graph_type = self._GRAPH_TYPES.get(difficulty, "linear")
+        graph_type = self._rng.choice(list(self._GRAPH_TYPES.values()))
         a = self._rng.randint(2, 4 + difficulty)
         b = self._rng.randint(1, 3 + difficulty)
         x = self._rng.randint(1, 3)
@@ -511,7 +511,7 @@ class CapacityBoundGenerator(StepGenerator):
         Returns:
             Tuple of (system_description, solution_data).
         """
-        cap_type = self._CAPACITY_TYPES.get(difficulty, "parameter_bits")
+        cap_type = self._rng.choice(list(self._CAPACITY_TYPES.values()))
         builder = self._get_builder(cap_type)
         return builder(difficulty)
 
@@ -721,7 +721,7 @@ class LossDesignGenerator(StepGenerator):
         Returns:
             Natural language description.
         """
-        loss_type = self._LOSS_TYPES.get(difficulty, "length_penalty")
+        loss_type = self._rng.choice(list(self._BEHAVIOURS.keys()))
         behaviour = self._BEHAVIOURS[loss_type]
         return f"design loss function that would {behaviour}"
 
@@ -734,7 +734,7 @@ class LossDesignGenerator(StepGenerator):
         Returns:
             Tuple of (behaviour_description, solution_data).
         """
-        loss_type = self._LOSS_TYPES.get(difficulty, "length_penalty")
+        loss_type = self._rng.choice(list(self._BEHAVIOURS.keys()))
         behaviour = self._BEHAVIOURS[loss_type]
         builder = self._get_builder(loss_type)
         return builder(difficulty, behaviour)
@@ -937,7 +937,7 @@ class ScalingPredictionGenerator(StepGenerator):
         Returns:
             Natural language description.
         """
-        factor = self._SCALE_FACTORS.get(difficulty, 2)
+        factor = self._rng.choice(list(self._SCALE_FACTORS.values()))
         return f"predict accuracy if we scale parameters by {factor}x"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -949,8 +949,8 @@ class ScalingPredictionGenerator(StepGenerator):
         Returns:
             Tuple of (observations_string, solution_data).
         """
-        base_n = self._BASE_SIZES.get(difficulty, 1000)
-        factor = self._SCALE_FACTORS.get(difficulty, 2)
+        base_n = self._rng.choice(list(self._BASE_SIZES.values()))
+        factor = self._rng.choice(list(self._SCALE_FACTORS.values()))
         alpha = round(self._rng.uniform(0.1, 0.3), 2)
         c = round(self._rng.uniform(5.0, 20.0), 2)
         model = ScalingLawModel(c, alpha)
@@ -1072,7 +1072,7 @@ class ArchitectureAnalysisGenerator(StepGenerator):
         Returns:
             Tuple of (operation_description, solution_data).
         """
-        op_type = self._OPERATION_TYPES.get(difficulty, "matrix_multiply")
+        op_type = self._rng.choice(list(self._OPERATION_TYPES.values()))
         builder = self._get_builder(op_type)
         return builder(difficulty)
 
@@ -1328,7 +1328,7 @@ class SuccessorDesignGenerator(StepGenerator):
         Returns:
             Natural language description.
         """
-        lim_type = self._LIMITATION_TYPES.get(difficulty, "fixed_iterations")
+        lim_type = self._rng.choice(list(self._LIMITATIONS.keys()))
         limitation = self._LIMITATIONS[lim_type]
         return f"this model has a problem: {limitation}. propose a fix"
 
@@ -1341,7 +1341,7 @@ class SuccessorDesignGenerator(StepGenerator):
         Returns:
             Tuple of (limitation_description, solution_data).
         """
-        lim_type = self._LIMITATION_TYPES.get(difficulty, "fixed_iterations")
+        lim_type = self._rng.choice(list(self._LIMITATIONS.keys()))
         limitation = self._LIMITATIONS[lim_type]
         bottleneck = self._BOTTLENECKS[lim_type]
         proposal = self._PROPOSALS[lim_type]

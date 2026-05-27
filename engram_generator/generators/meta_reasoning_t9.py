@@ -357,14 +357,17 @@ class AlgorithmDesignGenerator(StepGenerator):
         """Generate an algorithm design problem.
 
         Args:
-            difficulty: Controls problem type.
+            difficulty: Controls pool size — higher difficulty unlocks harder algorithms.
 
         Returns:
             Tuple of (problem_statement, solution_data).
         """
-        algo_key, description = self._PROBLEMS.get(difficulty, self._PROBLEMS[1])
+        pool = list(self._PROBLEMS.values())
+        if difficulty <= 3:
+            pool = pool[:6]
+        algo_key, description = self._rng.choice(pool)
         template = self._ALGORITHMS[algo_key]
-        test_input = self._TEST_INPUTS[algo_key]
+        test_input = self._TEST_INPUTS.get(algo_key, [1, 2, 3])
         test_result = self._run_test(algo_key, test_input)
         problem = f"\\text{{problem: {description}}}"
         return problem, {
@@ -394,7 +397,21 @@ class AlgorithmDesignGenerator(StepGenerator):
             return str(self._second_largest(test_input))
         if algo_key == "binary_search":
             return str(runner.binary_search(test_input, 7))
-        return str(self._merge_sorted(test_input))
+        if algo_key == "merge_sorted":
+            return str(self._merge_sorted(test_input))
+        if algo_key == "count_inversions":
+            return str(self._count_inversions(test_input))
+        if algo_key == "two_sum":
+            return str(self._two_sum(test_input, 9))
+        if algo_key == "kadane_max_subarray":
+            return str(self._kadane(test_input))
+        if algo_key == "dutch_flag":
+            return str(sorted(test_input))
+        if algo_key == "topk_quickselect":
+            return str(sorted(test_input)[:3])
+        if algo_key == "flood_fill":
+            return "filled region"
+        return "result"
 
     def _second_largest(self, nums: list[int]) -> int:
         """Find the second largest element.
@@ -422,6 +439,31 @@ class AlgorithmDesignGenerator(StepGenerator):
         b = sorted(nums[mid:])
         merged = sorted(a + b)
         return ",".join(str(x) for x in merged)
+
+    def _count_inversions(self, nums: list[int]) -> int:
+        """Count pairs (i, j) where i < j but nums[i] > nums[j]."""
+        count = 0
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                if nums[i] > nums[j]:
+                    count += 1
+        return count
+
+    def _two_sum(self, nums: list[int], target: int) -> str:
+        """Find two numbers that sum to target."""
+        for i in range(len(nums)):
+            for j in range(i + 1, len(nums)):
+                if nums[i] + nums[j] == target:
+                    return f"({nums[i]},{nums[j]})"
+        return "no pair"
+
+    def _kadane(self, nums: list[int]) -> int:
+        """Find maximum subarray sum."""
+        cur = best = nums[0]
+        for x in nums[1:]:
+            cur = max(x, cur + x)
+            best = max(best, cur)
+        return best
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate algorithm design steps.
@@ -615,7 +657,8 @@ class AlgorithmImprovementGenerator(StepGenerator):
         Returns:
             Tuple of (naive_algorithm_string, solution_data).
         """
-        problem_key = self._IMPROVEMENTS.get(difficulty, "duplicate_detection")
+        keys = list(self._IMPROVEMENTS.values())
+        problem_key = self._rng.choice(keys)
         naive = self._NAIVE[problem_key]
         improved = self._IMPROVED[problem_key]
         insight = self._INSIGHTS[problem_key]
@@ -777,7 +820,7 @@ class ImpossibilityProofGenerator(StepGenerator):
         Returns:
             Tuple of (problem_statement, solution_data).
         """
-        proof_type = self._PROOF_TYPES.get(difficulty, "searching")
+        proof_type = self._rng.choice(list(self._PROBLEMS.keys()))
         problem_name = self._PROBLEMS[proof_type]
         bound = self._BOUNDS[proof_type]
         proof_steps = self._PROOF_STEPS[proof_type]
@@ -932,7 +975,7 @@ class FailureAnalysisGenerator(StepGenerator):
         Returns:
             Tuple of (algorithm_with_input, solution_data).
         """
-        failure_type = self._FAILURE_TYPES.get(difficulty, "division_by_zero")
+        failure_type = self._rng.choice(list(self._ALGORITHMS.keys()))
         algorithm = self._ALGORITHMS[failure_type]
         failing_input = self._FAILING_INPUTS[failure_type]
         explanation = self._FAILURE_EXPLANATIONS[failure_type]

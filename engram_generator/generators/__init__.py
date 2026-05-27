@@ -60,3 +60,6 @@ from engram_generator.generators import statistics  # noqa: F401
 from engram_generator.generators import quantum  # noqa: F401
 from engram_generator.generators import ai_ml  # noqa: F401
 from engram_generator.generators import oos  # noqa: F401
+
+# Scenario pool expansions (must load AFTER generators)
+from engram_generator.generators import scenario_expansions  # noqa: F401

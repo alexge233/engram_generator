@@ -752,7 +752,7 @@ class ComplexityAnalysisGenerator(StepGenerator):
         Returns:
             Tuple of (problem_description, solution_data).
         """
-        ptype = self._PROBLEM_TYPES.get(difficulty, "linear_vs_binary")
+        ptype = self._rng.choice(list(self._PROBLEM_TYPES.values()))
         lo, hi = self._N_RANGES.get(difficulty, (32, 64))
         n = self._rng.randint(lo, hi)
         builder = self._get_builder(ptype)
@@ -1594,7 +1594,7 @@ class SolutionEleganceGenerator(StepGenerator):
         Returns:
             Tuple of (verbose_solution, solution_data).
         """
-        pattern = self._PATTERN_TYPES.get(difficulty, "diff_squares")
+        pattern = self._rng.choice(list(self._PATTERN_TYPES.values()))
         builder = self._get_builder(pattern)
         return builder(difficulty)
 
@@ -1844,7 +1844,7 @@ class ReductionGenerator(StepGenerator):
         Returns:
             Natural language description.
         """
-        rtype = self._REDUCTION_TYPES.get(difficulty, "sort_to_uniqueness")
+        rtype = self._rng.choice(list(self._REDUCTIONS.keys()))
         red = self._REDUCTIONS[rtype]
         return f"show {red['to']} is at least as hard as {red['from']}"
 
@@ -1857,7 +1857,7 @@ class ReductionGenerator(StepGenerator):
         Returns:
             Tuple of (problem_statement, solution_data).
         """
-        rtype = self._REDUCTION_TYPES.get(difficulty, "sort_to_uniqueness")
+        rtype = self._rng.choice(list(self._REDUCTIONS.keys()))
         red = self._REDUCTIONS[rtype]
         problem = f"reduce {red['from']} to {red['to']}"
         return problem, {
@@ -1966,7 +1966,7 @@ class LearningBoundGenerator(StepGenerator):
         Returns:
             Tuple of (problem_spec, solution_data).
         """
-        btype = self._BOUND_TYPES.get(difficulty, "hoeffding")
+        btype = self._rng.choice(list(self._BOUND_TYPES.values()))
         builder = self._get_builder(btype)
         return builder(difficulty)
 
@@ -2209,7 +2209,7 @@ class HypothesisDesignGenerator(StepGenerator):
         Returns:
             Tuple of (hypothesis_string, solution_data).
         """
-        etype = self._EXPERIMENT_TYPES.get(difficulty, "learning_rate")
+        etype = self._rng.choice(list(self._EXPERIMENTS.keys()))
         exp = self._EXPERIMENTS[etype]
         problem = f"hypothesis: {exp['hypothesis']}"
         return problem, dict(exp)
@@ -2316,7 +2316,7 @@ class MetaPatternGenerator(StepGenerator):
         Returns:
             Tuple of (error_list, solution_data).
         """
-        ptype = self._PATTERN_TYPES.get(difficulty, "constant_offset")
+        ptype = self._rng.choice(list(self._PATTERN_TYPES.values()))
         builder = self._get_builder(ptype)
         return builder(difficulty)
 
@@ -2570,7 +2570,7 @@ class RepresentationChoiceGenerator(StepGenerator):
         Returns:
             Tuple of (problem_description, solution_data).
         """
-        ctype = self._CHOICE_TYPES.get(difficulty, "array_vs_list")
+        ctype = self._rng.choice(list(self._CHOICES.keys()))
         choice = self._CHOICES[ctype]
         problem = f"problem: {choice['problem']}"
         return problem, dict(choice)
@@ -2686,7 +2686,7 @@ class TrainingDiagnosisGenerator(StepGenerator):
         Returns:
             Tuple of (loss_curve, solution_data).
         """
-        pathology = self._PATHOLOGY_TYPES.get(difficulty, "plateau")
+        pathology = self._rng.choice(list(self._PATHOLOGY_TYPES.values()))
         builder = self._get_builder(pathology)
         return builder()
 
@@ -2894,7 +2894,7 @@ class FailureModeClassificationGenerator(StepGenerator):
         Returns:
             Tuple of (predictions_and_truth, solution_data).
         """
-        etype = self._ERROR_TYPES.get(difficulty, "systematic_constant")
+        etype = self._rng.choice(list(self._ERROR_TYPES.values()))
         builder = self._get_builder(etype)
         return builder()
 
@@ -3119,7 +3119,7 @@ class DataPrescriptionGenerator(StepGenerator):
         Returns:
             Tuple of (weakness_description, solution_data).
         """
-        wtype = self._WEAKNESS_TYPES.get(difficulty, "carry_arithmetic")
+        wtype = self._rng.choice(list(self._WEAKNESSES.keys()))
         prescription = self._PRESCRIPTIONS[wtype]
         problem = f"weakness: {prescription['weakness']}"
         return problem, dict(prescription)
@@ -3377,7 +3377,7 @@ class EmergentCapabilityGenerator(StepGenerator):
         Returns:
             Tuple of (observations, solution_data).
         """
-        stype = self._SCALE_TYPES.get(difficulty, "power_law")
+        stype = self._rng.choice(list(self._SCALE_TYPES.values()))
         capability = self._rng.choice(self._CAPABILITIES)
         builder = self._get_builder(stype)
         return builder(capability)
