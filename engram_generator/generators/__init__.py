@@ -21,3 +21,8 @@ from engram_generator.generators import math_extended  # noqa: F401
 from engram_generator.generators import ai_ml  # noqa: F401
 from engram_generator.generators import expanded  # noqa: F401
 from engram_generator.generators import expanded_upper  # noqa: F401
+from engram_generator.generators import geometry  # noqa: F401
+from engram_generator.generators import logic  # noqa: F401
+from engram_generator.generators import sets_strings  # noqa: F401
+from engram_generator.generators import trig_measure_seq  # noqa: F401
+from engram_generator.generators import applied_domains  # noqa: F401
