@@ -27,3 +27,4 @@ from engram_generator.generators import sets_strings  # noqa: F401
 from engram_generator.generators import trig_measure_seq  # noqa: F401
 from engram_generator.generators import applied_domains  # noqa: F401
 from engram_generator.generators import graph_ds_recursion  # noqa: F401
+from engram_generator.generators import bridge_deep  # noqa: F401
