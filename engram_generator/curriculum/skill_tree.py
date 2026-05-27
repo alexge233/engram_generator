@@ -82,21 +82,54 @@ class SkillTree:
     def update(self, accuracy_per_task: dict[str, float]) -> dict[str, str]:
         """Update skill tree state based on validation accuracy.
 
+        Processes accuracy for all unlocked tasks, then propagates
+        unlocks from newly mastered prerequisites. Repeats until no
+        more tasks unlock, handling same-tier prerequisite chains
+        (e.g. multiplication T1 -> area_rectangle T1 -> area_triangle T1).
+
         Args:
-            accuracy_per_task: Dict of task_name → accuracy from last epoch.
+            accuracy_per_task: Dict of task_name to accuracy from last epoch.
 
         Returns:
             Dict of events that occurred (for logging):
-            task_name → event string ("escalated", "mastered", "unlocked").
+            task_name to event string ("escalated", "mastered", "unlocked").
         """
         events: dict[str, str] = {}
 
+        self._apply_accuracy(accuracy_per_task, events)
+
+        while True:
+            newly_unlocked = self._check_unlocks()
+            if not newly_unlocked:
+                break
+            for task_name in newly_unlocked:
+                events[task_name] = "unlocked"
+            pending = {n: accuracy_per_task[n] for n in newly_unlocked
+                       if n in accuracy_per_task}
+            if not pending:
+                break
+            self._apply_accuracy(pending, events)
+
+        return events
+
+    def _apply_accuracy(self, accuracy_per_task: dict[str, float],
+                        events: dict[str, str]) -> None:
+        """Process accuracy updates for unlocked tasks.
+
+        Escalates difficulty and marks mastery where thresholds are met.
+        Only processes tasks that are currently unlocked.
+
+        Args:
+            accuracy_per_task: Dict of task_name to accuracy.
+            events: Events dict to update in place.
+        """
         for task_name, accuracy in accuracy_per_task.items():
             if task_name not in self._nodes:
                 continue
 
             node = self._nodes[task_name]
-            node.accuracy_history.append(accuracy)
+            if accuracy not in [h for h in node.accuracy_history[-1:]]:
+                node.accuracy_history.append(accuracy)
 
             if not node.unlocked:
                 continue
@@ -109,12 +142,6 @@ class SkillTree:
             if accuracy >= node.mastery_threshold and not node.mastered:
                 node.mastered = True
                 events[task_name] = "mastered"
-
-        newly_unlocked = self._check_unlocks()
-        for task_name in newly_unlocked:
-            events[task_name] = "unlocked"
-
-        return events
 
     def _check_unlocks(self) -> list[str]:
         """Check if any locked tasks can be unlocked based on mastered prerequisites.
