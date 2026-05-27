@@ -53,9 +53,9 @@ Generators in tiers 7-10 use curated scenario pools (e.g., proof verification, a
 
 - **Human-written** with a known correct answer
 - **Deterministically selected** via seeded random number generator
-- **Not generative** — the generator picks from a fixed pool, it does not compose novel problems
+- **Not generative**  -- the generator picks from a fixed pool, it does not compose novel problems
 
-These generators now use parameterised templates with randomised coefficients, variable names, and numeric context — typically producing 50-500 unique outputs per 500 samples. Two generators (`derangement`, `fibonacci`) remain capped at 12-23 unique outputs due to the 512-character target length limit.
+These generators now use parameterised templates with randomised coefficients, variable names, and numeric context  -- typically producing 50-500 unique outputs per 500 samples. Two generators (`derangement`, `fibonacci`) remain capped at 12-23 unique outputs due to the 512-character target length limit.
 
 ## Verification Strategies
 
@@ -71,7 +71,7 @@ Every `Sample` object contains:
 | `difficulty` | Numeric difficulty level |
 | `task_name` | Which generator produced this sample |
 
-The `answer` field is **always computed by the same code path** that generates the problem. There is no separate "answer key" — the answer is a byproduct of problem construction.
+The `answer` field is **always computed by the same code path** that generates the problem. There is no separate "answer key"  -- the answer is a byproduct of problem construction.
 
 ### Automated Validation
 
@@ -120,7 +120,7 @@ Some generators include cross-checks:
 1. **Hallucinated answers**: Impossible. Answers are computed, not generated.
 2. **Incorrect arithmetic**: Python's integer arithmetic is exact. Float operations are IEEE 754 compliant.
 3. **Seed sensitivity**: All randomness uses `random.Random(seed)` instances, not the global random state. Generators are fully reproducible.
-4. **Data leakage**: No test set exists in the generator — all data is synthetic and infinite. The model cannot memorize specific problems because new problems are generated every epoch.
+4. **Data leakage**: No test set exists in the generator -- all data is procedurally generated (~333M unique combinations) and re-seeded each epoch. Repeat rates are below 1% at typical training volumes (2.56M samples per run).
 
 ## Reproducibility
 
