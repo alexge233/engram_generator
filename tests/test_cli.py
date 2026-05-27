@@ -46,7 +46,7 @@ class TestCLIValidation:
         """Verify CLI prints skill tree structure."""
         result = self._run_cli(["--skill-tree"])
         assert result.returncode == 0
-        assert "TIER" in result.stdout
+        assert "Tier" in result.stdout
         assert "addition" in result.stdout
 
     def test_verbose_output(self) -> None:

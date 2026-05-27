@@ -47,7 +47,7 @@ class TestCLIMainFunction:
         monkeypatch.setattr(sys, "argv", ["prog", "--skill-tree"])
         cli.main()
         captured = capsys.readouterr()
-        assert "TIER" in captured.out
+        assert "Tier" in captured.out
 
     def test_main_no_args_exits(self, monkeypatch) -> None:
         """Call main() with no arguments — should exit with code 1."""

@@ -209,5 +209,5 @@ class TestCLIDirectImport:
         from engram_generator.cli import _print_skill_tree
         _print_skill_tree()
         captured = capsys.readouterr()
-        assert "TIER" in captured.out
+        assert "Tier" in captured.out
         assert "addition" in captured.out

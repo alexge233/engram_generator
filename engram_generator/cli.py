@@ -377,26 +377,77 @@ def main() -> None:
 
 
 def _print_skill_tree() -> None:
-    """Print the full skill tree with rich formatting."""
+    """Print the skill tree as a rich dependency graph.
+
+    Shows each tier as a branch, with tasks nested under the
+    prerequisite that unlocks them. Root tasks (no prerequisites
+    within the same tier) appear directly under the tier branch.
+    Tasks with cross-tier prerequisites show their parent.
+    """
     from rich.console import Console
-    from rich.table import Table
     from rich.tree import Tree
 
     console = Console()
     generators = get_all_generators()
     by_tier: dict[int, list] = {}
+    name_to_tier: dict[str, int] = {}
     for gen in generators:
         by_tier.setdefault(gen.tier, []).append(gen)
+        name_to_tier[gen.task_name] = gen.tier
 
-    tree = Tree("[bold]Engram Curriculum[/bold]")
+    tier_labels = {
+        0: "Basic arithmetic",
+        1: "Operations",
+        2: "Intermediate",
+        3: "Advanced",
+        4: "Applied",
+        5: "Expert",
+        6: "Graduate",
+        7: "Meta-reasoning",
+        8: "Creative",
+        9: "Research",
+        10: "Self-architecture",
+    }
+
+    root = Tree("[bold]Engram Curriculum[/bold] (373 tasks)")
 
     for tier in sorted(by_tier.keys()):
-        tier_branch = tree.add(
-            f"[bold blue]TIER {tier}[/bold blue] ({len(by_tier[tier])} tasks)"
+        label = tier_labels.get(tier, "")
+        tier_branch = root.add(
+            f"[bold blue]Tier {tier}[/bold blue] -- {label} "
+            f"[dim]({len(by_tier[tier])} tasks)[/dim]"
         )
-        for gen in sorted(by_tier[tier], key=lambda g: g.task_name):
-            prereqs = ", ".join(gen.prerequisites) if gen.prerequisites else "none"
-            tier_branch.add(f"{gen.task_name} [dim][prereqs: {prereqs}][/dim]")
 
-    console.print(tree)
-    console.print(f"\n[bold]Total: {len(generators)} tasks across {len(by_tier)} tiers[/bold]")
+        tier_tasks = sorted(by_tier[tier], key=lambda g: g.task_name)
+        tier_names = {g.task_name for g in tier_tasks}
+
+        children: dict[str, list] = {}
+        roots: list = []
+        for gen in tier_tasks:
+            same_tier_prereqs = [
+                p for p in gen.prerequisites if p in tier_names
+            ]
+            if same_tier_prereqs:
+                parent = same_tier_prereqs[0]
+                children.setdefault(parent, []).append(gen)
+            else:
+                roots.append(gen)
+
+        def _add_subtree(branch, gen):
+            prereq_str = ""
+            cross_tier = [
+                p for p in gen.prerequisites
+                if p in name_to_tier and name_to_tier[p] < gen.tier
+            ]
+            if cross_tier:
+                prereq_str = f" [dim]<- {', '.join(cross_tier)}[/dim]"
+
+            node = branch.add(f"[green]{gen.task_name}[/green]{prereq_str}")
+            for child in children.get(gen.task_name, []):
+                _add_subtree(node, child)
+
+        for gen in roots:
+            _add_subtree(tier_branch, gen)
+
+    console.print(root)
+    console.print()
