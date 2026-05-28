@@ -60,17 +60,21 @@ class MolarMassGenerator(ChemistryGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "molar_mass"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate molar mass"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -123,17 +127,21 @@ class BalancingEquationGenerator(ChemistryGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "balancing_equation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "balance chemical equation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -210,17 +218,21 @@ class StoichiometryGenerator(ChemistryGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "stoichiometry"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["molar_mass", "multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "stoichiometry calculation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -252,17 +264,21 @@ class MolarityGenerator(ChemistryGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "molarity"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["molar_mass", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate molarity"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -299,17 +315,21 @@ class PhCalculationGenerator(ChemistryGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "ph_calculation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 5
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["logarithm"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate pH"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

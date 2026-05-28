@@ -13,17 +13,21 @@ class BoundingBoxGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "bounding_box"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["subtraction"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find bounding box"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -55,17 +59,21 @@ class PointInPolygonGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "point_in_polygon"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["line_intersection"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "point in polygon test"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -110,17 +118,21 @@ class ConvexHullCheckGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "convex_hull_check"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["polygon_area"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check convexity"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

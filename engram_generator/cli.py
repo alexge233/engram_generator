@@ -100,6 +100,26 @@ def validate_task(task_name: str, num_samples: int, difficulty: int | None,
     return results
 
 
+def _check_length(idx: int, label: str, actual: int, limit: int,
+                   results: dict, ok_key: str) -> None:
+    """Check a token length against a limit and update results.
+
+    Args:
+        idx: Sample index.
+        label: Field name for error messages.
+        actual: Actual token count.
+        limit: Maximum allowed.
+        results: Results dict to update.
+        ok_key: Key to increment on pass.
+    """
+    if actual <= limit:
+        results[ok_key] += 1
+    else:
+        results["errors"].append(
+            f"Sample {idx}: {label} too long ({actual} > {limit})"
+        )
+
+
 def _validate_one_sample(idx: int, sample, tokenizer: CharTokenizer,
                          max_input: int, max_target: int,
                          results: dict, verbose: bool) -> None:
@@ -114,11 +134,8 @@ def _validate_one_sample(idx: int, sample, tokenizer: CharTokenizer,
         results: Results dict to update in place.
         verbose: Whether to print sample details.
     """
-    input_ids = tokenizer.encode(sample.input_text)
-    target_ids = tokenizer.encode(sample.target_text)
-
-    input_len = len(input_ids)
-    target_len = len(target_ids)
+    input_len = len(tokenizer.encode(sample.input_text))
+    target_len = len(tokenizer.encode(sample.target_text))
     results["max_input_tokens"] = max(results["max_input_tokens"], input_len)
     results["max_target_tokens"] = max(results["max_target_tokens"], target_len)
 
@@ -128,20 +145,8 @@ def _validate_one_sample(idx: int, sample, tokenizer: CharTokenizer,
         results["errors"].append(f"Sample {idx}: missing <step> in target")
 
     results["tokens_ok"] += 1
-
-    if input_len <= max_input:
-        results["input_length_ok"] += 1
-    else:
-        results["errors"].append(
-            f"Sample {idx}: input too long ({input_len} > {max_input})"
-        )
-
-    if target_len <= max_target:
-        results["target_length_ok"] += 1
-    else:
-        results["errors"].append(
-            f"Sample {idx}: target too long ({target_len} > {max_target})"
-        )
+    _check_length(idx, "input", input_len, max_input, results, "input_length_ok")
+    _check_length(idx, "target", target_len, max_target, results, "target_length_ok")
 
     if sample.steps:
         results["has_steps"] += 1
@@ -194,11 +199,39 @@ def print_results(results: dict) -> bool:
     return passed
 
 
+def _render_sample_panel(console, sample, index: int, total: int,
+                         tok: "CharTokenizer", renderer, width: int) -> None:
+    """Render a single sample as a rich panel.
+
+    Args:
+        console: Rich console instance.
+        sample: Sample to render.
+        index: Sample index (0-based).
+        total: Total number of samples.
+        tok: Tokenizer for counting tokens.
+        renderer: LatexRenderer instance.
+        width: Terminal width.
+    """
+    from rich.panel import Panel
+    from rich.table import Table
+
+    table = Table(show_header=False, box=None, padding=(0, 2), width=width - 4)
+    table.add_column("Label", style="bold cyan", width=12)
+    table.add_column("Content")
+
+    table.add_row("Input", sample.input_text)
+    table.add_row("Problem", renderer.render(sample.problem).strip())
+    for j, step in enumerate(sample.steps):
+        table.add_row(f"Step {j + 1}", renderer.render(step).strip())
+    table.add_row("Answer", f"[bold green]{renderer.render_horizontal(sample.answer).strip()}[/bold green]")
+    table.add_row("Tokens", f"in={len(tok.encode(sample.input_text))} out={len(tok.encode(sample.target_text))} d={sample.difficulty}")
+
+    console.print(Panel(table, title=f"Sample {index + 1}/{total}", border_style="dim", width=width))
+
+
 def preview_task(task_name: str, num_samples: int,
                  difficulty: int | None) -> None:
     """Render samples with rich panels showing input, steps, and answer.
-
-    LaTeX notation is converted to Unicode for terminal display.
 
     Args:
         task_name: Task to preview.
@@ -207,12 +240,10 @@ def preview_task(task_name: str, num_samples: int,
     """
     from rich.console import Console
     from rich.panel import Panel
-    from rich.table import Table
-
     from engram_generator.latex_render import LatexRenderer
 
     console = Console(width=Console().size.width)
-    term_width = console.size.width
+    width = console.size.width
     gen = get_generator(task_name)
     tok = CharTokenizer()
     renderer = LatexRenderer()
@@ -220,47 +251,16 @@ def preview_task(task_name: str, num_samples: int,
     if difficulty is not None:
         gen.set_difficulty(difficulty, difficulty)
 
-    samples = gen.generate(num_samples)
-
     console.print()
     console.print(Panel(
         f"[bold]{task_name}[/bold] | Tier {gen.tier} | "
         f"Prerequisites: {', '.join(gen.prerequisites) or 'none'}",
-        title="Generator Preview",
-        border_style="blue",
-        width=term_width,
+        title="Generator Preview", border_style="blue", width=width,
     ))
+    _print_atom_panel(console, task_name, width)
 
-    _print_atom_panel(console, task_name, term_width)
-
-    for i, sample in enumerate(samples):
-        input_tokens = len(tok.encode(sample.input_text))
-        target_tokens = len(tok.encode(sample.target_text))
-
-        table = Table(show_header=False, box=None, padding=(0, 2),
-                      width=term_width - 4)
-        table.add_column("Label", style="bold cyan", width=12)
-        table.add_column("Content")
-
-        table.add_row("Input", sample.input_text)
-        table.add_row("Problem", renderer.render(sample.problem).strip())
-
-        for j, step in enumerate(sample.steps):
-            table.add_row(f"Step {j + 1}", renderer.render(step).strip())
-
-        answer_rendered = renderer.render_horizontal(sample.answer).strip()
-        table.add_row("Answer", f"[bold green]{answer_rendered}[/bold green]")
-        table.add_row(
-            "Tokens",
-            f"in={input_tokens} out={target_tokens} d={sample.difficulty}",
-        )
-
-        console.print(Panel(
-            table,
-            title=f"Sample {i + 1}/{num_samples}",
-            border_style="dim",
-            width=term_width,
-        ))
+    for i, sample in enumerate(gen.generate(num_samples)):
+        _render_sample_panel(console, sample, i, num_samples, tok, renderer, width)
 
 
 def _print_atom_panel(console, task_name: str,
@@ -377,77 +377,90 @@ def main() -> None:
 
 
 def _print_skill_tree() -> None:
-    """Print the skill tree as a rich dependency graph.
-
-    Shows each tier as a branch, with tasks nested under the
-    prerequisite that unlocks them. Root tasks (no prerequisites
-    within the same tier) appear directly under the tier branch.
-    Tasks with cross-tier prerequisites show their parent.
-    """
+    """Print the skill tree as a rich dependency graph."""
     from rich.console import Console
     from rich.tree import Tree
 
     console = Console()
     generators = get_all_generators()
+    by_tier, name_to_tier = _group_by_tier(generators)
+
+    root = Tree("[bold]Engram Curriculum[/bold] (373 tasks)")
+    for tier in sorted(by_tier.keys()):
+        _add_tier_branch(root, tier, by_tier[tier], name_to_tier)
+
+    console.print(root)
+    console.print()
+
+
+_TIER_LABELS = {
+    0: "Basic arithmetic", 1: "Operations", 2: "Intermediate",
+    3: "Advanced", 4: "Applied", 5: "Expert", 6: "Graduate",
+    7: "Meta-reasoning", 8: "Creative", 9: "Research",
+    10: "Self-architecture",
+}
+
+
+def _group_by_tier(generators: list) -> tuple[dict, dict]:
+    """Group generators by tier and build a name-to-tier map.
+
+    Args:
+        generators: All registered generators.
+
+    Returns:
+        Tuple of (by_tier dict, name_to_tier dict).
+    """
     by_tier: dict[int, list] = {}
     name_to_tier: dict[str, int] = {}
     for gen in generators:
         by_tier.setdefault(gen.tier, []).append(gen)
         name_to_tier[gen.task_name] = gen.tier
+    return by_tier, name_to_tier
 
-    tier_labels = {
-        0: "Basic arithmetic",
-        1: "Operations",
-        2: "Intermediate",
-        3: "Advanced",
-        4: "Applied",
-        5: "Expert",
-        6: "Graduate",
-        7: "Meta-reasoning",
-        8: "Creative",
-        9: "Research",
-        10: "Self-architecture",
-    }
 
-    root = Tree("[bold]Engram Curriculum[/bold] (373 tasks)")
+def _add_tier_branch(root, tier: int, tier_gens: list,
+                     name_to_tier: dict) -> None:
+    """Add a tier branch with dependency-nested tasks to the tree.
 
-    for tier in sorted(by_tier.keys()):
-        label = tier_labels.get(tier, "")
-        tier_branch = root.add(
-            f"[bold blue]Tier {tier}[/bold blue] -- {label} "
-            f"[dim]({len(by_tier[tier])} tasks)[/dim]"
-        )
+    Args:
+        root: Rich Tree root node.
+        tier: Tier number.
+        tier_gens: Generators in this tier.
+        name_to_tier: Global name-to-tier mapping.
+    """
+    label = _TIER_LABELS.get(tier, "")
+    branch = root.add(
+        f"[bold blue]Tier {tier}[/bold blue] -- {label} "
+        f"[dim]({len(tier_gens)} tasks)[/dim]"
+    )
+    tasks = sorted(tier_gens, key=lambda g: g.task_name)
+    tier_names = {g.task_name for g in tasks}
 
-        tier_tasks = sorted(by_tier[tier], key=lambda g: g.task_name)
-        tier_names = {g.task_name for g in tier_tasks}
+    children: dict[str, list] = {}
+    roots: list = []
+    for gen in tasks:
+        same = [p for p in gen.prerequisites if p in tier_names]
+        if same:
+            children.setdefault(same[0], []).append(gen)
+        else:
+            roots.append(gen)
 
-        children: dict[str, list] = {}
-        roots: list = []
-        for gen in tier_tasks:
-            same_tier_prereqs = [
-                p for p in gen.prerequisites if p in tier_names
-            ]
-            if same_tier_prereqs:
-                parent = same_tier_prereqs[0]
-                children.setdefault(parent, []).append(gen)
-            else:
-                roots.append(gen)
+    for gen in roots:
+        _add_subtree(branch, gen, children, name_to_tier)
 
-        def _add_subtree(branch, gen):
-            prereq_str = ""
-            cross_tier = [
-                p for p in gen.prerequisites
-                if p in name_to_tier and name_to_tier[p] < gen.tier
-            ]
-            if cross_tier:
-                prereq_str = f" [dim]<- {', '.join(cross_tier)}[/dim]"
 
-            node = branch.add(f"[green]{gen.task_name}[/green]{prereq_str}")
-            for child in children.get(gen.task_name, []):
-                _add_subtree(node, child)
+def _add_subtree(branch, gen, children: dict, name_to_tier: dict) -> None:
+    """Recursively add a task and its same-tier dependents.
 
-        for gen in roots:
-            _add_subtree(tier_branch, gen)
-
-    console.print(root)
-    console.print()
+    Args:
+        branch: Parent tree node.
+        gen: Generator to add.
+        children: Same-tier dependency map.
+        name_to_tier: Global name-to-tier mapping.
+    """
+    cross = [p for p in gen.prerequisites
+             if p in name_to_tier and name_to_tier[p] < gen.tier]
+    suffix = f" [dim]<- {', '.join(cross)}[/dim]" if cross else ""
+    node = branch.add(f"[green]{gen.task_name}[/green]{suffix}")
+    for child in children.get(gen.task_name, []):
+        _add_subtree(node, child, children, name_to_tier)

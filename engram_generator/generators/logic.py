@@ -15,13 +15,16 @@ class BooleanEvalGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "boolean_eval"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate boolean expression"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -68,13 +71,16 @@ class TruthTableGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "truth_table"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate truth table row"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -117,16 +123,142 @@ class TruthTableGenerator(StepGenerator):
 class NegationGenerator(StepGenerator):
     """Apply NOT and De Morgan's laws."""
 
+    _MODES = ["simple", "demorgan_and", "demorgan_or", "double",
+              "triple", "nested_demorgan", "demorgan_chain"]
+    _VAR_POOL = ["P", "Q", "R", "S", "T", "U", "V", "W"]
+
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "negation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "negate expression"
+
+    def _select_mode(self, difficulty: int) -> tuple[str, list[str], bool, bool]:
+        """Select negation mode and randomise variables/values.
+
+        Args:
+            difficulty: Controls expression complexity.
+
+        Returns:
+            Tuple of (mode, chosen_vars, a_value, b_value).
+        """
+        chosen = self._rng.sample(
+            self._VAR_POOL, min(2 + difficulty, len(self._VAR_POOL)))
+        a = self._rng.choice([True, False])
+        b = self._rng.choice([True, False])
+        mode = self._rng.choice(
+            self._MODES[:min(len(self._MODES), 3 + difficulty)])
+        return mode, chosen, a, b
+
+    def _evaluate_simple(self, v1: str, a: bool) -> tuple[str, bool, list[str]]:
+        """Evaluate simple NOT and double/triple negation modes.
+
+        Args:
+            v1: Variable name.
+            a: Truth value of the variable.
+
+        Returns:
+            Tuple of (expression, result, steps).
+        """
+        result = not a
+        return f"NOT {v1} (where {v1}={a})", result, [f"NOT {a} = {result}"]
+
+    def _evaluate_demorgan(self, mode: str, v1: str, v2: str,
+                           a: bool, b: bool) -> tuple[str, bool, list[str]]:
+        """Evaluate De Morgan's law modes (AND/OR).
+
+        Args:
+            mode: Either 'demorgan_and' or 'demorgan_or'.
+            v1: First variable name.
+            v2: Second variable name.
+            a: Truth value of v1.
+            b: Truth value of v2.
+
+        Returns:
+            Tuple of (expression, result, steps).
+        """
+        if mode == "demorgan_and":
+            op, neg_op = "AND", "OR"
+            result = (not a) or (not b)
+        else:
+            op, neg_op = "OR", "AND"
+            result = (not a) and (not b)
+        expr = f"NOT ({v1} {op} {v2}) (where {v1}={a}, {v2}={b})"
+        steps = [
+            f"De Morgan: NOT ({v1} {op} {v2}) = (NOT {v1}) {neg_op} (NOT {v2})",
+            f"(NOT {a}) {neg_op} (NOT {b}) = {not a} {neg_op} {not b} = {result}",
+        ]
+        return expr, result, steps
+
+    def _evaluate_multi_negation(self, mode: str, v1: str,
+                                 a: bool) -> tuple[str, bool, list[str]]:
+        """Evaluate double or triple negation.
+
+        Args:
+            mode: Either 'double' or 'triple'.
+            v1: Variable name.
+            a: Truth value.
+
+        Returns:
+            Tuple of (expression, result, steps).
+        """
+        if mode == "double":
+            return (f"NOT (NOT {v1}) (where {v1}={a})", a,
+                    [f"double negation: NOT (NOT {a}) = {a}"])
+        result = not a
+        return (f"NOT (NOT (NOT {v1})) (where {v1}={a})", result, [
+            f"inner: NOT {a} = {not a}",
+            f"middle: NOT {not a} = {a}",
+            f"outer: NOT {a} = {not a}",
+        ])
+
+    def _evaluate_nested(self, mode: str, chosen: list[str],
+                         a: bool, b: bool) -> tuple[str, bool, list[str]]:
+        """Evaluate nested De Morgan or De Morgan chain modes.
+
+        Args:
+            mode: Either 'nested_demorgan' or 'demorgan_chain'.
+            chosen: List of chosen variable names.
+            a: Truth value of first variable.
+            b: Truth value of second variable.
+
+        Returns:
+            Tuple of (expression, result, steps).
+        """
+        v1, v2 = chosen[0], chosen[1]
+        c = self._rng.choice([True, False])
+        v3 = chosen[2] if len(chosen) > 2 else "R"
+        if mode == "nested_demorgan":
+            inner = ((not a) and b) or c
+            result = not inner
+            expr = (f"NOT (NOT {v1} AND {v2} OR {v3}) "
+                    f"(where {v1}={a}, {v2}={b}, {v3}={c})")
+            steps = [
+                f"NOT {v1} = {not a}",
+                f"({not a} AND {b}) = {(not a) and b}",
+                f"({(not a) and b} OR {c}) = {inner}",
+                f"NOT {inner} = {result}",
+            ]
+        else:  # demorgan_chain
+            left = (not a) or (not b)
+            right = not c
+            result = left or right
+            expr = (f"NOT ({v1} AND {v2}) OR NOT {v3} "
+                    f"(where {v1}={a}, {v2}={b}, {v3}={c})")
+            steps = [
+                f"De Morgan: NOT ({a} AND {b}) = {not a} OR {not b} = {left}",
+                f"NOT {c} = {right}",
+                f"{left} OR {right} = {result}",
+            ]
+        return expr, result, steps
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a negation problem with randomised variable names.
@@ -137,72 +269,17 @@ class NegationGenerator(StepGenerator):
         Returns:
             Tuple of (expression_string, solution_data).
         """
-        var_pool = ["P", "Q", "R", "S", "T", "U", "V", "W"]
-        chosen = self._rng.sample(var_pool, min(2 + difficulty, len(var_pool)))
+        mode, chosen, a, b = self._select_mode(difficulty)
         v1, v2 = chosen[0], chosen[1]
-        a = self._rng.choice([True, False])
-        b = self._rng.choice([True, False])
-
-        modes = ["simple", "demorgan_and", "demorgan_or", "double",
-                 "triple", "nested_demorgan", "demorgan_chain"]
-        mode = self._rng.choice(modes[:min(len(modes), 3 + difficulty)])
 
         if mode == "simple":
-            expr = f"NOT {v1} (where {v1}={a})"
-            result = not a
-            steps = [f"NOT {a} = {result}"]
-        elif mode == "demorgan_and":
-            expr = f"NOT ({v1} AND {v2}) (where {v1}={a}, {v2}={b})"
-            result = (not a) or (not b)
-            steps = [
-                f"De Morgan: NOT ({v1} AND {v2}) = (NOT {v1}) OR (NOT {v2})",
-                f"(NOT {a}) OR (NOT {b}) = {not a} OR {not b} = {result}",
-            ]
-        elif mode == "demorgan_or":
-            expr = f"NOT ({v1} OR {v2}) (where {v1}={a}, {v2}={b})"
-            result = (not a) and (not b)
-            steps = [
-                f"De Morgan: NOT ({v1} OR {v2}) = (NOT {v1}) AND (NOT {v2})",
-                f"(NOT {a}) AND (NOT {b}) = {not a} AND {not b} = {result}",
-            ]
-        elif mode == "double":
-            expr = f"NOT (NOT {v1}) (where {v1}={a})"
-            result = a
-            steps = [f"double negation: NOT (NOT {a}) = {a}"]
-        elif mode == "triple":
-            expr = f"NOT (NOT (NOT {v1})) (where {v1}={a})"
-            result = not a
-            steps = [
-                f"inner: NOT {a} = {not a}",
-                f"middle: NOT {not a} = {a}",
-                f"outer: NOT {a} = {not a}",
-            ]
-        elif mode == "nested_demorgan":
-            c = self._rng.choice([True, False])
-            v3 = chosen[2] if len(chosen) > 2 else "R"
-            expr = (f"NOT (NOT {v1} AND {v2} OR {v3}) "
-                    f"(where {v1}={a}, {v2}={b}, {v3}={c})")
-            inner = ((not a) and b) or c
-            result = not inner
-            steps = [
-                f"NOT {v1} = {not a}",
-                f"({not a} AND {b}) = {(not a) and b}",
-                f"({(not a) and b} OR {c}) = {inner}",
-                f"NOT {inner} = {result}",
-            ]
-        else:  # demorgan_chain
-            c = self._rng.choice([True, False])
-            v3 = chosen[2] if len(chosen) > 2 else "R"
-            expr = (f"NOT ({v1} AND {v2}) OR NOT {v3} "
-                    f"(where {v1}={a}, {v2}={b}, {v3}={c})")
-            left = (not a) or (not b)
-            right = not c
-            result = left or right
-            steps = [
-                f"De Morgan: NOT ({a} AND {b}) = {not a} OR {not b} = {left}",
-                f"NOT {c} = {right}",
-                f"{left} OR {right} = {result}",
-            ]
+            expr, result, steps = self._evaluate_simple(v1, a)
+        elif mode in ("demorgan_and", "demorgan_or"):
+            expr, result, steps = self._evaluate_demorgan(mode, v1, v2, a, b)
+        elif mode in ("double", "triple"):
+            expr, result, steps = self._evaluate_multi_negation(mode, v1, a)
+        else:
+            expr, result, steps = self._evaluate_nested(mode, chosen, a, b)
 
         return expr, {"result": result, "steps": steps}
 
@@ -219,20 +296,130 @@ class NegationGenerator(StepGenerator):
 class ImplicationGenerator(StepGenerator):
     """Evaluate material implication p -> q."""
 
+    _VAR_POOL = ["P", "Q", "R", "S", "T", "U", "V", "W"]
+    _MODES = ["simple", "and", "or", "chain", "nested"]
+
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "implication"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["boolean_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate implication"
+
+    def _select_mode(self, difficulty: int) -> tuple[str, list[str], bool, bool, bool]:
+        """Select implication mode and randomise variables/values.
+
+        Args:
+            difficulty: Controls mode pool size.
+
+        Returns:
+            Tuple of (mode, chosen_vars, p, q, imp_result).
+        """
+        chosen = self._rng.sample(
+            self._VAR_POOL, min(3 + difficulty, len(self._VAR_POOL)))
+        p = self._rng.choice([True, False])
+        q = self._rng.choice([True, False])
+        # Consume one rng call to match original two-call pattern
+        self._rng.choice(self._MODES)
+        mode = self._rng.choice(
+            self._MODES[:min(len(self._MODES), 2 + difficulty)])
+        return mode, chosen, p, q, (not p) or q
+
+    def _evaluate_simple(self, vp: str, vq: str, p: bool, q: bool,
+                         imp: bool) -> tuple[str, dict]:
+        """Evaluate simple p -> q implication.
+
+        Args:
+            vp: Name for variable p.
+            vq: Name for variable q.
+            p: Truth value of p.
+            q: Truth value of q.
+            imp: Pre-computed implication result.
+
+        Returns:
+            Tuple of (expression, solution_data).
+        """
+        expr = f"{vp} -> {vq} (where {vp}={p}, {vq}={q})"
+        return expr, {"steps": [
+            f"{vp} -> {vq} = (NOT {vp}) OR {vq}",
+            f"(NOT {p}) OR {q} = {not p} OR {q} = {imp}",
+        ], "result": imp}
+
+    def _evaluate_binary(self, mode: str, vp: str, vq: str, vr: str,
+                         p: bool, q: bool, imp: bool) -> tuple[str, dict]:
+        """Evaluate (p -> q) AND/OR r implication.
+
+        Args:
+            mode: Either 'and' or 'or'.
+            vp: Name for variable p.
+            vq: Name for variable q.
+            vr: Name for variable r.
+            p: Truth value of p.
+            q: Truth value of q.
+            imp: Pre-computed p -> q result.
+
+        Returns:
+            Tuple of (expression, solution_data).
+        """
+        r = self._rng.choice([True, False])
+        op = "AND" if mode == "and" else "OR"
+        result = (imp and r) if mode == "and" else (imp or r)
+        expr = f"({vp} -> {vq}) {op} {vr} (where {vp}={p}, {vq}={q}, {vr}={r})"
+        return expr, {"steps": [
+            f"{vp} -> {vq} = (NOT {p}) OR {q} = {imp}",
+            f"{imp} {op} {r} = {result}",
+        ], "result": result}
+
+    def _evaluate_compound(self, mode: str, vp: str, vq: str, vr: str,
+                           p: bool, q: bool,
+                           imp: bool) -> tuple[str, dict]:
+        """Evaluate chain or nested implication.
+
+        Args:
+            mode: Either 'chain' or 'nested'.
+            vp: Name for variable p.
+            vq: Name for variable q.
+            vr: Name for variable r.
+            p: Truth value of p.
+            q: Truth value of q.
+            imp: Pre-computed p -> q result.
+
+        Returns:
+            Tuple of (expression, solution_data).
+        """
+        r = self._rng.choice([True, False])
+        imp2 = (not q) or r
+        if mode == "chain":
+            result = (not imp) or imp2
+            expr = (f"({vp} -> {vq}) -> ({vq} -> {vr}) "
+                    f"(where {vp}={p}, {vq}={q}, {vr}={r})")
+            steps = [
+                f"{vp} -> {vq} = {imp}",
+                f"{vq} -> {vr} = (NOT {q}) OR {r} = {imp2}",
+                f"{imp} -> {imp2} = (NOT {imp}) OR {imp2} = {result}",
+            ]
+        else:  # nested
+            inner = imp2
+            result = (not p) or inner
+            expr = (f"{vp} -> ({vq} -> {vr}) "
+                    f"(where {vp}={p}, {vq}={q}, {vr}={r})")
+            steps = [
+                f"{vq} -> {vr} = (NOT {q}) OR {r} = {inner}",
+                f"{vp} -> {inner} = (NOT {p}) OR {inner} = {result}",
+            ]
+        return expr, {"steps": steps, "result": result}
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate an implication evaluation with randomised variable names.
@@ -243,65 +430,14 @@ class ImplicationGenerator(StepGenerator):
         Returns:
             Tuple of (expression_string, solution_data).
         """
-        var_pool = ["P", "Q", "R", "S", "T", "U", "V", "W"]
-        chosen = self._rng.sample(var_pool, min(3 + difficulty, len(var_pool)))
+        mode, chosen, p, q, imp = self._select_mode(difficulty)
         vp, vq = chosen[0], chosen[1]
-        p = self._rng.choice([True, False])
-        q = self._rng.choice([True, False])
-        imp_result = (not p) or q
-
-        mode = self._rng.choice(["simple", "and", "or", "chain", "nested"])
-        mode_idx = ["simple", "and", "or", "chain", "nested"]
-        mode = self._rng.choice(mode_idx[:min(len(mode_idx), 2 + difficulty)])
 
         if mode == "simple":
-            expr = f"{vp} -> {vq} (where {vp}={p}, {vq}={q})"
-            result = imp_result
-            return expr, {"steps": [
-                f"{vp} -> {vq} = (NOT {vp}) OR {vq}",
-                f"(NOT {p}) OR {q} = {not p} OR {q} = {result}",
-            ], "result": result}
-        elif mode == "and":
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            result = imp_result and r
-            expr = f"({vp} -> {vq}) AND {vr} (where {vp}={p}, {vq}={q}, {vr}={r})"
-            return expr, {"steps": [
-                f"{vp} -> {vq} = (NOT {p}) OR {q} = {imp_result}",
-                f"{imp_result} AND {r} = {result}",
-            ], "result": result}
-        elif mode == "or":
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            result = imp_result or r
-            expr = f"({vp} -> {vq}) OR {vr} (where {vp}={p}, {vq}={q}, {vr}={r})"
-            return expr, {"steps": [
-                f"{vp} -> {vq} = (NOT {p}) OR {q} = {imp_result}",
-                f"{imp_result} OR {r} = {result}",
-            ], "result": result}
-        elif mode == "chain":
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            imp2 = (not q) or r
-            result = (not imp_result) or imp2
-            expr = (f"({vp} -> {vq}) -> ({vq} -> {vr}) "
-                    f"(where {vp}={p}, {vq}={q}, {vr}={r})")
-            return expr, {"steps": [
-                f"{vp} -> {vq} = {imp_result}",
-                f"{vq} -> {vr} = (NOT {q}) OR {r} = {imp2}",
-                f"{imp_result} -> {imp2} = (NOT {imp_result}) OR {imp2} = {result}",
-            ], "result": result}
-        else:  # nested
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            inner = (not q) or r
-            result = (not p) or inner
-            expr = (f"{vp} -> ({vq} -> {vr}) "
-                    f"(where {vp}={p}, {vq}={q}, {vr}={r})")
-            return expr, {"steps": [
-                f"{vq} -> {vr} = (NOT {q}) OR {r} = {inner}",
-                f"{vp} -> {inner} = (NOT {p}) OR {inner} = {result}",
-            ], "result": result}
+            return self._evaluate_simple(vp, vq, p, q, imp)
+        if mode in ("and", "or"):
+            return self._evaluate_binary(mode, vp, vq, chosen[2], p, q, imp)
+        return self._evaluate_compound(mode, vp, vq, chosen[2], p, q, imp)
 
     def _create_steps(self, sd: dict) -> list[str]:
         return sd["steps"]
@@ -314,20 +450,132 @@ class ImplicationGenerator(StepGenerator):
 class BiconditionalGenerator(StepGenerator):
     """Evaluate biconditional p <-> q."""
 
+    _VAR_POOL = ["P", "Q", "R", "S", "T", "U", "V", "W"]
+    _MODES = ["simple", "and", "or", "chain", "nested", "xor_equiv"]
+
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "biconditional"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["implication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate biconditional"
+
+    def _select_mode(self, difficulty: int) -> tuple[str, list[str], bool, bool, bool]:
+        """Select biconditional mode and randomise variables/values.
+
+        Args:
+            difficulty: Controls mode pool size.
+
+        Returns:
+            Tuple of (mode, chosen_vars, p, q, biconditional_result).
+        """
+        chosen = self._rng.sample(
+            self._VAR_POOL, min(3 + difficulty, len(self._VAR_POOL)))
+        p = self._rng.choice([True, False])
+        q = self._rng.choice([True, False])
+        mode = self._rng.choice(
+            self._MODES[:min(len(self._MODES), 2 + difficulty)])
+        return mode, chosen, p, q, (p == q)
+
+    def _evaluate_simple(self, vp: str, vq: str, p: bool, q: bool,
+                         bic: bool) -> tuple[str, bool, list[str]]:
+        """Evaluate simple biconditional p <-> q.
+
+        Args:
+            vp: Name for variable p.
+            vq: Name for variable q.
+            p: Truth value of p.
+            q: Truth value of q.
+            bic: Pre-computed biconditional result.
+
+        Returns:
+            Tuple of (expression, result, steps).
+        """
+        pq, qp = (not p) or q, (not q) or p
+        return (f"{vp} <-> {vq} (where {vp}={p}, {vq}={q})", bic, [
+            f"{vp} <-> {vq} = ({vp} -> {vq}) AND ({vq} -> {vp})",
+            f"{vp} -> {vq} = {pq}",
+            f"{vq} -> {vp} = {qp}",
+            f"{pq} AND {qp} = {bic}",
+        ])
+
+    def _evaluate_binary(self, mode: str, vp: str, vq: str, vr: str,
+                         p: bool, q: bool,
+                         bic: bool) -> tuple[str, bool, list[str]]:
+        """Evaluate (p <-> q) AND/OR r.
+
+        Args:
+            mode: Either 'and' or 'or'.
+            vp: Name for variable p.
+            vq: Name for variable q.
+            vr: Name for variable r.
+            p: Truth value of p.
+            q: Truth value of q.
+            bic: Pre-computed biconditional result.
+
+        Returns:
+            Tuple of (expression, result, steps).
+        """
+        r = self._rng.choice([True, False])
+        op = "AND" if mode == "and" else "OR"
+        result = (bic and r) if mode == "and" else (bic or r)
+        expr = f"({vp} <-> {vq}) {op} {vr} (where {vp}={p}, {vq}={q}, {vr}={r})"
+        return expr, result, [
+            f"{vp} <-> {vq} = {bic}",
+            f"{bic} {op} {r} = {result}",
+        ]
+
+    def _evaluate_compound(self, mode: str, vp: str, vq: str, vr: str,
+                           p: bool, q: bool,
+                           bic: bool) -> tuple[str, bool, list[str]]:
+        """Evaluate chain, nested, or xor_equiv biconditional.
+
+        Args:
+            mode: One of 'chain', 'nested', or 'xor_equiv'.
+            vp: Name for variable p.
+            vq: Name for variable q.
+            vr: Name for variable r.
+            p: Truth value of p.
+            q: Truth value of q.
+            bic: Pre-computed biconditional result.
+
+        Returns:
+            Tuple of (expression, result, steps).
+        """
+        if mode == "xor_equiv":
+            result = not bic
+            return (f"NOT ({vp} <-> {vq}) (where {vp}={p}, {vq}={q})", result,
+                    [f"{vp} <-> {vq} = {bic}", f"NOT {bic} = {result} (XOR)"])
+        r = self._rng.choice([True, False])
+        if mode == "chain":
+            bic2 = (q == r)
+            result = bic and bic2
+            expr = (f"({vp} <-> {vq}) AND ({vq} <-> {vr}) "
+                    f"(where {vp}={p}, {vq}={q}, {vr}={r})")
+            return expr, result, [
+                f"{vp} <-> {vq} = {bic}", f"{vq} <-> {vr} = {bic2}",
+                f"{bic} AND {bic2} = {result}",
+            ]
+        # nested
+        inner = (q == r)
+        result = (p == inner)
+        expr = (f"{vp} <-> ({vq} <-> {vr}) "
+                f"(where {vp}={p}, {vq}={q}, {vr}={r})")
+        return expr, result, [
+            f"{vq} <-> {vr} = {inner}", f"{vp} <-> {inner} = {result}",
+        ]
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a biconditional evaluation with randomised variables.
@@ -338,75 +586,18 @@ class BiconditionalGenerator(StepGenerator):
         Returns:
             Tuple of (expression_string, solution_data).
         """
-        var_pool = ["P", "Q", "R", "S", "T", "U", "V", "W"]
-        chosen = self._rng.sample(var_pool, min(3 + difficulty, len(var_pool)))
+        mode, chosen, p, q, bic = self._select_mode(difficulty)
         vp, vq = chosen[0], chosen[1]
-        p = self._rng.choice([True, False])
-        q = self._rng.choice([True, False])
-        bic = (p == q)
-
-        modes = ["simple", "and", "or", "chain", "nested", "xor_equiv"]
-        mode = self._rng.choice(modes[:min(len(modes), 2 + difficulty)])
 
         if mode == "simple":
-            expr = f"{vp} <-> {vq} (where {vp}={p}, {vq}={q})"
-            result = bic
-            pq = (not p) or q
-            qp = (not q) or p
-            steps = [
-                f"{vp} <-> {vq} = ({vp} -> {vq}) AND ({vq} -> {vp})",
-                f"{vp} -> {vq} = {pq}",
-                f"{vq} -> {vp} = {qp}",
-                f"{pq} AND {qp} = {result}",
-            ]
-        elif mode == "and":
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            result = bic and r
-            expr = f"({vp} <-> {vq}) AND {vr} (where {vp}={p}, {vq}={q}, {vr}={r})"
-            steps = [
-                f"{vp} <-> {vq} = {bic}",
-                f"{bic} AND {r} = {result}",
-            ]
-        elif mode == "or":
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            result = bic or r
-            expr = f"({vp} <-> {vq}) OR {vr} (where {vp}={p}, {vq}={q}, {vr}={r})"
-            steps = [
-                f"{vp} <-> {vq} = {bic}",
-                f"{bic} OR {r} = {result}",
-            ]
-        elif mode == "chain":
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            bic2 = (q == r)
-            result = bic and bic2
-            expr = (f"({vp} <-> {vq}) AND ({vq} <-> {vr}) "
-                    f"(where {vp}={p}, {vq}={q}, {vr}={r})")
-            steps = [
-                f"{vp} <-> {vq} = {bic}",
-                f"{vq} <-> {vr} = {bic2}",
-                f"{bic} AND {bic2} = {result}",
-            ]
-        elif mode == "nested":
-            vr = chosen[2]
-            r = self._rng.choice([True, False])
-            inner = (q == r)
-            result = (p == inner)
-            expr = (f"{vp} <-> ({vq} <-> {vr}) "
-                    f"(where {vp}={p}, {vq}={q}, {vr}={r})")
-            steps = [
-                f"{vq} <-> {vr} = {inner}",
-                f"{vp} <-> {inner} = {result}",
-            ]
-        else:  # xor_equiv
-            result = not bic  # XOR is NOT biconditional
-            expr = f"NOT ({vp} <-> {vq}) (where {vp}={p}, {vq}={q})"
-            steps = [
-                f"{vp} <-> {vq} = {bic}",
-                f"NOT {bic} = {result} (XOR)",
-            ]
+            expr, result, steps = self._evaluate_simple(vp, vq, p, q, bic)
+        elif mode in ("and", "or"):
+            expr, result, steps = self._evaluate_binary(
+                mode, vp, vq, chosen[2], p, q, bic)
+        else:
+            expr, result, steps = self._evaluate_compound(
+                mode, vp, vq, chosen[2] if len(chosen) > 2 else "R",
+                p, q, bic)
 
         return expr, {"result": result, "steps": steps}
 
@@ -421,20 +612,71 @@ class BiconditionalGenerator(StepGenerator):
 class SyllogismGenerator(StepGenerator):
     """Determine if a syllogism is valid and state the conclusion."""
 
+    _SUPERS = [
+        "animals", "vertebrates", "organisms", "creatures", "beings",
+        "celestial bodies", "shapes", "numbers", "structures",
+        "vehicles", "instruments", "compounds", "elements",
+        "languages", "beverages", "materials", "devices",
+    ]
+    _MIDS = [
+        "mammals", "birds", "reptiles", "fish", "insects",
+        "planets", "polygons", "integers", "primes",
+        "cars", "guitars", "metals", "gases",
+        "scripts", "teas", "alloys", "sensors",
+    ]
+    _SUBS = [
+        "dogs", "eagles", "cobras", "salmon", "ants",
+        "gas giants", "squares", "twin primes", "Mersenne primes",
+        "sedans", "bass guitars", "iron", "helium",
+        "kanji", "oolongs", "steel", "thermometers",
+    ]
+    _FORMS = ["barbara", "invalid_middle", "celarent", "invalid_neg"]
+
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "syllogism"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["implication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate syllogism"
+
+    def _build_syllogism(self, form: str, A: str, B: str,
+                         C: str) -> tuple[str, str, str, bool, str]:
+        """Build premise pair, conclusion, and validity for a given form.
+
+        Args:
+            form: Syllogism form name.
+            A: Middle term category.
+            B: Super term category.
+            C: Sub term category.
+
+        Returns:
+            Tuple of (premise1, premise2, conclusion, valid, reason).
+        """
+        if form == "barbara":
+            return (f"all {A} are {B}", f"all {C} are {A}",
+                    f"all {C} are {B}", True,
+                    "follows by transitivity (Barbara)")
+        if form == "celarent":
+            return (f"no {A} are {B}", f"all {C} are {A}",
+                    f"no {C} are {B}", True, "follows by Celarent")
+        if form == "invalid_middle":
+            return (f"all {A} are {B}", f"all {C} are {B}",
+                    f"all {C} are {A}", False, "undistributed middle")
+        # invalid_neg
+        return (f"no {A} are {B}", f"some {C} are {A}",
+                f"all {C} are {B}", False, "illicit negative")
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a syllogism with randomised category triples.
@@ -445,58 +687,15 @@ class SyllogismGenerator(StepGenerator):
         Returns:
             Tuple of (premise_string, solution_data).
         """
-        # Large pools for random category construction
-        supers = [
-            "animals", "vertebrates", "organisms", "creatures", "beings",
-            "celestial bodies", "shapes", "numbers", "structures",
-            "vehicles", "instruments", "compounds", "elements",
-            "languages", "beverages", "materials", "devices",
-        ]
-        mids = [
-            "mammals", "birds", "reptiles", "fish", "insects",
-            "planets", "polygons", "integers", "primes",
-            "cars", "guitars", "metals", "gases",
-            "scripts", "teas", "alloys", "sensors",
-        ]
-        subs = [
-            "dogs", "eagles", "cobras", "salmon", "ants",
-            "gas giants", "squares", "twin primes", "Mersenne primes",
-            "sedans", "bass guitars", "iron", "helium",
-            "kanji", "oolongs", "steel", "thermometers",
-        ]
+        idx_a = self._rng.randint(0, len(self._MIDS) - 1)
+        idx_b = self._rng.randint(0, len(self._SUPERS) - 1)
+        idx_c = self._rng.randint(0, len(self._SUBS) - 1)
+        A, B, C = self._MIDS[idx_a], self._SUPERS[idx_b], self._SUBS[idx_c]
 
-        idx_a = self._rng.randint(0, len(mids) - 1)
-        idx_b = self._rng.randint(0, len(supers) - 1)
-        idx_c = self._rng.randint(0, len(subs) - 1)
-        A, B, C = mids[idx_a], supers[idx_b], subs[idx_c]
-
-        forms = ["barbara", "invalid_middle", "celarent", "invalid_neg"]
-        form = self._rng.choice(forms[:min(len(forms), 2 + difficulty)])
-
-        if form == "barbara":
-            p1 = f"all {A} are {B}"
-            p2 = f"all {C} are {A}"
-            conclusion = f"all {C} are {B}"
-            valid = True
-            reason = "follows by transitivity (Barbara)"
-        elif form == "celarent":
-            p1 = f"no {A} are {B}"
-            p2 = f"all {C} are {A}"
-            conclusion = f"no {C} are {B}"
-            valid = True
-            reason = "follows by Celarent"
-        elif form == "invalid_middle":
-            p1 = f"all {A} are {B}"
-            p2 = f"all {C} are {B}"
-            conclusion = f"all {C} are {A}"
-            valid = False
-            reason = "undistributed middle"
-        else:  # invalid_neg
-            p1 = f"no {A} are {B}"
-            p2 = f"some {C} are {A}"
-            conclusion = f"all {C} are {B}"
-            valid = False
-            reason = "illicit negative"
+        form = self._rng.choice(
+            self._FORMS[:min(len(self._FORMS), 2 + difficulty)])
+        p1, p2, conclusion, valid, reason = self._build_syllogism(
+            form, A, B, C)
 
         return (
             f"premise 1: {p1}; premise 2: {p2}; conclusion: {conclusion}",
@@ -522,38 +721,39 @@ class SyllogismGenerator(StepGenerator):
 class PropositionalEvalGenerator(StepGenerator):
     """Evaluate compound propositional formulas."""
 
+    _VAR_POOL = ["p", "q", "r", "s", "t", "u"]
+
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "propositional_eval"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["boolean_eval", "implication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate propositional formula"
 
-    def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a compound propositional formula with randomised variables.
+    def _build_formulas(self, v: list[str],
+                        vals: dict[str, bool]) -> list[tuple[str, bool]]:
+        """Build the 3-variable formula pool.
 
         Args:
-            difficulty: Controls formula complexity.
+            v: List of chosen variable names (at least 3).
+            vals: Mapping from variable name to truth value.
 
         Returns:
-            Tuple of (formula_string, solution_data).
+            List of (formula_string, result) tuples.
         """
-        var_pool = ["p", "q", "r", "s", "t", "u"]
-        n_vars = min(3 + difficulty // 2, len(var_pool))
-        chosen = self._rng.sample(var_pool, n_vars)
-        vals = {v: self._rng.choice([True, False]) for v in chosen}
-        v = chosen  # shorthand
-
-        # Build formulas dynamically based on chosen variables
-        formulas = [
+        return [
             (f"({v[0]} -> {v[1]}) AND {v[2]}",
              (not vals[v[0]] or vals[v[1]]) and vals[v[2]]),
             (f"{v[0]} OR ({v[1]} -> {v[2]})",
@@ -576,21 +776,50 @@ class PropositionalEvalGenerator(StepGenerator):
              (not vals[v[0]]) and ((not vals[v[1]]) or vals[v[2]])),
         ]
 
-        if n_vars >= 4:
-            formulas.extend([
-                (f"({v[0]} -> {v[1]}) AND ({v[2]} -> {v[3]})",
-                 (not vals[v[0]] or vals[v[1]]) and (not vals[v[2]] or vals[v[3]])),
-                (f"({v[0]} AND {v[1]}) -> ({v[2]} OR {v[3]})",
-                 not (vals[v[0]] and vals[v[1]]) or (vals[v[2]] or vals[v[3]])),
-                (f"({v[0]} <-> {v[1]}) AND ({v[2]} <-> {v[3]})",
-                 (vals[v[0]] == vals[v[1]]) and (vals[v[2]] == vals[v[3]])),
-            ])
+    def _build_4var_formulas(self, v: list[str],
+                             vals: dict[str, bool]) -> list[tuple[str, bool]]:
+        """Build the 4-variable formula extensions.
 
-        formula, result = self._rng.choice(formulas[:min(len(formulas), difficulty + 4)])
+        Args:
+            v: List of chosen variable names (at least 4).
+            vals: Mapping from variable name to truth value.
+
+        Returns:
+            List of (formula_string, result) tuples.
+        """
+        return [
+            (f"({v[0]} -> {v[1]}) AND ({v[2]} -> {v[3]})",
+             (not vals[v[0]] or vals[v[1]]) and (not vals[v[2]] or vals[v[3]])),
+            (f"({v[0]} AND {v[1]}) -> ({v[2]} OR {v[3]})",
+             not (vals[v[0]] and vals[v[1]]) or (vals[v[2]] or vals[v[3]])),
+            (f"({v[0]} <-> {v[1]}) AND ({v[2]} <-> {v[3]})",
+             (vals[v[0]] == vals[v[1]]) and (vals[v[2]] == vals[v[3]])),
+        ]
+
+    def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a compound propositional formula with randomised variables.
+
+        Args:
+            difficulty: Controls formula complexity.
+
+        Returns:
+            Tuple of (formula_string, solution_data).
+        """
+        n_vars = min(3 + difficulty // 2, len(self._VAR_POOL))
+        chosen = self._rng.sample(self._VAR_POOL, n_vars)
+        vals = {v: self._rng.choice([True, False]) for v in chosen}
+
+        formulas = self._build_formulas(chosen, vals)
+        if n_vars >= 4:
+            formulas.extend(self._build_4var_formulas(chosen, vals))
+
+        formula, result = self._rng.choice(
+            formulas[:min(len(formulas), difficulty + 4)])
         assign = ", ".join(f"{k}={vals[k]}" for k in chosen)
         return (
             f"{formula} where {assign}",
-            {"formula": formula, "vals": vals, "vars": chosen, "result": result},
+            {"formula": formula, "vals": vals, "vars": chosen,
+             "result": result},
         )
 
     def _create_steps(self, sd: dict) -> list[str]:
@@ -609,36 +838,39 @@ class PropositionalEvalGenerator(StepGenerator):
 class LogicalEquivalenceGenerator(StepGenerator):
     """Determine if two formulas are logically equivalent."""
 
+    _VAR_POOL = ["p", "q", "r", "s", "t", "u"]
+
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "logical_equivalence"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["propositional_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check logical equivalence"
 
-    def _create_problem(self, difficulty: int) -> tuple[str, dict]:
-        """Generate a logical equivalence check with randomised variable names.
+    def _build_2var_templates(self, a: str,
+                              b: str) -> list[tuple[str, str, bool, str]]:
+        """Build equivalence templates using two variables.
 
         Args:
-            difficulty: Controls pool of equivalence patterns.
+            a: First variable name.
+            b: Second variable name.
 
         Returns:
-            Tuple of (question_string, solution_data).
+            List of (formula1, formula2, equivalent, law_name) tuples.
         """
-        var_pool = ["p", "q", "r", "s", "t", "u"]
-        chosen = self._rng.sample(var_pool, min(3 + difficulty // 2, len(var_pool)))
-        a, b = chosen[0], chosen[1]
-
-        # Template pairs use placeholders A, B, C
-        templates = [
+        return [
             (f"{a} -> {b}", f"NOT {a} OR {b}", True, "material implication"),
             (f"NOT ({a} AND {b})", f"NOT {a} OR NOT {b}", True, "De Morgan"),
             (f"NOT ({a} OR {b})", f"NOT {a} AND NOT {b}", True, "De Morgan"),
@@ -654,25 +886,51 @@ class LogicalEquivalenceGenerator(StepGenerator):
             (f"{a} -> {b}", f"{a} AND NOT {b}", False, "negation of conditional"),
         ]
 
+    def _build_3var_templates(self, a: str, b: str,
+                              c: str) -> list[tuple[str, str, bool, str]]:
+        """Build equivalence templates using three variables.
+
+        Args:
+            a: First variable name.
+            b: Second variable name.
+            c: Third variable name.
+
+        Returns:
+            List of (formula1, formula2, equivalent, law_name) tuples.
+        """
+        return [
+            (f"{a} AND ({b} OR {c})", f"({a} AND {b}) OR ({a} AND {c})",
+             True, "distribution"),
+            (f"{a} OR ({b} AND {c})", f"({a} OR {b}) AND ({a} OR {c})",
+             True, "distribution"),
+            (f"({a} -> {b}) AND ({a} -> {c})", f"{a} -> ({b} AND {c})",
+             True, "conjunction of consequents"),
+            (f"({a} -> {c}) AND ({b} -> {c})", f"({a} OR {b}) -> {c}",
+             True, "combination of antecedents"),
+            (f"NOT ({a} AND {b} AND {c})",
+             f"NOT {a} OR NOT {b} OR NOT {c}",
+             True, "generalised De Morgan"),
+        ]
+
+    def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        """Generate a logical equivalence check with randomised variable names.
+
+        Args:
+            difficulty: Controls pool of equivalence patterns.
+
+        Returns:
+            Tuple of (question_string, solution_data).
+        """
+        chosen = self._rng.sample(
+            self._VAR_POOL, min(3 + difficulty // 2, len(self._VAR_POOL)))
+        a, b = chosen[0], chosen[1]
+
+        templates = self._build_2var_templates(a, b)
         if len(chosen) >= 3:
-            c = chosen[2]
-            templates.extend([
-                (f"{a} AND ({b} OR {c})", f"({a} AND {b}) OR ({a} AND {c})",
-                 True, "distribution"),
-                (f"{a} OR ({b} AND {c})", f"({a} OR {b}) AND ({a} OR {c})",
-                 True, "distribution"),
-                (f"({a} -> {b}) AND ({a} -> {c})", f"{a} -> ({b} AND {c})",
-                 True, "conjunction of consequents"),
-                (f"({a} -> {c}) AND ({b} -> {c})", f"({a} OR {b}) -> {c}",
-                 True, "combination of antecedents"),
-                (f"NOT ({a} AND {b} AND {c})",
-                 f"NOT {a} OR NOT {b} OR NOT {c}",
-                 True, "generalised De Morgan"),
-            ])
+            templates.extend(self._build_3var_templates(a, b, chosen[2]))
 
         f1, f2, equiv, law = self._rng.choice(
-            templates[:min(len(templates), difficulty + 5)]
-        )
+            templates[:min(len(templates), difficulty + 5)])
         return (
             f"is '{f1}' equivalent to '{f2}'?",
             {"f1": f1, "f2": f2, "equiv": equiv, "law": law},
@@ -696,17 +954,21 @@ class ContrapositiveGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "contrapositive"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["implication", "negation"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find the contrapositive"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -774,17 +1036,21 @@ class DeductionChainGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "deduction_chain"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["propositional_eval", "contrapositive"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "follow deduction chain"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -853,17 +1119,21 @@ class QuantifierEvalGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "quantifier_eval"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["boolean_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate quantified statement"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -913,17 +1183,21 @@ class KnightsKnavesGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "knights_knaves"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["deduction_chain"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "solve knights and knaves"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -969,17 +1243,21 @@ class LogicalPuzzleGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "logical_puzzle"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["deduction_chain"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "solve logic puzzle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

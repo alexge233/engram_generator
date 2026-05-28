@@ -11,13 +11,16 @@ class SetMembershipGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "set_membership"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check set membership"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -43,13 +46,16 @@ class SetUnionGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "set_union"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find union of sets"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -75,13 +81,16 @@ class SetIntersectionGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "set_intersection"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find intersection of sets"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -109,17 +118,21 @@ class SetDifferenceGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "set_difference"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["set_membership"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find set difference"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -147,17 +160,21 @@ class SetSubsetGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "set_subset"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["set_membership"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check subset relation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -190,17 +207,21 @@ class SetCardinalityGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "set_cardinality"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["set_union", "set_intersection"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find cardinality"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -232,17 +253,21 @@ class PowerSetGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "power_set"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["set_subset"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find power set"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -266,17 +291,21 @@ class CartesianProductGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "cartesian_product"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["set_cardinality"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find Cartesian product size"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -302,17 +331,21 @@ class VennDiagramCountGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "venn_diagram_count"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["set_cardinality"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "count using inclusion-exclusion"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

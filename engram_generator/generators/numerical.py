@@ -13,17 +13,21 @@ class BisectionMethodGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "bisection_method"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "bisection method step"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -59,17 +63,21 @@ class TrapezoidalRuleGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "trapezoidal_rule"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["area_rectangle"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "trapezoidal rule"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -108,17 +116,21 @@ class EulerMethodODEGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "euler_method_ode"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["derivative"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "Euler method step"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -159,17 +171,21 @@ class NumericalDerivativeGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "numerical_derivative"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["derivative"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "numerical derivative"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

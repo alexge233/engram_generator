@@ -13,17 +13,21 @@ class DFAAcceptGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "dfa_accept"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["boolean_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "simulate DFA"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -63,17 +67,21 @@ class NFASimulateGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "nfa_simulate"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["dfa_accept", "set_union"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "simulate NFA"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -116,17 +124,21 @@ class TuringMachineStepGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "turing_machine_step"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["dfa_accept"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "execute Turing machine steps"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

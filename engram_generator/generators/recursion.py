@@ -13,17 +13,21 @@ class RecursiveTraceGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "recursive_trace"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "trace recursive function"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -76,17 +80,21 @@ class BaseCaseIdentifyGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "base_case_identify"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["recursive_trace"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "identify base case"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -148,17 +156,21 @@ class CallStackDepthGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "call_stack_depth"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["recursive_trace"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find call stack depth"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -193,24 +205,84 @@ class MemoisationGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "memoisation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["recursive_trace", "fibonacci"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "count calls with memoisation"
+
+    @staticmethod
+    def _count_fibonacci(n: int) -> int:
+        """Count naive recursive calls for fibonacci(n).
+
+        Args:
+            n: Input to fibonacci.
+
+        Returns:
+            Total number of recursive calls without memoisation.
+        """
+        counter = [0]
+        def fib(k: int) -> int:
+            counter[0] += 1
+            if k <= 1:
+                return k
+            return fib(k - 1) + fib(k - 2)
+        fib(n)
+        return counter[0]
+
+    @staticmethod
+    def _count_tribonacci(n: int) -> int:
+        """Count naive recursive calls for tribonacci(n).
+
+        Args:
+            n: Input to tribonacci.
+
+        Returns:
+            Total number of recursive calls without memoisation.
+        """
+        counter = [0]
+        def trib(k: int) -> int:
+            counter[0] += 1
+            if k <= 0:
+                return 0
+            if k <= 2:
+                return 1
+            return trib(k - 1) + trib(k - 2) + trib(k - 3)
+        trib(n)
+        return counter[0]
+
+    @staticmethod
+    def _count_staircase(n: int) -> int:
+        """Count naive recursive calls for staircase(n).
+
+        Args:
+            n: Input to staircase.
+
+        Returns:
+            Total number of recursive calls without memoisation.
+        """
+        counter = [0]
+        def stair(k: int) -> int:
+            counter[0] += 1
+            if k <= 1:
+                return 1
+            return stair(k - 1) + stair(k - 2)
+        stair(n)
+        return counter[0]
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a memoisation comparison problem.
-
-        Randomly picks from several DP-style recurrences and compares
-        call counts with and without memoisation.
 
         Args:
             difficulty: Controls the input size n.
@@ -222,49 +294,20 @@ class MemoisationGenerator(StepGenerator):
         n = self._rng.randint(5, min(18, 5 + 3 * difficulty))
 
         if fn_type == "fibonacci":
-            without_memo = [0]
-            def fib_count(k):
-                without_memo[0] += 1
-                if k <= 1:
-                    return k
-                return fib_count(k - 1) + fib_count(k - 2)
-            fib_count(n)
-            naive_calls = without_memo[0]
-            memo_calls = n + 1
+            naive_calls = self._count_fibonacci(n)
             desc = f"fibonacci({n})"
         elif fn_type == "tribonacci":
-            without_memo = [0]
-            def trib_count(k):
-                without_memo[0] += 1
-                if k <= 0:
-                    return 0
-                if k <= 2:
-                    return 1
-                return trib_count(k - 1) + trib_count(k - 2) + trib_count(k - 3)
-            # Limit n to avoid explosion
-            tn = min(n, 14)
-            trib_count(tn)
-            naive_calls = without_memo[0]
-            memo_calls = tn + 1
-            n = tn
+            n = min(n, 14)
+            naive_calls = self._count_tribonacci(n)
             desc = f"tribonacci({n})"
         else:
-            # Staircase: f(n) = f(n-1) + f(n-2), same as fib but different framing
             steps = self._rng.randint(1, 3)
-            without_memo = [0]
-            def stair_count(k):
-                without_memo[0] += 1
-                if k <= 1:
-                    return 1
-                return stair_count(k - 1) + stair_count(k - 2)
-            stair_count(n)
-            naive_calls = without_memo[0]
-            memo_calls = n + 1
+            naive_calls = self._count_staircase(n)
             desc = f"staircase({n}, steps={steps})"
 
         return (
             f"{desc}: calls without vs with memo",
-            {"n": n, "naive": naive_calls, "memo": memo_calls, "fn_type": fn_type},
+            {"n": n, "naive": naive_calls, "memo": n + 1, "fn_type": fn_type},
         )
 
     def _create_steps(self, sd: dict) -> list[str]:

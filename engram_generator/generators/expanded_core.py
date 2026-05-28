@@ -19,13 +19,16 @@ class CountingGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "counting"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return f"count items in list"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -50,13 +53,16 @@ class ComparisonGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "comparison"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compare two numbers"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -86,13 +92,16 @@ class RoundingGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "rounding"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "round number"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -117,10 +126,12 @@ class AbsoluteValueGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "absolute_value"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
@@ -129,6 +140,7 @@ class AbsoluteValueGenerator(StepGenerator):
         return ["subtraction"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute absolute value"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -155,10 +167,12 @@ class FloorCeilGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "floor_ceil"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
@@ -167,6 +181,7 @@ class FloorCeilGenerator(StepGenerator):
         return ["division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute floor or ceiling"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -194,17 +209,21 @@ class PercentageGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "percentage"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute percentage"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -231,10 +250,12 @@ class SequenceNextGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "sequence_next"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
@@ -243,6 +264,7 @@ class SequenceNextGenerator(StepGenerator):
         return ["addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find next in sequence"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -282,17 +304,21 @@ class FractionArithmeticGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "fraction_arithmetic"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute fraction arithmetic"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -331,17 +357,21 @@ class SquareRootGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "square_root"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute square root"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -371,17 +401,21 @@ class PrimeFactorisationGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "prime_factorisation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find prime factorisation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -413,17 +447,21 @@ class ArithmeticMeanGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "arithmetic_mean"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute arithmetic mean"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -453,17 +491,21 @@ class WeightedSumGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "weighted_sum"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute weighted sum"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -495,17 +537,21 @@ class SummationGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "summation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition", "exponentiation"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute summation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -542,17 +588,21 @@ class ProductNotationGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "product_notation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute product"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -622,17 +672,21 @@ class MatrixAddGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "matrix_add"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "add two matrices"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -643,6 +697,7 @@ class MatrixAddGenerator(StepGenerator):
         result = [[a[i][j] + b[i][j] for j in range(size)] for i in range(size)]
 
         def fmt(m):
+            """Format the term as a string."""
             rows = [" & ".join(str(x) for x in row) for row in m]
             return "\\begin{pmatrix}" + " \\\\ ".join(rows) + "\\end{pmatrix}"
 
@@ -667,17 +722,21 @@ class MatrixScalarGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "matrix_scalar"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "multiply matrix by scalar"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -709,17 +768,21 @@ class DotProductGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "dot_product"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute dot product"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -749,17 +812,21 @@ class MatrixTransposeGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "matrix_transpose"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["matrix_add"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "transpose matrix"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -787,17 +854,21 @@ class TraceGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "matrix_trace"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute matrix trace"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -825,17 +896,21 @@ class NormGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "vector_norm"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["exponentiation", "addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute vector norm"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -875,17 +950,21 @@ class CrossProductGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "cross_product"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "subtraction"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute cross product"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -920,17 +999,21 @@ class ImplicitDiffGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "implicit_diff"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 5
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["derivative", "chain_rule"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "implicit differentiation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -958,17 +1041,21 @@ class AreaUnderCurveGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "area_under_curve"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 5
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["definite_integral"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute area under curve"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -1005,17 +1092,21 @@ class RelatedRatesGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "related_rates"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 5
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["chain_rule", "derivative"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "solve related rates"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -1042,17 +1133,21 @@ class LogarithmGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "logarithm"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 5
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["exponentiation"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate logarithm"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -1085,17 +1180,21 @@ class PartialDerivativeMultiGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "partial_deriv_multi"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 6
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["partial_derivative", "product_rule"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute partial derivatives"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -1123,17 +1222,21 @@ class MatrixPowerGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "matrix_power"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 6
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["matrix_multiply"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute matrix power"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -1141,6 +1244,7 @@ class MatrixPowerGenerator(StepGenerator):
         power = min(2 + difficulty // 3, 4)
 
         def mat_mul(a, b):
+            """Multiply two matrices."""
             return [
                 [a[0][0]*b[0][0] + a[0][1]*b[1][0], a[0][0]*b[0][1] + a[0][1]*b[1][1]],
                 [a[1][0]*b[0][0] + a[1][1]*b[1][0], a[1][0]*b[0][1] + a[1][1]*b[1][1]],
@@ -1171,17 +1275,21 @@ class SystemODEGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "system_ode"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 6
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["diff_equation", "system_equations"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "solve ODE system"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -1220,17 +1328,21 @@ class ConvolutionMatrixGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "conv_2d"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 6
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["matrix_multiply", "convolution"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "apply 2D convolution"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

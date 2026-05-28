@@ -166,6 +166,40 @@ class FalseClaimPool:
         41
     """
 
+    _CLAIMS_DATA: list[tuple] = [
+        ("n^2 + n + 41 is prime for all n >= 0", 41,
+         41 * 41 + 41 + 41, "41^2+41+41 = 41*43 = 1763, which is composite"),
+        ("2^p - 1 is prime for all prime p", 11,
+         2047, "2^11-1 = 2047 = 23*89, which is composite"),
+        ("n^2 - n + 41 is prime for all n >= 1", 41,
+         41 * 41 - 41 + 41, "41^2-41+41 = 41^2 = 1681, which is composite"),
+        ("all odd numbers are prime", 9,
+         9, "9 = 3*3, which is composite"),
+        ("n! + 1 is prime for all n >= 1", 5,
+         121, "5!+1 = 121 = 11*11, which is composite"),
+        ("2^(2^n) + 1 is prime for all n >= 0", 5,
+         4294967297, "2^32+1 = 4294967297 = 641*6700417, which is composite"),
+        ("the sum of two irrational numbers is always irrational",
+         "sqrt(2) and -sqrt(2)", 0,
+         "sqrt(2) + (-sqrt(2)) = 0, which is rational"),
+        ("if a^2 divides b^2 then a divides b",
+         "a=6, b=12 fails for a=6,b=10",
+         "6^2=36 does not divide 10^2=100",
+         "36 does not divide 100; 100/36 is not an integer"),
+        ("every continuous function is differentiable",
+         "f(x) = |x| at x=0", "undefined",
+         "|x| is continuous everywhere but not differentiable at x=0 (sharp corner)"),
+        ("if f(n) = O(g(n)) then g(n) = O(f(n))",
+         "f(n)=n, g(n)=n^2", "n = O(n^2) but n^2 != O(n)",
+         "O is not symmetric: n grows slower than n^2"),
+        ("every group of order n is cyclic",
+         "n=4, Klein four-group", "V4 = {e, a, b, ab}",
+         "the Klein four-group has order 4 but every non-identity element has order 2"),
+        ("the product of two negative numbers is negative",
+         "-3 * -4 = 12", 12,
+         "(-3)(-4) = 12, which is positive"),
+    ]
+
     def __init__(self) -> None:
         """Initialise the pool of false claims."""
         self._claims = self._build_claims()
@@ -186,78 +220,8 @@ class FalseClaimPool:
             List of claim dictionaries with text, counterexample, and explanation.
         """
         return [
-            {
-                "text": "n^2 + n + 41 is prime for all n >= 0",
-                "counterexample": 41,
-                "check_value": 41 * 41 + 41 + 41,
-                "explanation": "41^2+41+41 = 41*43 = 1763, which is composite",
-            },
-            {
-                "text": "2^p - 1 is prime for all prime p",
-                "counterexample": 11,
-                "check_value": 2047,
-                "explanation": "2^11-1 = 2047 = 23*89, which is composite",
-            },
-            {
-                "text": "n^2 - n + 41 is prime for all n >= 1",
-                "counterexample": 41,
-                "check_value": 41 * 41 - 41 + 41,
-                "explanation": "41^2-41+41 = 41^2 = 1681, which is composite",
-            },
-            {
-                "text": "all odd numbers are prime",
-                "counterexample": 9,
-                "check_value": 9,
-                "explanation": "9 = 3*3, which is composite",
-            },
-            {
-                "text": "n! + 1 is prime for all n >= 1",
-                "counterexample": 5,
-                "check_value": 121,
-                "explanation": "5!+1 = 121 = 11*11, which is composite",
-            },
-            {
-                "text": "2^(2^n) + 1 is prime for all n >= 0",
-                "counterexample": 5,
-                "check_value": 4294967297,
-                "explanation": "2^32+1 = 4294967297 = 641*6700417, which is composite",
-            },
-            {
-                "text": "the sum of two irrational numbers is always irrational",
-                "counterexample": "sqrt(2) and -sqrt(2)",
-                "check_value": 0,
-                "explanation": "sqrt(2) + (-sqrt(2)) = 0, which is rational",
-            },
-            {
-                "text": "if a^2 divides b^2 then a divides b",
-                "counterexample": "a=6, b=12 fails for a=6,b=10",
-                "check_value": "6^2=36 does not divide 10^2=100",
-                "explanation": "36 does not divide 100; 100/36 is not an integer",
-            },
-            {
-                "text": "every continuous function is differentiable",
-                "counterexample": "f(x) = |x| at x=0",
-                "check_value": "undefined",
-                "explanation": "|x| is continuous everywhere but not differentiable at x=0 (sharp corner)",
-            },
-            {
-                "text": "if f(n) = O(g(n)) then g(n) = O(f(n))",
-                "counterexample": "f(n)=n, g(n)=n^2",
-                "check_value": "n = O(n^2) but n^2 != O(n)",
-                "explanation": "O is not symmetric: n grows slower than n^2",
-            },
-            {
-                "text": "every group of order n is cyclic",
-                "counterexample": "n=4, Klein four-group",
-                "check_value": "V4 = {e, a, b, ab}",
-                "explanation": "the Klein four-group has order 4 but every non-identity element has order 2",
-            },
-            {
-                "text": "the product of two negative numbers is negative",
-                "counterexample": "-3 * -4 = 12",
-                "check_value": 12,
-                "explanation": "(-3)(-4) = 12, which is positive",
-            },
+            {"text": t, "counterexample": ce, "check_value": cv, "explanation": ex}
+            for t, ce, cv, ex in self._CLAIMS_DATA
         ]
 
 
@@ -1112,6 +1076,48 @@ class ProofByInductionGenerator(StepGenerator):
         """
         return "prove by mathematical induction"
 
+    @staticmethod
+    def _build_all_identities() -> list[InductionIdentity]:
+        """Build all induction identities for reuse across calls.
+
+        Returns:
+            List of InductionIdentity objects ordered by difficulty.
+        """
+        return [
+            InductionIdentity(
+                "sum_n", "\\sum_{k=1}^n k", "\\frac{n(n+1)}{2}",
+                lambda n: n * (n + 1) // 2, lambda n: n),
+            InductionIdentity(
+                "sum_squares", "\\sum_{k=1}^n k^2", "\\frac{n(n+1)(2n+1)}{6}",
+                lambda n: n * (n + 1) * (2 * n + 1) // 6, lambda n: n * n),
+            InductionIdentity(
+                "sum_cubes", "\\sum_{k=1}^n k^3",
+                "\\left(\\frac{n(n+1)}{2}\\right)^2",
+                lambda n: (n * (n + 1) // 2) ** 2, lambda n: n ** 3),
+            InductionIdentity(
+                "geometric", "\\sum_{k=1}^n 2^k", "2^{n+1}-2",
+                lambda n: 2 ** (n + 1) - 2, lambda n: 2 ** n),
+            InductionIdentity(
+                "sum_odd", "\\sum_{k=1}^n (2k-1)", "n^2",
+                lambda n: n * n, lambda n: 2 * n - 1),
+            InductionIdentity(
+                "power_of_two", "\\sum_{k=0}^n 2^k", "2^{n+1}-1",
+                lambda n: 2 ** (n + 1) - 1, lambda n: 2 ** n),
+            InductionIdentity(
+                "triangular", "\\sum_{k=1}^n \\frac{1}{k(k+1)}",
+                "\\frac{n}{n+1}",
+                lambda n: n / (n + 1), lambda n: 1 / (n * (n + 1))),
+            InductionIdentity(
+                "sum_3k", "\\sum_{k=0}^n 3^k", "\\frac{3^{n+1}-1}{2}",
+                lambda n: (3 ** (n + 1) - 1) // 2, lambda n: 3 ** n),
+            InductionIdentity(
+                "factorial_bound", "n!", "n! >= 2^{n-1} for n >= 1",
+                lambda n: 1 if n == 0 else n * (
+                    lambda f, x: f(f, x - 1) * x if x > 0 else 1)(
+                    lambda f, x: f(f, x - 1) * x if x > 0 else 1, n - 1),
+                lambda n: n),
+        ]
+
     def _get_identities(self, difficulty: int) -> list[InductionIdentity]:
         """Return identities appropriate for the difficulty.
 
@@ -1121,71 +1127,7 @@ class ProofByInductionGenerator(StepGenerator):
         Returns:
             List of available InductionIdentity objects.
         """
-        identities = [
-            InductionIdentity(
-                "sum_n",
-                "\\sum_{k=1}^n k",
-                "\\frac{n(n+1)}{2}",
-                lambda n: n * (n + 1) // 2,
-                lambda n: n,
-            ),
-            InductionIdentity(
-                "sum_squares",
-                "\\sum_{k=1}^n k^2",
-                "\\frac{n(n+1)(2n+1)}{6}",
-                lambda n: n * (n + 1) * (2 * n + 1) // 6,
-                lambda n: n * n,
-            ),
-            InductionIdentity(
-                "sum_cubes",
-                "\\sum_{k=1}^n k^3",
-                "\\left(\\frac{n(n+1)}{2}\\right)^2",
-                lambda n: (n * (n + 1) // 2) ** 2,
-                lambda n: n ** 3,
-            ),
-            InductionIdentity(
-                "geometric",
-                "\\sum_{k=1}^n 2^k",
-                "2^{n+1}-2",
-                lambda n: 2 ** (n + 1) - 2,
-                lambda n: 2 ** n,
-            ),
-            InductionIdentity(
-                "sum_odd",
-                "\\sum_{k=1}^n (2k-1)",
-                "n^2",
-                lambda n: n * n,
-                lambda n: 2 * n - 1,
-            ),
-            InductionIdentity(
-                "power_of_two",
-                "\\sum_{k=0}^n 2^k",
-                "2^{n+1}-1",
-                lambda n: 2 ** (n + 1) - 1,
-                lambda n: 2 ** n,
-            ),
-            InductionIdentity(
-                "triangular",
-                "\\sum_{k=1}^n \\frac{1}{k(k+1)}",
-                "\\frac{n}{n+1}",
-                lambda n: n / (n + 1),
-                lambda n: 1 / (n * (n + 1)),
-            ),
-            InductionIdentity(
-                "sum_3k",
-                "\\sum_{k=0}^n 3^k",
-                "\\frac{3^{n+1}-1}{2}",
-                lambda n: (3 ** (n + 1) - 1) // 2,
-                lambda n: 3 ** n,
-            ),
-            InductionIdentity(
-                "factorial_bound",
-                "n!",
-                "n! >= 2^{n-1} for n >= 1",
-                lambda n: 1 if n == 0 else n * (lambda f, x: f(f, x - 1) * x if x > 0 else 1)(lambda f, x: f(f, x - 1) * x if x > 0 else 1, n - 1),
-                lambda n: n,
-            ),
-        ]
+        identities = self._build_all_identities()
         if difficulty <= 2:
             return identities[:4]
         if difficulty <= 5:
@@ -1898,6 +1840,64 @@ class DeriveFormulaGenerator(StepGenerator):
         """
         return "derive formula from first principles"
 
+    _DERIVATIONS: list[dict] = [
+        {"name": "difference of squares",
+         "statement": "a^2 - b^2 = (a-b)(a+b)",
+         "steps": ["expand (a-b)(a+b)", "= a*a + a*b - b*a - b*b",
+                    "= a^2 + ab - ab - b^2", "= a^2 - b^2"],
+         "verify_a": 5, "verify_b": 3, "verify_lhs": 16, "verify_rhs": 16},
+        {"name": "sum of arithmetic series",
+         "statement": "S = n(n+1)/2",
+         "steps": ["S = 1 + 2 + ... + n", "S = n + (n-1) + ... + 1",
+                    "2S = (n+1) + (n+1) + ... + (n+1) = n(n+1)", "S = n(n+1)/2"],
+         "verify_a": 10, "verify_b": 0, "verify_lhs": 55, "verify_rhs": 55},
+        {"name": "geometric series",
+         "statement": "S = (1-r^{n+1})/(1-r)",
+         "steps": ["S = 1 + r + r^2 + ... + r^n", "rS = r + r^2 + ... + r^{n+1}",
+                    "S - rS = 1 - r^{n+1}", "S(1-r) = 1 - r^{n+1}",
+                    "S = (1-r^{n+1})/(1-r)"],
+         "verify_a": 2, "verify_b": 3, "verify_lhs": 15, "verify_rhs": 15},
+        {"name": "quadratic formula",
+         "statement": "x = (-b +/- sqrt(b^2-4ac))/(2a)",
+         "steps": ["start: ax^2 + bx + c = 0", "divide by a: x^2 + (b/a)x + c/a = 0",
+                    "complete square: (x + b/(2a))^2 = b^2/(4a^2) - c/a",
+                    "= (b^2 - 4ac)/(4a^2)", "x + b/(2a) = +/- sqrt(b^2-4ac)/(2a)",
+                    "x = (-b +/- sqrt(b^2-4ac))/(2a)"],
+         "verify_a": 1, "verify_b": -5, "verify_lhs": 6, "verify_rhs": 6},
+        {"name": "binomial theorem (n=2)",
+         "statement": "(a+b)^2 = a^2 + 2ab + b^2",
+         "steps": ["(a+b)(a+b)", "= a*a + a*b + b*a + b*b", "= a^2 + 2ab + b^2"],
+         "verify_a": 3, "verify_b": 4, "verify_lhs": 49, "verify_rhs": 49},
+        {"name": "sum of cubes factorisation",
+         "statement": "a^3 + b^3 = (a+b)(a^2-ab+b^2)",
+         "steps": ["expand RHS: a^3 - a^2b + ab^2 + a^2b - ab^2 + b^3",
+                    "cancel: a^3 + b^3"],
+         "verify_a": 2, "verify_b": 3, "verify_lhs": 35, "verify_rhs": 35},
+        {"name": "distance formula",
+         "statement": "d = sqrt((x2-x1)^2 + (y2-y1)^2)",
+         "steps": ["right triangle with legs dx = x2-x1, dy = y2-y1",
+                    "by Pythagorean theorem: d^2 = dx^2 + dy^2",
+                    "d = sqrt(dx^2 + dy^2)"],
+         "verify_a": 5, "verify_b": 0, "verify_lhs": 5, "verify_rhs": 5},
+        {"name": "derivative of x^n",
+         "statement": "d/dx(x^n) = n*x^{n-1}",
+         "steps": ["f(x+h) = (x+h)^n = x^n + n*x^{n-1}*h + ...",
+                    "[f(x+h) - f(x)] / h = n*x^{n-1} + O(h)",
+                    "limit h->0: n*x^{n-1}"],
+         "verify_a": 3, "verify_b": 2, "verify_lhs": 12, "verify_rhs": 12},
+        {"name": "Euler's formula for polyhedra",
+         "statement": "V - E + F = 2",
+         "steps": ["for a cube: V=8, E=12, F=6", "8 - 12 + 6 = 2",
+                    "proof by removing faces one at a time"],
+         "verify_a": 8, "verify_b": 0, "verify_lhs": 2, "verify_rhs": 2},
+        {"name": "area of a circle",
+         "statement": "A = pi*r^2",
+         "steps": ["divide circle into n thin triangles from centre",
+                    "each triangle: base ~ 2*pi*r/n, height ~ r",
+                    "total area ~ n * (1/2)(2*pi*r/n)(r) = pi*r^2"],
+         "verify_a": 5, "verify_b": 0, "verify_lhs": 78, "verify_rhs": 78},
+    ]
+
     def _get_derivations(self, difficulty: int) -> list[dict]:
         """Return derivations appropriate for the difficulty.
 
@@ -1907,129 +1907,11 @@ class DeriveFormulaGenerator(StepGenerator):
         Returns:
             List of derivation dictionaries.
         """
-        derivations = [
-            {
-                "name": "difference of squares",
-                "statement": "a^2 - b^2 = (a-b)(a+b)",
-                "steps": [
-                    "expand (a-b)(a+b)",
-                    "= a*a + a*b - b*a - b*b",
-                    "= a^2 + ab - ab - b^2",
-                    "= a^2 - b^2",
-                ],
-                "verify_a": 5, "verify_b": 3,
-                "verify_lhs": 16, "verify_rhs": 16,
-            },
-            {
-                "name": "sum of arithmetic series",
-                "statement": "S = n(n+1)/2",
-                "steps": [
-                    "S = 1 + 2 + ... + n",
-                    "S = n + (n-1) + ... + 1",
-                    "2S = (n+1) + (n+1) + ... + (n+1) = n(n+1)",
-                    "S = n(n+1)/2",
-                ],
-                "verify_a": 10, "verify_b": 0,
-                "verify_lhs": 55, "verify_rhs": 55,
-            },
-            {
-                "name": "geometric series",
-                "statement": "S = (1-r^{n+1})/(1-r)",
-                "steps": [
-                    "S = 1 + r + r^2 + ... + r^n",
-                    "rS = r + r^2 + ... + r^{n+1}",
-                    "S - rS = 1 - r^{n+1}",
-                    "S(1-r) = 1 - r^{n+1}",
-                    "S = (1-r^{n+1})/(1-r)",
-                ],
-                "verify_a": 2, "verify_b": 3,
-                "verify_lhs": 15, "verify_rhs": 15,
-            },
-            {
-                "name": "quadratic formula",
-                "statement": "x = (-b +/- sqrt(b^2-4ac))/(2a)",
-                "steps": [
-                    "start: ax^2 + bx + c = 0",
-                    "divide by a: x^2 + (b/a)x + c/a = 0",
-                    "complete square: (x + b/(2a))^2 = b^2/(4a^2) - c/a",
-                    "= (b^2 - 4ac)/(4a^2)",
-                    "x + b/(2a) = +/- sqrt(b^2-4ac)/(2a)",
-                    "x = (-b +/- sqrt(b^2-4ac))/(2a)",
-                ],
-                "verify_a": 1, "verify_b": -5,
-                "verify_lhs": 6, "verify_rhs": 6,
-            },
-            {
-                "name": "binomial theorem (n=2)",
-                "statement": "(a+b)^2 = a^2 + 2ab + b^2",
-                "steps": [
-                    "(a+b)(a+b)",
-                    "= a*a + a*b + b*a + b*b",
-                    "= a^2 + 2ab + b^2",
-                ],
-                "verify_a": 3, "verify_b": 4,
-                "verify_lhs": 49, "verify_rhs": 49,
-            },
-            {
-                "name": "sum of cubes factorisation",
-                "statement": "a^3 + b^3 = (a+b)(a^2-ab+b^2)",
-                "steps": [
-                    "expand RHS: a^3 - a^2b + ab^2 + a^2b - ab^2 + b^3",
-                    "cancel: a^3 + b^3",
-                ],
-                "verify_a": 2, "verify_b": 3,
-                "verify_lhs": 35, "verify_rhs": 35,
-            },
-            {
-                "name": "distance formula",
-                "statement": "d = sqrt((x2-x1)^2 + (y2-y1)^2)",
-                "steps": [
-                    "right triangle with legs dx = x2-x1, dy = y2-y1",
-                    "by Pythagorean theorem: d^2 = dx^2 + dy^2",
-                    "d = sqrt(dx^2 + dy^2)",
-                ],
-                "verify_a": 5, "verify_b": 0,
-                "verify_lhs": 5, "verify_rhs": 5,
-            },
-            {
-                "name": "derivative of x^n",
-                "statement": "d/dx(x^n) = n*x^{n-1}",
-                "steps": [
-                    "f(x+h) = (x+h)^n = x^n + n*x^{n-1}*h + ...",
-                    "[f(x+h) - f(x)] / h = n*x^{n-1} + O(h)",
-                    "limit h->0: n*x^{n-1}",
-                ],
-                "verify_a": 3, "verify_b": 2,
-                "verify_lhs": 12, "verify_rhs": 12,
-            },
-            {
-                "name": "Euler's formula for polyhedra",
-                "statement": "V - E + F = 2",
-                "steps": [
-                    "for a cube: V=8, E=12, F=6",
-                    "8 - 12 + 6 = 2",
-                    "proof by removing faces one at a time",
-                ],
-                "verify_a": 8, "verify_b": 0,
-                "verify_lhs": 2, "verify_rhs": 2,
-            },
-            {
-                "name": "area of a circle",
-                "statement": "A = pi*r^2",
-                "steps": [
-                    "divide circle into n thin triangles from centre",
-                    "each triangle: base ~ 2*pi*r/n, height ~ r",
-                    "total area ~ n * (1/2)(2*pi*r/n)(r) = pi*r^2",
-                ],
-                "verify_a": 5, "verify_b": 0,
-                "verify_lhs": 78, "verify_rhs": 78,
-            },
-        ]
         if difficulty <= 2:
-            return derivations[:4]
+            return self._DERIVATIONS[:4]
         if difficulty <= 5:
-            return derivations[:7]
-        return derivations
+            return self._DERIVATIONS[:7]
+        return list(self._DERIVATIONS)
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Select a derivation and generate randomised verification values.

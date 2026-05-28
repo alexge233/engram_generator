@@ -17,17 +17,21 @@ class AreaRectangleGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "area_rectangle"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find area of rectangle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -50,17 +54,21 @@ class PerimeterRectangleGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "perimeter_rectangle"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find perimeter of rectangle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -84,17 +92,21 @@ class PythagoreanGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "pythagorean"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition", "multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find missing side of right triangle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -146,17 +158,21 @@ class AreaTriangleGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "area_triangle"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["area_rectangle"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find area of triangle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -181,17 +197,21 @@ class AreaCircleGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "area_circle"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find area of circle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -213,17 +233,21 @@ class CircumferenceGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "circumference"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find circumference of circle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -244,17 +268,21 @@ class VolumeBoxGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "volume_box"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["area_rectangle"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find volume of box"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -281,17 +309,21 @@ class Distance2DGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "distance_2d"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["pythagorean"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find distance between two points"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -328,17 +360,21 @@ class MidpointGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "midpoint"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find midpoint of segment"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -362,6 +398,7 @@ class MidpointGenerator(StepGenerator):
 
     def _create_answer(self, sd: dict) -> str:
         def fmt(v):
+            """Format the term as a string."""
             return str(int(v)) if v == int(v) else f"{v:.1f}"
         return f"({fmt(sd['mx'])},{fmt(sd['my'])})"
 
@@ -372,17 +409,21 @@ class SlopeGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "slope"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["subtraction", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find slope of line"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -417,17 +458,21 @@ class AngleSumTriangleGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "angle_sum_triangle"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["subtraction"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find missing angle in triangle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -457,17 +502,21 @@ class SimilarTrianglesGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "similar_triangles"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["division", "multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find missing side of similar triangle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -502,17 +551,21 @@ class LineIntersectionGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "line_intersection"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["slope", "linear_equation"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find intersection of two lines"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -545,17 +598,21 @@ class PolygonAreaGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "polygon_area"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["area_triangle", "multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find area of polygon (shoelace)"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -596,17 +653,21 @@ class CircleArcLengthGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "circle_arc_length"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["circumference"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find arc length"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -635,17 +696,21 @@ class SectorAreaGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "sector_area"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["area_circle"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find sector area"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -677,17 +742,21 @@ class CoordinateRotationGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "coordinate_rotation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["distance_2d"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "rotate point about origin"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -711,6 +780,7 @@ class CoordinateRotationGenerator(StepGenerator):
 
     def _create_answer(self, sd: dict) -> str:
         def fmt(v):
+            """Format the term as a string."""
             return str(int(v)) if abs(v - round(v)) < 1e-9 else f"{v}"
         return f"({fmt(sd['xp'])},{fmt(sd['yp'])})"
 
@@ -721,17 +791,21 @@ class Reflection2DGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "reflection_2d"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["distance_2d"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "reflect point across axis"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -769,17 +843,21 @@ class VolumeSphereGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "volume_sphere"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["area_circle"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find volume of sphere"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -812,17 +890,21 @@ class VolumeCylinderGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "volume_cylinder"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["area_circle"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find volume of cylinder"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

@@ -29,17 +29,21 @@ class SimpleInterestGenerator(FinanceGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "simple_interest"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate simple interest"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -66,17 +70,21 @@ class CompoundInterestGenerator(FinanceGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "compound_interest"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["simple_interest", "exponentiation"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate compound interest"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -103,17 +111,21 @@ class ROIGenerator(FinanceGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "roi"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["subtraction", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate ROI"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -135,17 +147,21 @@ class BreakEvenGenerator(FinanceGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "break_even"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find break-even point"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -172,17 +188,21 @@ class DepreciationGenerator(FinanceGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "depreciation"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["subtraction", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate depreciation"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -210,17 +230,21 @@ class PresentValueGenerator(FinanceGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "present_value"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["compound_interest"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "calculate present value"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

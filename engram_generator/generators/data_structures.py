@@ -11,17 +11,21 @@ class StackOperationsGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "stack_operations"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["sorting"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "simulate stack"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -55,17 +59,21 @@ class QueueOperationsGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "queue_operations"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["sorting"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "simulate queue"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -99,17 +107,21 @@ class BinaryTreeTraversalGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "binary_tree_traversal"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["stack_operations"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "binary tree traversal"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -129,12 +141,15 @@ class BinaryTreeTraversalGenerator(StepGenerator):
             nodes.append(v)
 
         def inorder(node):
+            """Return inorder traversal of the tree."""
             if node is None: return []
             return inorder(tree[node][0]) + [node] + inorder(tree[node][1])
         def preorder(node):
+            """Return preorder traversal of the tree."""
             if node is None: return []
             return [node] + preorder(tree[node][0]) + preorder(tree[node][1])
         def postorder(node):
+            """Return postorder traversal of the tree."""
             if node is None: return []
             return postorder(tree[node][0]) + postorder(tree[node][1]) + [node]
 
@@ -162,17 +177,21 @@ class HeapOperationsGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "heap_operations"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["sorting"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "simulate min-heap"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -207,17 +226,21 @@ class HashTableOpsGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "hash_table_ops"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["modular"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "simulate hash table"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

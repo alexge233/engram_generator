@@ -1047,6 +1047,76 @@ class FailureAnalysisGenerator(StepGenerator):
         """
         return "identify why this algorithm fails"
 
+    def _fail_division_by_zero(self) -> tuple[str, str, list[str]]:
+        """Generate a division-by-zero failure scenario.
+
+        Returns:
+            Tuple of (algorithm, failing_input, explanation_steps).
+        """
+        func_name = self._rng.choice(["average", "mean", "normalize", "scale"])
+        return (
+            f"{func_name}: return sum(list) / len(list)",
+            "list = []",
+            ["len([]) = 0",
+             f"sum([]) / 0 causes division by zero in {func_name}",
+             "fix: check if list is empty before dividing"],
+        )
+
+    def _fail_empty_list(self) -> tuple[str, str, list[str]]:
+        """Generate an empty-list access failure scenario.
+
+        Returns:
+            Tuple of (algorithm, failing_input, explanation_steps).
+        """
+        func_name = self._rng.choice(["find_max", "find_min", "get_first", "pop_top"])
+        n = self._rng.randint(0, 0)
+        return (
+            f"{func_name}: return max(list[0], list[1:]...)",
+            f"list = [] (size={n})",
+            [f"list has {n} elements",
+             f"accessing list[0] raises IndexError in {func_name}",
+             "fix: return None or raise ValueError if list is empty"],
+        )
+
+    def _fail_integer_overflow(self) -> tuple[str, str, list[str]]:
+        """Generate an integer-overflow failure scenario.
+
+        Returns:
+            Tuple of (algorithm, failing_input, explanation_steps).
+        """
+        lo = self._rng.randint(1_000_000_000, 1_900_000_000)
+        hi = self._rng.randint(lo + 100_000_000, 2_100_000_000)
+        total = lo + hi
+        return (
+            "binary_search: mid = (lo + hi) / 2",
+            f"lo = {lo}, hi = {hi}",
+            [f"lo + hi = {lo} + {hi} = {total}",
+             f"{total} exceeds 32-bit signed integer max (2147483647)",
+             "fix: mid = lo + (hi - lo) / 2 avoids overflow"],
+        )
+
+    def _fail_off_by_one(self, difficulty: int) -> tuple[str, str, list[str]]:
+        """Generate an off-by-one failure scenario.
+
+        Args:
+            difficulty: Controls array size.
+
+        Returns:
+            Tuple of (algorithm, failing_input, explanation_steps).
+        """
+        arr_size = self._rng.randint(4, 10 + difficulty)
+        arr = list(range(1, arr_size + 1))
+        lo_idx = self._rng.randint(0, 1)
+        hi_idx = arr_size
+        return (
+            f"range_sum: for i in range({lo_idx}, {hi_idx}) sum += arr[i]",
+            f"arr = {arr}, lo = {lo_idx}, hi = {hi_idx}",
+            [f"range({lo_idx}, {hi_idx}) includes index {hi_idx - 1}",
+             f"arr[{hi_idx - 1}] = {arr[hi_idx - 1]} is the last element",
+             "if hi means exclusive end, result is correct",
+             "fix: clarify whether hi is inclusive or exclusive"],
+        )
+
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a failure analysis problem with randomised parameters.
 
@@ -1057,56 +1127,18 @@ class FailureAnalysisGenerator(StepGenerator):
             Tuple of (algorithm_with_input, solution_data).
         """
         failure_type = self._rng.choice(list(self._ALGORITHMS.keys()))
-        bug_name = self._BUG_NAMES[failure_type]
-        # Generate randomised context for each failure type
-        if failure_type == "division_by_zero":
-            func_name = self._rng.choice(["average", "mean", "normalize", "scale"])
-            algorithm = f"{func_name}: return sum(list) / len(list)"
-            failing_input = "list = []"
-            explanation = [
-                "len([]) = 0",
-                f"sum([]) / 0 causes division by zero in {func_name}",
-                "fix: check if list is empty before dividing",
-            ]
-        elif failure_type == "empty_list":
-            func_name = self._rng.choice(["find_max", "find_min", "get_first", "pop_top"])
-            algorithm = f"{func_name}: return max(list[0], list[1:]...)"
-            n = self._rng.randint(0, 0)
-            failing_input = f"list = [] (size={n})"
-            explanation = [
-                f"list has {n} elements",
-                f"accessing list[0] raises IndexError in {func_name}",
-                "fix: return None or raise ValueError if list is empty",
-            ]
-        elif failure_type == "integer_overflow":
-            lo = self._rng.randint(1_000_000_000, 1_900_000_000)
-            hi = self._rng.randint(lo + 100_000_000, 2_100_000_000)
-            algorithm = f"binary_search: mid = (lo + hi) / 2"
-            failing_input = f"lo = {lo}, hi = {hi}"
-            total = lo + hi
-            explanation = [
-                f"lo + hi = {lo} + {hi} = {total}",
-                f"{total} exceeds 32-bit signed integer max (2147483647)",
-                "fix: mid = lo + (hi - lo) / 2 avoids overflow",
-            ]
-        else:
-            arr_size = self._rng.randint(4, 10 + difficulty)
-            arr = list(range(1, arr_size + 1))
-            lo_idx = self._rng.randint(0, 1)
-            hi_idx = arr_size
-            algorithm = f"range_sum: for i in range({lo_idx}, {hi_idx}) sum += arr[i]"
-            failing_input = f"arr = {arr}, lo = {lo_idx}, hi = {hi_idx}"
-            explanation = [
-                f"range({lo_idx}, {hi_idx}) includes index {hi_idx - 1}",
-                f"arr[{hi_idx - 1}] = {arr[hi_idx - 1]} is the last element",
-                f"if hi means exclusive end, result is correct",
-                "fix: clarify whether hi is inclusive or exclusive",
-            ]
+        builders = {
+            "division_by_zero": lambda: self._fail_division_by_zero(),
+            "empty_list": lambda: self._fail_empty_list(),
+            "integer_overflow": lambda: self._fail_integer_overflow(),
+            "off_by_one": lambda: self._fail_off_by_one(difficulty),
+        }
+        algorithm, failing_input, explanation = builders[failure_type]()
         problem = f"algorithm: {algorithm}; input: {failing_input}"
         return problem, {
             "failure_type": failure_type, "algorithm": algorithm,
             "failing_input": failing_input, "explanation": explanation,
-            "bug_name": bug_name,
+            "bug_name": self._BUG_NAMES[failure_type],
         }
 
     def _create_steps(self, data: dict) -> list[str]:

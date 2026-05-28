@@ -13,13 +13,16 @@ class StringReverseGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "string_reverse"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "reverse the string"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -41,13 +44,16 @@ class CharacterCountGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "character_count"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "count character occurrences"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -71,17 +77,21 @@ class PalindromeCheckGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "palindrome_check"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 0
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["string_reverse"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check palindrome"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -109,17 +119,21 @@ class SubstringFindGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "substring_find"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["character_count"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find substring index"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -144,17 +158,21 @@ class AnagramCheckGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "anagram_check"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["character_count"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check anagram"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -184,17 +202,21 @@ class PatternContinueGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "pattern_continue"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "continue the pattern"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -238,17 +260,21 @@ class HammingDistanceGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "hamming_distance"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["character_count"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find Hamming distance"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -277,17 +303,21 @@ class StringEncodeDecodeGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "string_encode_decode"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["character_count"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "run-length encode/decode"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -337,17 +367,21 @@ class RegexMatchGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "regex_match"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["pattern_continue", "boolean_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check regex match"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

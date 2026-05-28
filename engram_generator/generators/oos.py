@@ -24,13 +24,16 @@ class SymbolicLogicGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "oos_symbolic_logic"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 99
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate logic proof"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -180,13 +183,16 @@ class UnitConversionGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "oos_unit_conversion"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 99
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "convert units"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -234,13 +240,16 @@ class StateMachineGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "oos_state_machine"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 99
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "trace state machine"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -330,13 +339,16 @@ class ProgramTraceGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "oos_program_trace"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 99
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "trace program output"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -474,13 +486,16 @@ class MusicalIntervalGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "oos_musical_interval"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 99
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute musical interval"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

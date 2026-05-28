@@ -13,17 +13,21 @@ class SinCosEvalGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "sin_cos_eval"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate sin or cos"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -54,17 +58,21 @@ class TanEvalGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "tan_eval"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["sin_cos_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "evaluate tan"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -101,17 +109,21 @@ class AngleConversionGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "angle_conversion"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 1
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "convert angle units"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -153,17 +165,21 @@ class LawOfSinesGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "law_of_sines"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["sin_cos_eval", "angle_sum_triangle"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "apply law of sines"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -193,17 +209,21 @@ class LawOfCosinesGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "law_of_cosines"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["sin_cos_eval", "pythagorean"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "apply law of cosines"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -237,17 +257,21 @@ class TrigIdentityGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "trig_identity"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["sin_cos_eval", "tan_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "verify trig identity"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

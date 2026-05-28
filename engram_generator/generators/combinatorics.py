@@ -13,17 +13,21 @@ class CombinationCountGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "combination_count"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "compute C(n,k)"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -47,17 +51,21 @@ class PermutationWithRepGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "permutation_with_rep"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "count permutations"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -90,17 +98,21 @@ class PigeonholeGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "pigeonhole"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 2
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "apply pigeonhole principle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -128,17 +140,21 @@ class InclusionExclusionGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "inclusion_exclusion"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["combination_count", "venn_diagram_count"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "count by inclusion-exclusion"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -169,17 +185,21 @@ class StarsAndBarsGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "stars_and_bars"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["combination_count"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "count distributions (stars and bars)"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

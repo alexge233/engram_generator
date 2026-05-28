@@ -14,17 +14,21 @@ class VerifyProofGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "verify_proof"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 7
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["proof_by_induction", "error_detection"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "verify proof step"
 
     _PROOF_TEMPLATES = [
@@ -274,17 +278,21 @@ class DimensionalAnalysisGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "dimensional_analysis"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 7
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["multiplication", "division"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check dimensional consistency"
 
     _FORMULA_TEMPLATES = [
@@ -329,17 +337,21 @@ class SymmetryDetectionGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "symmetry_detection"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 7
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["polynomial_eval"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "detect symmetry"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -380,17 +392,21 @@ class AbstractionLevelGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "abstraction_level"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 8
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["isomorphism_detection"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "identify abstract pattern"
 
     _PATTERN_TEMPLATES = [
@@ -451,17 +467,21 @@ class DualProblemGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "dual_problem"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 8
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["problem_transformation"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "state the dual problem"
 
     _DUAL_TEMPLATES = [
@@ -515,17 +535,21 @@ class InformationBottleneckGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "information_bottleneck"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 9
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["info_entropy", "complexity_comparison"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "analyse information bottleneck"
 
     _SCENARIO_TEMPLATES = [
@@ -624,17 +648,21 @@ class ConvergenceProofGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "convergence_proof"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 9
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["invariant_discovery", "learning_bound"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "prove convergence"
 
     _CONVERGENCE_TEMPLATES = [
@@ -716,17 +744,21 @@ class RegularisationDesignGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "regularisation_design"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 10
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["loss_design", "training_diagnosis"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "design regularisation"
 
     _SCENARIO_TEMPLATES = [
@@ -824,17 +856,21 @@ class BottleneckIdentificationGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "bottleneck_identification"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 10
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["efficiency_analysis", "architecture_analysis"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "identify bottleneck"
 
     _BOTTLENECK_TEMPLATES = [

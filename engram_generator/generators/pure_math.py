@@ -239,12 +239,44 @@ class IntegrationByPartsGenerator(StepGenerator):
         """
         return "integrate by parts"
 
+    @staticmethod
+    def _dv_parts(func_type: str, freq_x: str, freq: int,
+                  u_str: str, du_full: str) -> dict:
+        """Compute dv, v, uv, and answer core for a given function type.
+
+        Args:
+            func_type: One of "exp", "sin", "cos".
+            freq_x: Frequency-times-x string (e.g. "2x").
+            freq: Integer frequency parameter.
+            u_str: LaTeX string for the u term.
+            du_full: LaTeX string for du (without dx stripped).
+
+        Returns:
+            Dict with keys dv, v, uv, remainder, ans_core, integrand_tail.
+        """
+        du_no_dx = du_full.replace(" dx", "")
+        if func_type == "exp":
+            dv = f"e^{{{freq_x}}} dx"
+            v = f"\\frac{{1}}{{{freq}}}e^{{{freq_x}}}" if freq != 1 else f"e^{{{freq_x}}}"
+            uv = f"{u_str} \\cdot {v}"
+            tail = f"e^{{{freq_x}}}"
+        elif func_type == "sin":
+            dv = f"\\sin({freq_x}) dx"
+            v = f"-\\frac{{1}}{{{freq}}}\\cos({freq_x})" if freq != 1 else f"-\\cos({freq_x})"
+            uv = f"{u_str} \\cdot ({v})"
+            tail = f"\\sin({freq_x})"
+        else:
+            dv = f"\\cos({freq_x}) dx"
+            v = f"\\frac{{1}}{{{freq}}}\\sin({freq_x})" if freq != 1 else f"\\sin({freq_x})"
+            uv = f"{u_str} \\cdot {v}"
+            tail = f"\\cos({freq_x})"
+        wrap = f"({v})" if func_type == "sin" else v
+        ans_core = f"{uv} - \\int {du_no_dx} \\cdot {wrap} dx"
+        return {"dv": dv, "v": v, "uv": uv, "remainder": v,
+                "ans_core": ans_core, "integrand_tail": tail}
+
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate an integration by parts problem with random parameters.
-
-        Randomises both the polynomial exponent on u and an overall
-        coefficient, and selects among e^(ax), sin(bx), cos(bx) as
-        the dv component with random frequency parameters.
 
         Args:
             difficulty: Controls exponent, coefficient, and frequency ranges.
@@ -254,12 +286,7 @@ class IntegrationByPartsGenerator(StepGenerator):
         """
         coeff = self._rng.randint(1, 2 + difficulty)
         power = self._rng.randint(1, min(3, 1 + difficulty // 2))
-
-        if difficulty <= 3:
-            func_type = "exp"
-        else:
-            func_type = self._rng.choice(["exp", "sin", "cos"])
-
+        func_type = "exp" if difficulty <= 3 else self._rng.choice(["exp", "sin", "cos"])
         freq = self._rng.randint(1, 2 + difficulty // 2)
 
         u_str = "x" if power == 1 else f"x^{{{power}}}"
@@ -267,39 +294,16 @@ class IntegrationByPartsGenerator(StepGenerator):
         du_str = f"{du_coeff}" if power > 1 else "1"
         du_power = f"x^{{{power - 1}}}" if power > 2 else ("x" if power == 2 else "")
         du_full = f"{du_str}{du_power} dx" if power > 1 else "1 dx"
-
-        freq_str = f"{freq}" if freq != 1 else ""
         freq_x = f"{freq}x" if freq != 1 else "x"
 
-        if func_type == "exp":
-            dv_str = f"e^{{{freq_x}}} dx"
-            v_str = f"\\frac{{1}}{{{freq}}}e^{{{freq_x}}}" if freq != 1 else f"e^{{{freq_x}}}"
-            uv_str = f"{u_str} \\cdot {v_str}"
-            remainder = v_str
-            ans_core = f"{u_str} \\cdot {v_str} - \\int {du_full.replace(' dx', '')} \\cdot {v_str} dx"
-        elif func_type == "sin":
-            dv_str = f"\\sin({freq_x}) dx"
-            v_str = f"-\\frac{{1}}{{{freq}}}\\cos({freq_x})" if freq != 1 else f"-\\cos({freq_x})"
-            uv_str = f"{u_str} \\cdot ({v_str})"
-            remainder = v_str
-            ans_core = f"{uv_str} - \\int {du_full.replace(' dx', '')} \\cdot ({v_str}) dx"
-        else:
-            dv_str = f"\\cos({freq_x}) dx"
-            v_str = f"\\frac{{1}}{{{freq}}}\\sin({freq_x})" if freq != 1 else f"\\sin({freq_x})"
-            uv_str = f"{u_str} \\cdot {v_str}"
-            remainder = v_str
-            ans_core = f"{uv_str} - \\int {du_full.replace(' dx', '')} \\cdot {v_str} dx"
-
+        parts = self._dv_parts(func_type, freq_x, freq, u_str, du_full)
         coeff_str = f"{coeff}" if coeff != 1 else ""
-        integrand = f"{u_str}e^{{{freq_x}}}" if func_type == "exp" else (
-            f"{u_str}\\sin({freq_x})" if func_type == "sin" else f"{u_str}\\cos({freq_x})"
-        )
-        problem = f"\\int {coeff_str}{integrand} dx"
+        problem = f"\\int {coeff_str}{u_str}{parts['integrand_tail']} dx"
 
         return problem, {
-            "coeff": coeff, "u": u_str, "dv": dv_str,
-            "du": du_full, "v": v_str, "uv": uv_str,
-            "remainder": remainder, "ans_core": ans_core,
+            "coeff": coeff, "u": u_str, "dv": parts["dv"],
+            "du": du_full, "v": parts["v"], "uv": parts["uv"],
+            "remainder": parts["remainder"], "ans_core": parts["ans_core"],
             "func_type": func_type, "freq": freq, "power": power,
         }
 
@@ -2130,12 +2134,42 @@ class BlochCoordsGenerator(StepGenerator):
             return f"{frac.numerator}\\pi", float(frac.numerator) * math.pi
         return f"\\frac{{{frac.numerator}\\pi}}{{{frac.denominator}}}", rad
 
+    @staticmethod
+    def _frac_to_label(frac: "Fraction") -> str:
+        """Convert a Fraction of pi to a LaTeX label.
+
+        Args:
+            frac: Fraction representing a multiple of pi.
+
+        Returns:
+            LaTeX string for the angle.
+        """
+        if frac == 0:
+            return "0"
+        if frac == 1:
+            return "\\pi"
+        if frac.denominator == 1:
+            return f"{frac.numerator}\\pi"
+        return f"\\frac{{{frac.numerator}\\pi}}{{{frac.denominator}}}"
+
+    @staticmethod
+    def _format_modulus(value: float) -> str:
+        """Format a trig modulus value to a compact string.
+
+        Args:
+            value: Rounded modulus value.
+
+        Returns:
+            Formatted string, with special cases for 0 and 1.
+        """
+        if abs(value - 1.0) < 1e-9:
+            return "1"
+        if abs(value) < 1e-9:
+            return "0"
+        return f"{value:.4f}".rstrip("0").rstrip(".")
+
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a Bloch sphere coordinate problem with random angles.
-
-        Generates random theta in [0, pi] and phi in [0, 2*pi) as
-        fractions of pi, computes the corresponding qubit state
-        amplitudes, and formats everything in LaTeX.
 
         Args:
             difficulty: Controls the range of denominators used.
@@ -2143,53 +2177,22 @@ class BlochCoordsGenerator(StepGenerator):
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        if difficulty <= 3:
-            denoms = self._THETA_DENOMS[:3]
-        else:
-            denoms = self._THETA_DENOMS
+        denoms = self._THETA_DENOMS[:3] if difficulty <= 3 else self._THETA_DENOMS
 
         theta_den = self._rng.choice(denoms)
         theta_num = self._rng.randint(0, theta_den)
         theta_rad = theta_num * math.pi / theta_den
-        theta_frac = Fraction(theta_num, theta_den)
-        if theta_frac == 0:
-            theta_label = "0"
-        elif theta_frac == 1:
-            theta_label = "\\pi"
-        elif theta_frac.denominator == 1:
-            theta_label = f"{theta_frac.numerator}\\pi"
-        else:
-            theta_label = (
-                f"\\frac{{{theta_frac.numerator}\\pi}}"
-                f"{{{theta_frac.denominator}}}"
-            )
+        theta_label = self._frac_to_label(Fraction(theta_num, theta_den))
 
         phi_den = self._rng.choice(denoms)
         phi_num = self._rng.randint(0, 2 * phi_den - 1)
         phi_rad = phi_num * math.pi / phi_den
-        phi_frac = Fraction(phi_num, phi_den)
-        if phi_frac == 0:
-            phi_label = "0"
-        elif phi_frac == 1:
-            phi_label = "\\pi"
-        elif phi_frac.denominator == 1:
-            phi_label = f"{phi_frac.numerator}\\pi"
-        else:
-            phi_label = (
-                f"\\frac{{{phi_frac.numerator}\\pi}}"
-                f"{{{phi_frac.denominator}}}"
-            )
+        phi_label = self._frac_to_label(Fraction(phi_num, phi_den))
 
-        alpha_mod = round(math.cos(theta_rad / 2), 6)
-        alpha_mod_str = f"{alpha_mod:.4f}".rstrip("0").rstrip(".")
-        if abs(alpha_mod - 1.0) < 1e-9:
-            alpha_mod_str = "1"
-        elif abs(alpha_mod) < 1e-9:
-            alpha_mod_str = "0"
-
-        alpha_label = alpha_mod_str
+        alpha_mod_str = self._format_modulus(round(math.cos(theta_rad / 2), 6))
         beta_mod = round(math.sin(theta_rad / 2), 6)
-        beta_mod_str = f"{beta_mod:.4f}".rstrip("0").rstrip(".")
+        beta_mod_str = self._format_modulus(beta_mod)
+
         if abs(beta_mod) < 1e-9:
             beta_label = "0"
         elif abs(phi_rad) < 1e-9:
@@ -2197,12 +2200,8 @@ class BlochCoordsGenerator(StepGenerator):
         else:
             beta_label = f"{beta_mod_str}e^{{i{phi_label}}}"
 
-        problem = f"{alpha_label}|0\\rangle + {beta_label}|1\\rangle"
-        state = {
-            "alpha_mod": alpha_mod_str,
-            "theta": theta_label,
-            "phi": phi_label,
-        }
+        problem = f"{alpha_mod_str}|0\\rangle + {beta_label}|1\\rangle"
+        state = {"alpha_mod": alpha_mod_str, "theta": theta_label, "phi": phi_label}
         return problem, {"state": state}
 
     def _create_steps(self, data: dict) -> list[str]:

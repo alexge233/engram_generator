@@ -13,17 +13,21 @@ class BFSOrderGenerator(GraphGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "bfs_order"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["graph_reach"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "BFS traversal order"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -59,17 +63,21 @@ class DFSOrderGenerator(GraphGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "dfs_order"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["graph_reach"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "DFS traversal order"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -105,17 +113,21 @@ class ConnectedComponentsGenerator(GraphGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "connected_components"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["bfs_order"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "count connected components"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -155,17 +167,21 @@ class MinimumSpanningTreeGenerator(GraphGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "minimum_spanning_tree"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["connected_components", "sorting"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find MST weight"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -183,6 +199,7 @@ class MinimumSpanningTreeGenerator(GraphGenerator):
         weighted_edges.sort()
         parent = list(range(n))
         def find(x):
+            """Find the root of an element."""
             while parent[x] != x:
                 parent[x] = parent[parent[x]]
                 x = parent[x]
@@ -214,17 +231,21 @@ class GraphColoringGenerator(GraphGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "graph_coloring"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["graph_reach"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "greedy graph coloring"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -257,17 +278,21 @@ class BipartiteCheckGenerator(GraphGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "bipartite_check"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["bfs_order"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "check if bipartite"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:

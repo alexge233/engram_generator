@@ -13,17 +13,21 @@ class PayoffMatrixGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "payoff_matrix"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["addition"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "read payoff matrix"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -57,17 +61,21 @@ class DominantStrategyGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "dominant_strategy"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 3
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["payoff_matrix"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find dominant strategy"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -103,17 +111,21 @@ class NashEquilibriumGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "nash_equilibrium"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["dominant_strategy"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find Nash equilibrium"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
@@ -148,17 +160,21 @@ class MinimaxGenerator(StepGenerator):
 
     @property
     def task_name(self) -> str:
+        """Return the unique task identifier."""
         return "minimax"
 
     @property
     def tier(self) -> int:
+        """Return the skill tree tier."""
         return 4
 
     @property
     def prerequisites(self) -> list[str]:
+        """Return required prerequisite task names."""
         return ["payoff_matrix"]
 
     def task_description(self, difficulty: int) -> str:
+        """Return a natural language task description."""
         return "find minimax value"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
