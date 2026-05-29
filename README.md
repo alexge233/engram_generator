@@ -29,6 +29,50 @@ Tiers 0-6 randomise operands across digit ranges, producing effectively unlimite
 
 At a typical training run (10K steps, batch_size 256 = 2.56M samples), the expected repeat rate is **< 1%**.
 
+### Information capacity analysis
+
+The generator produces two kinds of information:
+
+- **Instance information**: the total data content if every unique problem were stored (34.0 GB across ~333M instances)
+- **Algorithmic information**: the procedures needed to *generate* those instances (364 KB across 373 algorithms)
+
+The compression ratio is **97,787x** -- the algorithms are nearly 100,000 times smaller than the instances they produce.
+
+| Tier | Generators | Bits/Sample | Est. Space | Instance Info | Algo Info |
+|---|---|---|---|---|---|
+| 0 | 20 | 522 | ~35M | 2.1 GB | 19.5 KB |
+| 1 | 36 | 581 | ~44M | 3.0 GB | 35.2 KB |
+| 2 | 46 | 638 | ~48M | 3.6 GB | 44.9 KB |
+| 3 | 59 | 918 | ~68M | 7.3 GB | 57.6 KB |
+| 4 | 57 | 979 | ~56M | 6.4 GB | 55.7 KB |
+| 5 | 55 | 1,144 | ~35M | 4.7 GB | 53.7 KB |
+| 6 | 42 | 1,077 | ~24M | 3.0 GB | 41.0 KB |
+| 7 | 18 | 1,104 | ~8M | 1.0 GB | 17.6 KB |
+| 8 | 13 | 1,026 | ~32K | 3.9 MB | 12.7 KB |
+| 9 | 14 | 1,719 | ~11M | 2.2 GB | 13.7 KB |
+| 10 | 13 | 1,613 | ~4M | 769 MB | 12.7 KB |
+| **Total** | **373** | | **~333M** | **34.0 GB** | **364 KB** |
+
+**Why this matters for training:** a model with N parameters has roughly N bits of effective capacity (Zhang et al., 2017). A 7M-parameter model has ~867 KB of effective capacity. It is 41,000x too small to memorise the 34 GB of instances, but the 364 KB of algorithmic information fits comfortably. The model is forced to learn the algorithms because memorisation is physically impossible.
+
+| Model | Effective Capacity | vs Instances | vs Algorithms |
+|---|---|---|---|
+| Phase 1 char (2.4M params) | 293 KB | 121,582x too small | 1.2x too small |
+| GLM 6-layer (7.1M params) | 867 KB | 41,098x too small | fits |
+| GLM 12-layer (56.7M params) | 6.8 MB | 5,146x too small | fits |
+| 100M param target | 11.9 MB | 2,918x too small | fits |
+
+Repeat rates across training regimes:
+
+| Regime | Samples Drawn | Unique Seen | Repeat Rate | Information Seen |
+|---|---|---|---|---|
+| HPO sweep (10K x 10 epochs) | 100K | 100K | 0.00% | 10.4 MB |
+| Phase 1 baseline (10K x 100) | 1M | 1M | 0.00% | 104 MB |
+| Phase 1 full (50K x 200) | 10M | 9.85M | 1.49% | 1.0 GB |
+| Phase 2 target (100K x 500) | 50M | 46.4M | 7.14% | 4.7 GB |
+
+Five out-of-set (OOS) generators are held out entirely from training. They test whether the model transfers algorithmic reasoning to novel domains it has never seen.
+
 ## Knowledge Pipeline
 
 The generator's correctness chain runs from authoritative sources down to training samples:
