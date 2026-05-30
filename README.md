@@ -33,43 +33,48 @@ At a typical training run (10K steps, batch_size 256 = 2.56M samples), the expec
 
 The generator produces two kinds of information:
 
-- **Instance information**: the total data content if every unique problem were stored (34.0 GB across ~333M instances)
-- **Algorithmic information**: the procedures needed to *generate* those instances (364 KB across 373 algorithms)
+- **Instance information**: the entropy of the problem space -- 14.3 GB across ~333M unique problems. Measured using empirical token entropy (5.41 bits/token) on problem parameters only, since solution steps are deterministically computed from the problem and carry no additional information.
+- **Algorithmic information**: the compressed generator source code -- 286 KB (gzip-9). This approximates the Kolmogorov complexity of the 373 algorithms: the minimum description needed to reproduce all instances.
 
-The compression ratio is **97,787x** -- the algorithms are nearly 100,000 times smaller than the instances they produce.
+The compression ratio is **52,394x** -- the algorithms are over 50,000 times smaller than the instances they produce.
 
-| Tier | Generators | Bits/Sample | Est. Space | Instance Info | Algo Info |
-|---|---|---|---|---|---|
-| 0 | 20 | 522 | ~35M | 2.1 GB | 19.5 KB |
-| 1 | 36 | 581 | ~44M | 3.0 GB | 35.2 KB |
-| 2 | 46 | 638 | ~48M | 3.6 GB | 44.9 KB |
-| 3 | 59 | 918 | ~68M | 7.3 GB | 57.6 KB |
-| 4 | 57 | 979 | ~56M | 6.4 GB | 55.7 KB |
-| 5 | 55 | 1,144 | ~35M | 4.7 GB | 53.7 KB |
-| 6 | 42 | 1,077 | ~24M | 3.0 GB | 41.0 KB |
-| 7 | 18 | 1,104 | ~8M | 1.0 GB | 17.6 KB |
-| 8 | 13 | 1,026 | ~32K | 3.9 MB | 12.7 KB |
-| 9 | 14 | 1,719 | ~11M | 2.2 GB | 13.7 KB |
-| 10 | 13 | 1,613 | ~4M | 769 MB | 12.7 KB |
-| **Total** | **373** | | **~333M** | **34.0 GB** | **364 KB** |
-
-**Why this matters for training:** a model with N parameters has roughly N bits of effective capacity (Zhang et al., 2017). A 7M-parameter model has ~867 KB of effective capacity. It is 41,000x too small to memorise the 34 GB of instances, but the 364 KB of algorithmic information fits comfortably. The model is forced to learn the algorithms because memorisation is physically impossible.
-
-| Model | Effective Capacity | vs Instances | vs Algorithms |
-|---|---|---|---|
-| Phase 1 char (2.4M params) | 293 KB | 121,582x too small | 1.2x too small |
-| GLM 6-layer (7.1M params) | 867 KB | 41,098x too small | fits |
-| GLM 12-layer (56.7M params) | 6.8 MB | 5,146x too small | fits |
-| 100M param target | 11.9 MB | 2,918x too small | fits |
-
-Repeat rates across training regimes:
-
-| Regime | Samples Drawn | Unique Seen | Repeat Rate | Information Seen |
+| Tier | Generators | Est. Space | Instance Info | Algo Info (compressed) |
 |---|---|---|---|---|
-| HPO sweep (10K x 10 epochs) | 100K | 100K | 0.00% | 10.4 MB |
-| Phase 1 baseline (10K x 100) | 1M | 1M | 0.00% | 104 MB |
-| Phase 1 full (50K x 200) | 10M | 9.85M | 1.49% | 1.0 GB |
-| Phase 2 target (100K x 500) | 50M | 46.4M | 7.14% | 4.7 GB |
+| 0 -- Basic arithmetic | 20 | ~35M | 1.5 GB | 4.4 KB |
+| 1 -- Operations | 36 | ~44M | 1.9 GB | 10.4 KB |
+| 2 -- Intermediate | 46 | ~48M | 2.1 GB | 16.4 KB |
+| 3 -- Advanced | 59 | ~68M | 2.9 GB | 22.8 KB |
+| 4 -- Applied | 57 | ~56M | 2.4 GB | 27.2 KB |
+| 5 -- Expert | 55 | ~35M | 1.5 GB | 31.6 KB |
+| 6 -- Graduate | 42 | ~24M | 1.0 GB | 30.0 KB |
+| 7 -- Meta-reasoning | 18 | ~8M | 345 MB | 42.2 KB |
+| 8 -- Creative | 13 | ~32K | 1.4 MB | 28.8 KB |
+| 9 -- Research | 14 | ~11M | 475 MB | 38.4 KB |
+| 10 -- Self-architecture | 13 | ~4M | 173 MB | 33.6 KB |
+| **Total** | **373** | **~333M** | **14.3 GB** | **286 KB** |
+
+**Methodology:**
+- Empirical entropy measured from 1,067,909 tokens across 7,460 samples: 5.41 bits/token (80.9% of uniform maximum)
+- Instance information uses problem-only tokens (input + problem statement, avg 68 tokens), not solution steps, because solutions are deterministic functions of the problem
+- Algorithmic information uses gzip-9 compressed size of all generator source code as a Kolmogorov complexity approximation
+
+**Why this matters for training:** a model with N parameters has roughly N bits of effective capacity (Zhang et al., 2017). The model is forced to learn the algorithms because memorisation is physically impossible.
+
+| Model | Effective Capacity | vs Instances (14.3 GB) | vs Algorithms (286 KB) |
+|---|---|---|---|
+| Phase 1 char (2.4M params) | 293 KB | 51,068x too small | fits |
+| GLM 6-layer (7.1M params) | 867 KB | 17,262x too small | fits |
+| GLM 12-layer (56.7M params) | 6.9 MB | 2,162x too small | fits |
+| 100M param target | 11.9 MB | 1,226x too small | fits |
+
+Repeat rates across training regimes (samples re-seeded each epoch):
+
+| Regime | Samples Drawn | Unique Seen | Repeat Rate |
+|---|---|---|---|
+| HPO sweep (10K x 10 epochs) | 100K | 100K | 0.00% |
+| Phase 1 baseline (10K x 100) | 1M | 1M | 0.00% |
+| Phase 1 full (50K x 200) | 10M | 9.85M | 1.49% |
+| Phase 2 target (100K x 500) | 50M | 46.4M | 7.14% |
 
 Five out-of-set (OOS) generators are held out entirely from training. They test whether the model transfers algorithmic reasoning to novel domains it has never seen.
 
