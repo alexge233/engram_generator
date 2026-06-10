@@ -173,20 +173,24 @@ Engram Generator uses a **character-level tokenizer** -- every character maps to
 - **LaTeX preservation**: LaTeX uses nested braces, superscripts, and subscripts (`\frac{d}{dx}`, `x^{2}`). Subword tokenizers split these unpredictably -- `\frac` might become `\fr` + `ac`, breaking the command boundary. Character-level tokenization preserves brace matching, command names, and operator structure exactly as written.
 - **Deterministic alignment**: Every character is exactly one token. No ambiguity about tokenization boundaries. The model's attention patterns can align precisely with the mathematical structure of the problem.
 
-**The character set** (98 characters + 5 special tokens = 103 vocab):
+**The character set** (132 characters + 3 special tokens = 135 vocab):
 
 | Category | Characters |
 |---|---|
 | Digits (10) | `0 1 2 3 4 5 6 7 8 9` |
 | Lowercase (26) | `a b c ... z` |
 | Uppercase (26) | `A B C ... Z` |
+| Greek (12) | `α β γ δ ε θ λ μ π σ φ ω` |
 | Arithmetic (5) | `+ - * / ^` |
+| Relations (4) | `≤ ≥ ≠ ≈` |
 | Grouping (6) | `( ) [ ] { }` |
+| Calculus & analysis (4) | `∂ ∫ √ ∞` |
+| Set theory (5) | `∈ ⊂ ∅ ∩ ∪` |
+| Logic (9) | `∀ ∃ ¬ ∧ ∨ ⊢ ⊨ ↔ ⊥` |
 | Punctuation (9) | `= : ; ? . , ! ' "` |
-| LaTeX & logic (7) | `\ _ \| ~ < > %` |
-| Other (5) | `# @ $ & (space)` |
-| Unicode (4) | degree sign, multiplication sign, arrow, set operators |
-| **Special tokens** (5) | `<pad> <bos> <eos> <unk> <step>` |
+| LaTeX & structure (7) | `\ _ \| ~ < > %` |
+| Other (9) | `# @ $ & ° × — → (space)` |
+| **Special tokens** (3) | `<pad> <eos> <step>` |
 
 The `<step>` token separates solution steps in the target sequence. All generator output is constrained to use only characters in this set -- any generator that produces a character outside it is a bug and is caught by the test suite.
 

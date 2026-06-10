@@ -25,6 +25,9 @@ class CharTokenizer:
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
         " +-/*^()[]{}=:;?.,\\_|!&~'<>%#@\""
         "$°×—→∩∪"
+        "≤≥≠≈∞√∂∫∈⊂∅"
+        "∀∃¬∧∨⊢⊨↔⊥"
+        "αβγδεθλμπσφω"
     )
 
     def __init__(self):
