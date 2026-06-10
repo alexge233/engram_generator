@@ -15,7 +15,7 @@ def tree() -> SkillTree:
     """Create a skill tree from all registered generators.
 
     Returns:
-        SkillTree initialised with the full 373-task curriculum.
+        SkillTree initialised with the full 2022-task curriculum.
     """
     return SkillTree(get_all_generators())
 
@@ -26,7 +26,7 @@ class TestSkillTreeConstruction:
     def test_all_tasks_present(self, tree: SkillTree) -> None:
         """Verify every registered task has a node in the tree."""
         summary = tree.summary()
-        assert summary["total"] == 373
+        assert summary["total"] == 2022
 
     def test_tier0_unlocked_initially(self, tree: SkillTree) -> None:
         """Verify tier 0 tasks without prerequisites start unlocked."""

@@ -1,7 +1,7 @@
 """Structural integrity tests for the engram generator curriculum.
 
 Validates the skill tree graph properties, sample contracts, determinism,
-and difficulty scaling across all 373 registered generators. These tests
+and difficulty scaling across all 2022 registered generators. These tests
 catch connectivity bugs, orphan tasks, dangling prerequisites, and
 backwards cross-tier dependencies that would prevent the curriculum
 from functioning correctly at training time.
@@ -19,7 +19,7 @@ def all_generators() -> list[StepGenerator]:
     """Return all registered generators, cached for the entire module.
 
     Returns:
-        List of all 373 StepGenerator instances with default settings.
+        List of all 2022 StepGenerator instances with default settings.
     """
     return get_all_generators()
 
@@ -115,7 +115,7 @@ class TestTierConsistency:
 
     def test_total_count(self, all_generators: list[StepGenerator]) -> None:
         """Verify total generator count matches expectations."""
-        assert len(all_generators) == 373
+        assert len(all_generators) == 2022
 
 
 class TestSampleContract:
