@@ -155,12 +155,22 @@ And here's the kicker: the algorithmic information (1.85 MB) fits inside even a 
 
 ## Tokenizer
 
+All mathematical notation is written in **LaTeX**. The model learns to read and write LaTeX as a native language -- fractions, integrals, matrices, Greek letters (spelled out), superscripts, subscripts, and nested expressions. This means a model trained on Engram Generator doesn't just learn to solve maths -- it learns the standard notation that humans use to communicate it.
+
+```
+\frac{d}{dx}(-x^2-2x-2) <step> -1*2x=-2x <step> -2*1=-2 <step> 0 <step> -2x-2
+
+\begin{pmatrix} -5 & 3 \\ 2 & 2 \end{pmatrix} \times \begin{pmatrix} -1 & -2 \\ -3 & 8 \end{pmatrix}
+
+\oint_{|z|=3} \frac{1}{z^{2}+z-6} dz <step> poles: z=-3, 2 <step> Res(f,2)=0.2 <step> 1.2566i
+```
+
 Engram Generator uses a **character-level tokenizer** -- every character maps to exactly one token. No subword merging. No BPE. No SentencePiece.
 
 **Why?** Subword tokenizers destroy the structure that reasoning depends on:
 
 - **Digit atomicity**: BPE merges `"123"` into a single token. The model can't see that the `3` is in the ones place and the `1` is in the hundreds place. Arithmetic becomes impossible. Character-level tokenization keeps every digit separate, so carry operations and place-value reasoning work naturally.
-- **LaTeX structure**: Mathematical notation uses nested braces, superscripts, and subscripts (`\frac{d}{dx}`, `x^{2}`). Subword tokenizers split these unpredictably. Character-level tokenization preserves brace matching and operator boundaries exactly.
+- **LaTeX preservation**: LaTeX uses nested braces, superscripts, and subscripts (`\frac{d}{dx}`, `x^{2}`). Subword tokenizers split these unpredictably -- `\frac` might become `\fr` + `ac`, breaking the command boundary. Character-level tokenization preserves brace matching, command names, and operator structure exactly as written.
 - **Deterministic alignment**: Every character is exactly one token. No ambiguity about tokenization boundaries. The model's attention patterns can align precisely with the mathematical structure of the problem.
 
 **The character set** (98 characters + 5 special tokens = 103 vocab):
