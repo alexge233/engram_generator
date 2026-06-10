@@ -332,6 +332,10 @@ def preview_tier(tier: int, num_samples: int,
 
 def main() -> None:
     """CLI entry point."""
+    from engram_generator.logo import print_logo
+    print_logo()
+    print()
+
     args = parse_args()
 
     if args.skill_tree:

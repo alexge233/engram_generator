@@ -1,131 +1,149 @@
-# Engram Generator
+```
+  ███████╗███╗   ██╗ ██████╗ ██████╗  █████╗ ███╗   ███╗
+  ██╔════╝████╗  ██║██╔════╝ ██╔══██╗██╔══██╗████╗ ████║
+  █████╗  ██╔██╗ ██║██║  ███╗██████╔╝███████║██╔████╔██║
+  ██╔══╝  ██║╚██╗██║██║   ██║██╔══██╗██╔══██║██║╚██╔╝██║
+  ███████╗██║ ╚████║╚██████╔╝██║  ██║██║  ██║██║ ╚═╝ ██║
+  ╚══════╝╚═╝  ╚═══╝ ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝
+               G E N E R A T O R
+```
 
-A procedural synthetic dataset generator for training reasoning AI. **2,022 generators** across **100+ scientific domains** and **11 tiers** of difficulty, producing step-by-step problem-solution pairs that force models to learn algorithms rather than memorise answers.
+**2,022 generators. 100+ scientific domains. 10^81 unique problems.**
+
+A procedural dataset that forces AI models to learn algorithms, not memorise answers. Every problem is generated on-the-fly with a step-by-step solution chain. Every answer is correct by construction. There is no dataset file -- just code that writes an endless exam.
 
 > This repository contains AI-generated code, reviewed and directed by a human author.
 
-## Why This Exists
+```
+pip install engram-generator
+```
 
-Models trained on static datasets learn to pattern-match, not to reason. They memorise input-output mappings rather than learning the underlying algorithms. When faced with unseen problem structures, they collapse.
+## The Problem
 
-Engram Generator produces procedurally generated training data that forces models to learn **how to think, not what to answer**:
+Train a model on 10,000 addition problems and it learns a lookup table, not addition. Change the digit count and it breaks. That's pattern matching pretending to be reasoning.
 
-- **2,022 generators** across 100+ scientific domains
-- **~100M+ unique problem combinations** -- memorisation is physically impossible
-- **Step-by-step solution chains** -- the model must decompose and reason
-- **26 reasoning patterns** with balanced training exposure
-- **Adaptive difficulty** -- escalates as the model improves
-- **Prerequisite skill tree** -- gates advanced reasoning behind mastery of foundations
-- **Deterministic verification** -- every answer is provably correct by construction
+Engram Generator makes pattern matching impossible:
 
-## Domain Coverage
-
-| Domain | Generators | Topics |
-|---|---|---|
-| **Mathematics** | 730+ | Arithmetic, algebra, calculus, analysis, topology, differential geometry, measure theory, functional analysis, algebraic geometry, category theory, homological algebra, number theory, combinatorics, PDEs, optimization |
-| **Physics** | 200+ | Classical mechanics, electromagnetism, thermodynamics, special/general relativity, optics, fluids, nuclear, quantum mechanics, statistical mechanics, particle physics, nonlinear dynamics, solid state, plasma |
-| **Computer Science** | 230+ | Algorithms, data structures, cryptography, formal languages, information theory, compilers, distributed systems, ML theory, computer graphics, robotics, formal verification, NLP |
-| **Chemistry** | 80+ | General, physical, organic, inorganic, spectroscopy, polymer science |
-| **Biology & Health** | 90+ | Genetics, biochemistry, cell biology, bioinformatics, ecology, epidemiology, pharmacology, neuroscience, systems biology, biostatistics |
-| **Engineering** | 100+ | Signal processing, control theory, materials science, aerospace, power systems, antenna theory, semiconductor, photonics, structural, heat transfer, digital electronics |
-| **Quantum** | 50+ | Quantum mechanics formalism, quantum information, quantum field theory, quantum error correction |
-| **Earth & Space** | 30+ | Astronomy, geology, climate science, oceanography, geophysics |
-| **Social & Cognitive** | 50+ | Economics, game theory, linguistics, decision theory, network science, cognitive science, causal inference |
-| **Logic & Foundations** | 50+ | Formal logic, model theory, computability, proof theory, set theory |
-| **Other** | 100+ | Music theory, financial mathematics, actuarial science, medical imaging, operations research, fuzzy logic, persistent homology, wavelet theory |
-
-## Reasoning Patterns
-
-Training is balanced across **26 distinct reasoning strategies**, not by generator count. Without this, formula-substitution problems (55% of generators) would dominate training.
-
-| Pattern | Description | Sample allocation |
-|---|---|---|
-| Formula substitution | Plug values into formula | 3.8% |
-| Symbolic manipulation | Differentiation, integration, simplification | 3.8% |
-| Graph traversal | BFS, DFS, shortest path, flow | 3.8% |
-| Dynamic programming | Optimal substructure, memoisation | 3.8% |
-| Linear algebra | Matrix decomposition, solving systems | 3.8% |
-| Probabilistic reasoning | Bayes, distributions, expectations | 3.8% |
-| Logical deduction | Proofs, inference, validity checking | 3.8% |
-| Meta-reasoning | Proof strategy, error analysis, design | 3.8% |
-| ... (18 more patterns) | | 3.8% each |
-
-Each pattern gets **equal representation** regardless of how many generators belong to it. A recursive decomposition problem (8 generators) gets the same training exposure as formula substitution (1,187 generators).
-
-## Tier System
-
-Tasks are organised into 11 tiers (0-10) with prerequisite dependencies:
-
-| Tier | Tasks | Level | Examples |
-|---|---|---|---|
-| 0 | 20 | Basic arithmetic | Addition, subtraction, sorting, boolean evaluation |
-| 1 | 36 | Operations | Multiplication, division, Fibonacci, Caesar cipher |
-| 2 | 47 | Intermediate | Modular arithmetic, derivatives, quadratics, graph reachability |
-| 3 | 95 | Advanced | Integrals, determinants, base conversion, boolean algebra |
-| 4 | 313 | Applied | Physics, matrix operations, probability, dynamic programming |
-| 5 | 730 | Expert | Calculus depth, PDEs, cryptography, quantum mechanics |
-| 6 | 521 | Graduate | Abstract algebra, topology, general relativity, information theory |
-| 7 | 176 | Meta-reasoning | Proof construction, error detection, generalisation |
-| 8 | 31 | Creative | Conjecture, problem transformation, isomorphism detection |
-| 9 | 29 | Research | Algorithm design, impossibility proofs, hypothesis testing |
-| 10 | 24 | Self-architecture | Scaling prediction, architecture analysis, loss design |
+- **10^81 unique problems** -- more than atoms in the observable universe
+- **Step-by-step solutions** -- show your work or fail
+- **26 reasoning strategies** with balanced exposure -- no single trick works
+- **Adaptive difficulty** -- the curriculum escalates as the model improves
+- **Must Level Up** -- advanced tasks are locked behind mastery of prerequisites
+- **Provably correct** -- every answer is generated by the same algorithm that generated the problem
 
 ## The Arc
 
-A model trained on this curriculum progresses from basic arithmetic to self-architectural reasoning:
+A model trained on this curriculum climbs from counting to self-awareness:
 
 ```
-2 + 3 = 5
-    |
-d/dx(3x^2 + 2x) = 6x + 2
-    |
-curl F = (dFz/dy - dFy/dz, ...)
-    |
-"This proof has an error in step 3. Here is the correction."
-    |
-"These two problems share an isomorphic structure."
-    |
-"To solve this class of problems, I would design the following algorithm."
-    |
-"My architecture struggles with length generalisation.
- Here is a proposed modification."
+Tier 0   "2 + 3 = 5"
+  |
+Tier 2   "d/dx(3x^2 + 2x) = 6x + 2"
+  |
+Tier 5   "curl F = (dFz/dy - dFy/dz, ...)"
+  |
+Tier 7   "This proof has an error in step 3. Here is the correction."
+  |
+Tier 8   "These two problems share an isomorphic structure."
+  |
+Tier 9   "To solve this class of problems, I would design the following algorithm."
+  |
+Tier 10  "My architecture struggles with length generalisation.
+          Here is a proposed modification."
 ```
 
 From following procedures to creating them. From solving problems to understanding what makes problems solvable.
 
-## Samples
+## What's Inside
 
-Each training sample has three parts:
+| Domain | Generators | Highlights |
+|---|---|---|
+| **Mathematics** | 730+ | Arithmetic through category theory, PDEs, algebraic geometry |
+| **Physics** | 200+ | Newton to quantum field theory, plasma, particle physics |
+| **Computer Science** | 230+ | Algorithms, cryptography, compilers, distributed systems, ML theory |
+| **Chemistry** | 80+ | General, organic, physical, spectroscopy, polymer science |
+| **Biology & Health** | 90+ | Genetics, biochemistry, epidemiology, neuroscience, systems biology |
+| **Engineering** | 100+ | Signal processing, control theory, semiconductors, photonics, aerospace |
+| **Quantum** | 50+ | Formalism, information, field theory, error correction |
+| **Earth & Space** | 30+ | Astronomy, geology, oceanography, geophysics, climate |
+| **Social & Cognitive** | 50+ | Economics, game theory, linguistics, causal inference |
+| **Logic & Foundations** | 50+ | Formal logic, model theory, computability, proof theory |
+| **Other** | 100+ | Music theory, financial maths, medical imaging, persistent homology |
+
+## Levelling System
+
+You don't get to attempt RSA encryption until you can do modular arithmetic. You don't get to critique a proof until you can write one. The skill tree enforces this:
+
+| Tier | Tasks | What You Unlock | Examples |
+|---|---|---|---|
+| 0 | 20 | **Fundamentals** | Addition, subtraction, sorting, boolean logic |
+| 1 | 36 | **Building blocks** | Multiplication, Fibonacci, Caesar cipher |
+| 2 | 47 | **Algebra & graphs** | Derivatives, quadratics, graph reachability |
+| 3 | 95 | **Real maths** | Integrals, determinants, boolean algebra |
+| 4 | 313 | **Applied science** | Physics, probability, dynamic programming |
+| 5 | 730 | **Expert territory** | PDEs, cryptography, quantum mechanics |
+| 6 | 521 | **Graduate level** | Topology, general relativity, information theory |
+| 7 | 176 | **Meta-reasoning** | Proof strategy, error detection, generalisation |
+| 8 | 31 | **Creative** | Conjecture, isomorphism detection |
+| 9 | 29 | **Research** | Algorithm design, impossibility proofs |
+| 10 | 24 | **Self-architecture** | Scaling laws, architecture search, loss design |
+
+## Reasoning Balance
+
+Without balancing, formula-substitution problems (55% of generators) would dominate training. The model would learn to plug numbers into equations and call it a day.
+
+Instead, training is balanced across **26 reasoning strategies**. Each gets equal exposure:
+
+| Pattern | What it teaches |
+|---|---|
+| Formula substitution | Plug and compute |
+| Symbolic manipulation | Differentiate, integrate, simplify |
+| Graph traversal | BFS, DFS, shortest path, flow |
+| Dynamic programming | Optimal substructure, memoisation |
+| Linear algebra | Decompose, solve, transform |
+| Probabilistic reasoning | Bayes, distributions, expectations |
+| Logical deduction | Proofs, inference, validity |
+| Meta-reasoning | Strategy selection, error analysis, design |
+| *...18 more* | *Each at 3.8% of training samples* |
+
+A recursive decomposition problem (8 generators) gets the same training time as formula substitution (1,187 generators). No free rides.
+
+## Why Memorisation is Impossible
+
+The entire curriculum is **1.85 MB of algorithms**. It produces **terabytes of unique instances**. That's a compression ratio of 1,250,000:1.
+
+| Difficulty range | Unique problems | For scale... |
+|---|---|---|
+| d=1 only | ~10^12 | More than all Google searches ever |
+| d=1-4 | ~10^41 | Grains of sand on Earth, squared |
+| d=1-8 (full) | **~10^81** | **Atoms in the observable universe** |
+
+Even the largest models can't put a dent in it:
+
+| Model | Parameters | Can memorise | Coverage of 10^81 |
+|---|---|---|---|
+| 1M | 1,000,000 | ~1,000 | 10^-78 |
+| **13M (Engram)** | **13,200,000** | **~14,000** | **10^-77** |
+| 1B | 1,000,000,000 | ~1M | 10^-75 |
+| 7B (Llama-2) | 7,000,000,000 | ~7.5M | 10^-74 |
+| 70B (Llama-2) | 70,000,000,000 | ~75M | 10^-73 |
+| 405B (Llama-3.1) | 405,000,000,000 | ~438M | 10^-72 |
+
+A 405B model -- the largest open-weight LLM ever released -- covers 10^-72 of the state space. The gap is 72 orders of magnitude. **The only winning strategy is to learn the algorithms.**
+
+And here's the kicker: the algorithmic information (1.85 MB) fits inside even a 1M parameter model with 14x headroom. The model *can* store every algorithm. It *cannot* store even a billionth of the instances.
+
+## Samples
 
 ```
 Input:  add two 5 digit numbers
 Target: 13278 + 46048 <step> 8+8=16 <step> 7+4+1=12 <step> 2+0+1=3 <step> 3+6=9 <step> 1+4=5 <step> 59326
 ```
 
-- **Input**: short natural language task description
-- **Target**: problem statement, solution steps, and final answer separated by `<step>` tokens
+- **Input**: natural language task description
+- **Target**: problem, solution steps, and answer separated by `<step>` tokens
 - Both capped at **512 characters**
-
-## Tokenizer
-
-Character-level tokenizer with 72 tokens. Every character is its own token -- no subword merging. This preserves digit atomicity (critical for arithmetic) and LaTeX structure (brace matching).
-
-## Information Capacity
-
-| Metric | Value |
-|---|---|
-| Unique problem combinations | ~100M+ (conservative) |
-| Instance information | ~10 GB |
-| Algorithmic information (compressed source) | ~1.85 MB |
-| Compression ratio | ~5,700x |
-
-A 13M parameter model is **6,500x too small** to memorise the dataset. A 1B model is **85x too small**. The model **must** learn the algorithms.
-
-## Installation
-
-```bash
-pip install -e .
-```
+- Character-level tokenizer (72 tokens) -- no subword merging, so digits stay atomic
 
 ## Usage
 
@@ -152,11 +170,14 @@ from engram_generator.curriculum.skill_tree import SkillTree
 generators = get_all_generators()
 tree = SkillTree(generators, retention_ratio=0.1)
 
+# See what's unlocked
 print(tree.get_unlocked_tasks())
+
+# Level up by proving mastery
 events = tree.update({"addition": 0.97, "subtraction": 0.85})
 ```
 
-### Pattern-balanced sampling
+### Balanced training
 
 ```python
 from engram_generator.curriculum.reasoning_patterns import (
@@ -166,14 +187,14 @@ from engram_generator.curriculum.registry import get_all_generators
 
 gens = get_all_generators()
 weights = get_pattern_weights(gens)
-summary = get_pattern_summary(gens)
 
 # Each of the 26 reasoning patterns gets equal training exposure
+summary = get_pattern_summary(gens)
 for pattern, count in sorted(summary.items(), key=lambda x: -x[1])[:5]:
-    print(f"{pattern}: {count} generators -> 3.8% of training samples")
+    print(f"{pattern}: {count} generators -> 3.8% of training")
 ```
 
-### Validate generators
+### Validate
 
 ```bash
 engram-validate --all --samples 20
@@ -189,10 +210,23 @@ python -m pytest tests/ -v
 
 **6,326 tests** across 16 test modules:
 
-- **Sanity tests** (6,066): every generator tested at low difficulty, high difficulty, and determinism
-- **Correctness tests** (75): independent mathematical verification of answers
-- **Structural tests** (185): no orphans, no dangling prerequisites, no backwards cross-tier dependencies
-- **Coverage: 99%** (77,452 statements, 1,104 missed)
+- **Sanity** (6,066): every generator at low difficulty, high difficulty, and determinism
+- **Correctness** (75): independent mathematical verification
+- **Structural** (185): no orphans, no dangling prerequisites, no backwards cross-tier deps
+- **Coverage**: 99% (77,452 statements, 1,104 missed)
+
+## Roadmap
+
+Current: **v0.1.0** -- 2,022 generators, 100+ domains, 26 reasoning patterns
+
+Planned:
+
+- **Code generation** -- generators that output executable code (Python, pseudocode), verified by sandboxed execution
+- **Tool calling** -- generators that produce structured tool-call sequences from task descriptions
+- **Agentic reasoning** -- multi-step observation-action-reward chains for planning and tool use
+- **5,000+ generators** -- deeper coverage of existing domains, plus medicine, law, philosophy, and linguistics
+- **Multi-language output** -- same algorithms, different natural language task descriptions
+- **Difficulty auto-scaling** -- dynamic difficulty adjustment based on model accuracy curves
 
 ## License
 

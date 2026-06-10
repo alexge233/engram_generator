@@ -1,7 +1,7 @@
 [project]
 name = "engram-generator"
-version = "0.1.0a1"
-description = "Infinite synthetic dataset generator for reasoning, logic, and algorithmic learning — 373 tasks across 11 tiers (alpha)"
+version = "0.1.0"
+description = "Procedural synthetic dataset generator for training reasoning AI — 2,022 generators across 100+ scientific domains"
 requires-python = ">=3.10"
 authors = [
     {name = "deepnet.one"},
@@ -10,11 +10,15 @@ readme = "README.md"
 license = {text = "MIT"}
 keywords = ["machine-learning", "curriculum", "reasoning", "logic", "synthetic-data", "infinite-dataset"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Artificial Intelligence",
     "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
 ]
+
 dependencies = [
     "sympy>=1.12",
     "numpy>=1.24",
@@ -22,6 +26,10 @@ dependencies = [
     "pylatexenc>=2.10",
     "unicodeit>=0.7",
 ]
+
+[project.urls]
+Homepage = "https://www.deepnet.one"
+Repository = "https://github.com/alexge233/engram_generator"
 
 [project.optional-dependencies]
 dev = [

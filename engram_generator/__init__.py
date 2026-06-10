@@ -1,10 +1,9 @@
-"""Engram Generator — infinite synthetic dataset for reasoning and logic.
+"""Engram Generator — procedural synthetic dataset for training reasoning AI.
 
-Alpha Version — Not yet tested at scale. Not yet fully reviewed.
-
-373 tasks across 11 tiers (0-10), from basic arithmetic to self-architecture.
-Procedurally generated with LaTeX notation, step-by-step solution chains,
-and adaptive difficulty via a prerequisite skill tree.
+2,022 generators across 100+ scientific domains and 11 tiers (0-10),
+from basic arithmetic to self-architectural reasoning. Produces ~10^81
+unique step-by-step problem-solution pairs that force models to learn
+algorithms rather than memorise answers.
 """
 
-__version__ = "0.1.0-alpha"
+__version__ = "0.1.0"
