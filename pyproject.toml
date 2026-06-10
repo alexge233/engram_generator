@@ -28,7 +28,7 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://www.deepnet.one"
+Homepage = "https://www.engram.one"
 Repository = "https://github.com/alexge233/engram_generator"
 
 [project.optional-dependencies]
