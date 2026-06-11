@@ -235,12 +235,12 @@ async function init(){
     allLinks = [];
     tasks.forEach(t=>{
         t.prereqs.forEach(p=>{
-            if(taskMap[p]) allLinks.push({source:p, target:t.name});
+            if(taskMap[p]) allLinks.push({sourceId:p, targetId:t.name});
         });
     });
 
-    const nodes = [...allNodes];
-    const links = [...allLinks];
+    const nodes = allNodes;
+    const links = allLinks.map(l=>({source:l.sourceId, target:l.targetId}));
 
     bar.style.width="50%";
     status.textContent=`Laying out ${nodes.length} nodes, ${links.length} edges...`;
@@ -321,15 +321,18 @@ function applyFilter(){
     rebuildGraphData(activeDomain, document.getElementById("search").value.toLowerCase());
 }
 
-function rebuildGraphData(domain, searchTerm){
+function rebuildGraphData(domain, searchTerm, extraIds){
     const visibleIds = new Set();
     allNodes.forEach(n=>{
         const domOk = !domain || n.domain===domain;
         const srchOk = !searchTerm || n.id.includes(searchTerm);
         if(domOk && srchOk) visibleIds.add(n.id);
     });
+    if(extraIds) extraIds.forEach(id=>visibleIds.add(id));
     const nodes = allNodes.filter(n=>visibleIds.has(n.id));
-    const links = allLinks.filter(l=>visibleIds.has(l.source)&&visibleIds.has(l.target));
+    const links = allLinks
+        .filter(l=>visibleIds.has(l.sourceId)&&visibleIds.has(l.targetId))
+        .map(l=>({source:l.sourceId, target:l.targetId}));
     graph.graphData({nodes, links});
 }
 
@@ -341,33 +344,31 @@ function selectNode(name){
     const unlockSet=new Set(reverseMap[name]||[]);
     const searchTerm=document.getElementById("search").value.toLowerCase();
 
-    // Rebuild graph with selected node + its prereqs/unlocks included
-    const visibleIds = new Set();
-    allNodes.forEach(n=>{
-        const domOk = !activeDomain || n.domain===activeDomain;
-        const srchOk = !searchTerm || n.id.includes(searchTerm);
-        if(domOk && srchOk) visibleIds.add(n.id);
-    });
-    // Force-include clicked node, prereqs, and unlocks
-    visibleIds.add(name);
-    prereqSet.forEach(p=>visibleIds.add(p));
-    unlockSet.forEach(u=>visibleIds.add(u));
+    // Rebuild with cross-domain prereqs/unlocks included
+    const extraIds = new Set([name]);
+    prereqSet.forEach(p=>extraIds.add(p));
+    unlockSet.forEach(u=>extraIds.add(u));
+    rebuildGraphData(activeDomain, searchTerm, extraIds);
 
-    const nodes = allNodes.filter(n=>visibleIds.has(n.id));
-    const links = allLinks.filter(l=>visibleIds.has(l.source)&&visibleIds.has(l.target));
-
-    // Set highlight flags
+    // Set highlight flags on the live graph data
+    const {nodes, links} = graph.graphData();
     nodes.forEach(n=>{
         n.__highlighted = n.id===name;
         n.__prereq = prereqSet.has(n.id);
         n.__unlock = unlockSet.has(n.id);
     });
     links.forEach(l=>{
-        l.__highlighted = prereqSet.has(l.source)&&l.target===name;
-        l.__unlockEdge = l.source===name&&unlockSet.has(l.target);
+        const sid=typeof l.source==="object"?l.source.id:l.source;
+        const tid=typeof l.target==="object"?l.target.id:l.target;
+        l.__highlighted = prereqSet.has(sid)&&tid===name;
+        l.__unlockEdge = sid===name&&unlockSet.has(tid);
     });
 
-    graph.graphData({nodes, links});
+    graph.nodeColor(graph.nodeColor())
+         .nodeVal(graph.nodeVal())
+         .linkColor(graph.linkColor())
+         .linkWidth(graph.linkWidth())
+         .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
 
     // Focus camera
     const node=nodes.find(n=>n.id===name);
