@@ -455,11 +455,7 @@
 
 <section class="hero">
     <div class="container">
-        <div class="logo" aria-label="ENGRAM">  _____ _   _  ____ ____      _    __  __
- | ____| \ | |/ ___|  _ \    / \  |  \/  |
- |  _| |  \| | |  _| |_) |  / _ \ | |\/| |
- | |___| |\  | |_| |  _ <  / ___ \| |  | |
- |_____|_| \_|\____|_| \_\/_/   \_\_|  |_|</div>
+        <canvas id="hero-logo" width="64" height="64" style="width:192px;height:192px;image-rendering:pixelated;border-radius:12px;margin-bottom:8px"></canvas>
 
         <h1>Teaching AI to <span class="highlight">Reason</span></h1>
         <p class="subtitle">A procedural dataset that encodes the breadth of human scientific knowledge as step-by-step reasoning problems. The goal is not a benchmark. The goal is to teach machines how humans think, discover, and invent.</p>
@@ -766,5 +762,78 @@ summary = get_pattern_summary(gens)
     </div>
 </footer>
 
+<script>
+(function(){
+const canvas=document.getElementById("hero-logo");
+if(!canvas)return;
+const ctx=canvas.getContext("2d");
+ctx.imageSmoothingEnabled=false;
+const S=64;let time=0;
+const V=[];for(let i=0;i<16;i++)V.push([(i&1)?1:-1,(i&2)?1:-1,(i&4)?1:-1,(i&8)?1:-1]);
+const E=[];for(let i=0;i<16;i++)for(let j=i+1;j<16;j++){let d=0;for(let k=0;k<4;k++)if(V[i][k]!==V[j][k])d++;if(d===1)E.push({a:i,b:j,t:0});}
+const N=[];for(let i=0;i<30;i++)N.push({p:[(Math.random()-.5)*1.6,(Math.random()-.5)*1.6,(Math.random()-.5)*1.6,(Math.random()-.5)*1.6],br:0});
+const NE=[];for(let i=0;i<30;i++){const ds=[];for(let j=0;j<30;j++){if(i===j)continue;let d=0;for(let k=0;k<4;k++)d+=(N[i].p[k]-N[j].p[k])**2;ds.push({j,d:Math.sqrt(d)});}ds.sort((a,b)=>a.d-b.d);for(let c=0;c<3;c++){const a=i,b=ds[c].j;if(!NE.some(e=>(e.a===a&&e.b===b)||(e.a===b&&e.b===a)))NE.push({a,b,t:0});}}
+const nBr=new Float32Array(16);
+const sigs=[];
+function launch(){sigs.push({n:Math.floor(Math.random()*16),isN:Math.random()<.5,c:Math.floor(Math.random()*3),age:0});}
+for(let i=0;i<4;i++)launch();
+function rot(v,a){let[x,y,z,w]=v;let c,s;
+c=Math.cos(a[0]);s=Math.sin(a[0]);[x,y]=[x*c-y*s,x*s+y*c];
+c=Math.cos(a[1]);s=Math.sin(a[1]);[x,z]=[x*c-z*s,x*s+z*c];
+c=Math.cos(a[2]);s=Math.sin(a[2]);[x,w]=[x*c-w*s,x*s+w*c];
+c=Math.cos(a[3]);s=Math.sin(a[3]);[y,z]=[y*c-z*s,y*s+z*c];
+c=Math.cos(a[4]);s=Math.sin(a[4]);[y,w]=[y*c-w*s,y*s+w*c];
+c=Math.cos(a[5]);s=Math.sin(a[5]);[z,w]=[z*c-w*s,z*s+w*c];
+return[x,y,z,w];}
+function proj(v){const[x,y,z,w]=v;const s4=3/(3-w);const x3=x*s4,y3=y*s4,z3=z*s4;const s3=6/(6+z3);return{sx:32+x3*s3*S*.18,sy:32+y3*s3*S*.18,z:z3,sc:s3*s4};}
+function step(){
+const ns=[];
+for(const sig of sigs){sig.age++;if(sig.age>16)continue;
+if(!sig.isN){const oe=E.filter(e=>e.a===sig.n||e.b===sig.n).sort(()=>Math.random()-.5);
+const cnt=Math.random()<.25?2:1;
+for(let i=0;i<Math.min(cnt,oe.length);i++){oe[i].t=1;nBr[oe[i].a]=1;nBr[oe[i].b]=1;
+const nx=oe[i].a===sig.n?oe[i].b:oe[i].a;
+if(Math.random()<.3){const br=NE.filter(e=>e.bridge);if(br.length){const be=br[Math.floor(Math.random()*br.length)];be.t=1;ns.push({n:be.a,isN:true,c:sig.c,age:sig.age});continue;}}
+ns.push({n:nx,isN:false,c:sig.c,age:sig.age});}}
+else{const oe=NE.filter(e=>e.a===sig.n||e.b===sig.n).sort(()=>Math.random()-.5);
+const cnt=Math.random()<.35?2:1;
+for(let i=0;i<Math.min(cnt,oe.length);i++){oe[i].t=1;N[sig.n].br=1;
+const nx=oe[i].a===sig.n?oe[i].b:oe[i].a;
+if(nx<30){N[nx].br=.7;ns.push({n:nx,isN:true,c:sig.c,age:sig.age});}
+else{const vi=nx-30;if(vi<16){nBr[vi]=1;ns.push({n:vi,isN:false,c:sig.c,age:sig.age});}}
+}}}
+sigs.length=0;sigs.push(...ns);if(Math.random()<.12)launch();}
+// Add bridge markers
+for(let i=0;i<30;i++){let bd=Infinity,bv=0;for(let v=0;v<16;v++){let d=0;for(let k=0;k<4;k++)d+=(N[i].p[k]-V[v][k])**2;if(d<bd){bd=d;bv=v;}}NE.push({a:i,b:bv+30,t:0,bridge:true});}
+const DC=[[0,212,255],[68,136,255],[204,68,255],[140,80,255]];
+function draw(){time+=.008;if(Math.floor(time*125)%3===0)step();
+for(const e of E)e.t*=.95;for(const e of NE)e.t*=.94;for(let i=0;i<16;i++)nBr[i]*=.93;for(const n of N)n.br*=.92;
+ctx.fillStyle="#0a0a0f";ctx.fillRect(0,0,S,S);
+const a=[time*.5,time*.3,time*.7,time*.2,time*.4,time*.15];
+const pj=V.map(v=>{const r=rot(v,a);return proj(r);});
+const pn=N.map(n=>{const r=rot(n.p,a);return proj(r);});
+for(const e of E){const f=pj[e.a],t2=pj[e.b],tr=e.t;
+let di=0;for(let k=0;k<4;k++)if(V[e.a][k]!==V[e.b][k]){di=k;break;}
+const dc=DC[di];
+if(tr<.01)ctx.strokeStyle=`rgba(${dc[0]/6|0},${dc[1]/6|0},${dc[2]/6|0},.3)`;
+else ctx.strokeStyle=`rgba(${dc[0]*tr|0},${dc[1]*tr|0},${dc[2]*tr|0},${.4+tr*.6})`;
+ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(f.sx,f.sy);ctx.lineTo(t2.sx,t2.sy);ctx.stroke();}
+for(const e of NE){const tr=e.t;
+let f,t2;if(e.bridge){f=pn[e.a<30?e.a:e.b];const vi=(e.a>=30?e.a:e.b)-30;if(vi>=16)continue;t2=pj[vi];}else{if(e.a>=30||e.b>=30)continue;f=pn[e.a];t2=pn[e.b];}
+if(tr<.01)ctx.strokeStyle="rgba(8,8,15,.2)";
+else ctx.strokeStyle=`rgba(${100*tr|0},${220*tr|0},${180*tr|0},${.3+tr*.6})`;
+ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(f.sx,f.sy);ctx.lineTo(t2.sx,t2.sy);ctx.stroke();}
+for(const p of pj){const i=pj.indexOf(p),b=nBr[i];
+ctx.fillStyle=`rgb(${15+b*220|0},${15+b*200|0},${30+b*225|0})`;ctx.fillRect(p.sx-.5|0,p.sy-.5|0,2,2);
+if(b>.4){ctx.fillStyle=`rgba(255,255,255,${b*.5})`;ctx.fillRect(p.sx|0,p.sy|0,1,1);}}
+for(let i=0;i<N.length;i++){const p=pn[i],b=N[i].br;
+ctx.fillStyle=`rgb(${10+b*150|0},${20+b*230|0},${15+b*180|0})`;ctx.fillRect(p.sx|0,p.sy|0,1,1);}
+for(const sig of sigs){const p=sig.isN?(sig.n<30?pn[sig.n]:null):pj[sig.n];if(!p)continue;
+const cols=["rgba(0,255,255,.8)","rgba(255,100,255,.8)","rgba(255,200,50,.8)"];
+ctx.fillStyle=cols[sig.c]||cols[0];ctx.fillRect(p.sx|0,p.sy|0,1,1);}
+requestAnimationFrame(draw);}
+draw();
+})();
+</script>
 </body>
 </html>
