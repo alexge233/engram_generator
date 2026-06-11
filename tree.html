@@ -214,6 +214,23 @@
         .info-panel .unl li { color: var(--green); cursor: pointer; padding: 2px 0; }
         .info-panel li:hover { text-decoration: underline; }
 
+        .sample-box {
+            background: #080810;
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            line-height: 1.5;
+            overflow-x: auto;
+            word-break: break-all;
+        }
+        .sample-box .s-input { color: var(--yellow); margin-bottom: 4px; }
+        .sample-box .s-problem { color: var(--green); }
+        .sample-box .s-step { color: var(--text-dim); }
+        .sample-box .s-step .sn { color: var(--magenta); }
+        .sample-box .s-answer { color: var(--cyan); font-weight: 700; margin-top: 4px; }
+
         .legend {
             position: fixed;
             bottom: 12px;
@@ -266,6 +283,8 @@
     <ul class="req" id="info-req"></ul>
     <div class="section-label" id="lbl-unl">UNLOCKS</div>
     <ul class="unl" id="info-unl"></ul>
+    <div class="section-label" id="lbl-samples" style="margin-top:14px">SAMPLES</div>
+    <div id="info-samples"></div>
 </div>
 <div class="legend" id="legend"></div>
 
@@ -430,6 +449,26 @@ function selectNode(name){
         lblUnl.style.display="block"; unlEl.style.display="block";
         unlEl.innerHTML=unl.map(u=>`<li onclick="selectNode('${u}')">${u.replace(/_/g," ")}</li>`).join("");
     } else { lblUnl.style.display="none"; unlEl.style.display="none"; }
+
+    // Samples
+    const sampEl=document.getElementById("info-samples");
+    const lblSamp=document.getElementById("lbl-samples");
+    if(t.samples && t.samples.length){
+        lblSamp.style.display="block"; sampEl.style.display="block";
+        sampEl.innerHTML=t.samples.map(s=>{
+            const parts=s.target.split(" <step> ");
+            const problem=parts[0]||"";
+            const steps=parts.slice(1,-1);
+            const answer=parts.length>1?parts[parts.length-1]:"";
+            function esc(str){return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+            return `<div class="sample-box">`+
+                `<div class="s-input">${esc(s.input)}</div>`+
+                `<div class="s-problem">${esc(problem)}</div>`+
+                steps.map((st,i)=>`<div class="s-step"><span class="sn">${i+1}.</span> ${esc(st)}</div>`).join("")+
+                (answer?`<div class="s-answer">= ${esc(answer)}</div>`:"")+
+                `</div>`;
+        }).join("");
+    } else { lblSamp.style.display="none"; sampEl.style.display="none"; }
 
     panel.classList.add("visible");
 }
