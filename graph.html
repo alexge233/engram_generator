@@ -206,7 +206,7 @@ const TIER_NAMES = [
     "Creative","Research","Self-Architecture"
 ];
 
-let graph, taskMap={}, reverseMap={}, selectedNode=null, activeDomain=null;
+let graph, taskMap={}, reverseMap={}, selectedNode=null, activeDomain=null, allNodes=[], allLinks=[];
 
 async function init(){
     const bar=document.getElementById("load-bar");
@@ -223,21 +223,24 @@ async function init(){
     tasks.forEach(t=>{ taskMap[t.name]=t; reverseMap[t.name]=[]; });
     tasks.forEach(t=>t.prereqs.forEach(p=>{ if(reverseMap[p]) reverseMap[p].push(t.name); }));
 
-    const nodes = tasks.map(t=>({
+    allNodes = tasks.map(t=>({
         id: t.name,
         tier: t.tier,
         domain: t.domain,
         pattern: t.pattern,
         color: DOMAIN_COLORS[t.domain]||"#8888a0",
-        val: 1 + t.tier * 0.5,
+        val: 0.4 + t.tier * 0.15,
     }));
 
-    const links = [];
+    allLinks = [];
     tasks.forEach(t=>{
         t.prereqs.forEach(p=>{
-            if(taskMap[p]) links.push({source:p, target:t.name});
+            if(taskMap[p]) allLinks.push({source:p, target:t.name});
         });
     });
+
+    const nodes = [...allNodes];
+    const links = [...allLinks];
 
     bar.style.width="50%";
     status.textContent=`Laying out ${nodes.length} nodes, ${links.length} edges...`;
@@ -247,14 +250,14 @@ async function init(){
     graph = ForceGraph3D()(document.getElementById("graph"))
         .graphData({nodes, links})
         .backgroundColor("#0a0a0f")
-        .nodeColor(n=> n.__dimmed ? "#0a0a0f" : n.__highlighted ? "#ffffff" : n.__prereq ? "#ffcc44" : n.__unlock ? "#44ff88" : n.color)
+        .nodeColor(n=> n.__highlighted ? "#ffffff" : n.__prereq ? "#ffcc44" : n.__unlock ? "#44ff88" : n.color)
         .nodeOpacity(1)
-        .nodeVal(n=> n.__dimmed ? 0 : n.__highlighted ? 2 : n.__prereq||n.__unlock ? 1.5 : 0.4 + n.tier * 0.15)
-        .nodeLabel(n=> n.__dimmed ? "" : `${n.id.replace(/_/g," ")}\nTier ${n.tier} · ${n.domain} · ${n.pattern.replace(/_/g," ")}`)
-        .linkColor(l=>{if(l.__highlighted)return"#ffcc44";if(l.__unlockEdge)return"#44ff88";const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if((sn&&sn.__dimmed)||(tn&&tn.__dimmed))return"#0a0a0f";return"rgba(100,130,180,0.35)";})
-        .linkWidth(l=>{if(l.__highlighted||l.__unlockEdge)return 2.5;const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if((sn&&sn.__dimmed)||(tn&&tn.__dimmed))return 0.001;return 1.2;})
+        .nodeVal(n=> n.__highlighted ? 2 : n.__prereq||n.__unlock ? 1.5 : n.val)
+        .nodeLabel(n=> `${n.id.replace(/_/g," ")}\nTier ${n.tier} · ${n.domain} · ${n.pattern.replace(/_/g," ")}`)
+        .linkColor(l=> l.__highlighted ? "#ffcc44" : l.__unlockEdge ? "#44ff88" : "rgba(100,130,180,0.35)")
+        .linkWidth(l=> l.__highlighted||l.__unlockEdge ? 2.5 : 1.2)
         .linkOpacity(0.8)
-        .linkDirectionalArrowLength(l=>{if(l.__highlighted||l.__unlockEdge)return 5;const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if((sn&&sn.__dimmed)||(tn&&tn.__dimmed))return 0;return 3;})
+        .linkDirectionalArrowLength(l=> l.__highlighted||l.__unlockEdge ? 5 : 3)
         .linkDirectionalArrowRelPos(1)
         .linkDirectionalArrowColor(l=> l.__highlighted ? "#ffcc44" : l.__unlockEdge ? "#44ff88" : "rgba(100,130,180,0.35)")
         .onNodeClick(n=>selectNode(n.id))
@@ -285,15 +288,7 @@ async function init(){
 
     document.getElementById("search").addEventListener("input",e=>{
         const term=e.target.value.toLowerCase();
-        const {nodes,links}=graph.graphData();
-        nodes.forEach(n=>{
-            n.__dimmed = term ? !n.id.includes(term) : false;
-        });
-        graph.nodeColor(graph.nodeColor())
-             .nodeVal(graph.nodeVal())
-             .linkColor(graph.linkColor())
-             .linkWidth(graph.linkWidth())
-             .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
+        rebuildGraphData(activeDomain, term);
     });
 }
 
@@ -323,44 +318,56 @@ function buildFilters(){
 }
 
 function applyFilter(){
-    const {nodes}=graph.graphData();
-    nodes.forEach(n=>{
-        n.__dimmed = activeDomain ? n.domain!==activeDomain : false;
+    rebuildGraphData(activeDomain, document.getElementById("search").value.toLowerCase());
+}
+
+function rebuildGraphData(domain, searchTerm){
+    const visibleIds = new Set();
+    allNodes.forEach(n=>{
+        const domOk = !domain || n.domain===domain;
+        const srchOk = !searchTerm || n.id.includes(searchTerm);
+        if(domOk && srchOk) visibleIds.add(n.id);
     });
-    graph.nodeColor(graph.nodeColor())
-         .nodeVal(graph.nodeVal())
-         .linkColor(graph.linkColor())
-         .linkWidth(graph.linkWidth())
-         .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
+    const nodes = allNodes.filter(n=>visibleIds.has(n.id));
+    const links = allLinks.filter(l=>visibleIds.has(l.source)&&visibleIds.has(l.target));
+    graph.graphData({nodes, links});
 }
 
 function selectNode(name){
-    const {nodes,links}=graph.graphData();
     const t=taskMap[name];
     if(!t) return;
 
     const prereqSet=new Set(t.prereqs);
     const unlockSet=new Set(reverseMap[name]||[]);
+    const searchTerm=document.getElementById("search").value.toLowerCase();
 
+    // Rebuild graph with selected node + its prereqs/unlocks included
+    const visibleIds = new Set();
+    allNodes.forEach(n=>{
+        const domOk = !activeDomain || n.domain===activeDomain;
+        const srchOk = !searchTerm || n.id.includes(searchTerm);
+        if(domOk && srchOk) visibleIds.add(n.id);
+    });
+    // Force-include clicked node, prereqs, and unlocks
+    visibleIds.add(name);
+    prereqSet.forEach(p=>visibleIds.add(p));
+    unlockSet.forEach(u=>visibleIds.add(u));
+
+    const nodes = allNodes.filter(n=>visibleIds.has(n.id));
+    const links = allLinks.filter(l=>visibleIds.has(l.source)&&visibleIds.has(l.target));
+
+    // Set highlight flags
     nodes.forEach(n=>{
         n.__highlighted = n.id===name;
         n.__prereq = prereqSet.has(n.id);
         n.__unlock = unlockSet.has(n.id);
-        // Un-hide prereqs and unlocks even if domain-filtered
-        if(n.__highlighted || n.__prereq || n.__unlock) n.__dimmed = false;
     });
     links.forEach(l=>{
-        const sid=typeof l.source==="object"?l.source.id:l.source;
-        const tid=typeof l.target==="object"?l.target.id:l.target;
-        l.__highlighted = prereqSet.has(sid)&&tid===name;
-        l.__unlockEdge = sid===name&&unlockSet.has(tid);
+        l.__highlighted = prereqSet.has(l.source)&&l.target===name;
+        l.__unlockEdge = l.source===name&&unlockSet.has(l.target);
     });
 
-    graph.nodeColor(graph.nodeColor())
-         .nodeVal(graph.nodeVal())
-         .linkColor(graph.linkColor())
-         .linkWidth(graph.linkWidth())
-         .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
+    graph.graphData({nodes, links});
 
     // Focus camera
     const node=nodes.find(n=>n.id===name);
@@ -389,18 +396,7 @@ function selectNode(name){
 
 function closePanel(){
     document.getElementById("info").classList.remove("visible");
-    const {nodes,links}=graph.graphData();
-    nodes.forEach(n=>{
-        n.__highlighted=false; n.__prereq=false; n.__unlock=false;
-        // Re-apply domain filter
-        n.__dimmed = activeDomain ? n.domain!==activeDomain : false;
-    });
-    links.forEach(l=>{ l.__highlighted=false; l.__unlockEdge=false; });
-    graph.nodeColor(graph.nodeColor())
-         .nodeVal(graph.nodeVal())
-         .linkColor(graph.linkColor())
-         .linkWidth(graph.linkWidth())
-         .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
+    rebuildGraphData(activeDomain, document.getElementById("search").value.toLowerCase());
 }
 
 init();
