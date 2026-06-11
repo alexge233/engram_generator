@@ -255,7 +255,7 @@ async function init(){
         .linkColor(l=>{const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if(sn&&sn.__dimmed||tn&&tn.__dimmed)return"rgba(0,0,0,0)";return l.__highlighted?"#ffcc44":l.__unlockEdge?"#44ff88":"rgba(100,130,180,0.35)";})
         .linkWidth(l=>{const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if(sn&&sn.__dimmed||tn&&tn.__dimmed)return 0;return l.__highlighted||l.__unlockEdge?2.5:1.2;})
         .linkOpacity(0.8)
-        .linkVisibility(l=>{const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;return!(sn&&sn.__dimmed)&&!(tn&&tn.__dimmed);})
+        .linkVisibility(l=>{if(l.__highlighted||l.__unlockEdge)return true;const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;return!(sn&&sn.__dimmed)&&!(tn&&tn.__dimmed);})
         .linkDirectionalArrowLength(l=>{const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if(sn&&sn.__dimmed||tn&&tn.__dimmed)return 0;return l.__highlighted||l.__unlockEdge?5:3;})
         .linkDirectionalArrowRelPos(1)
         .linkDirectionalArrowColor(l=> l.__highlighted ? "#ffcc44" : l.__unlockEdge ? "#44ff88" : "rgba(100,130,180,0.35)")
@@ -364,6 +364,7 @@ function selectNode(name){
          .nodeVal(graph.nodeVal())
          .linkColor(graph.linkColor())
          .linkWidth(graph.linkWidth())
+         .linkVisibility(graph.linkVisibility())
          .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
 
     // Focus camera
@@ -400,6 +401,7 @@ function closePanel(){
          .nodeVal(graph.nodeVal())
          .linkColor(graph.linkColor())
          .linkWidth(graph.linkWidth())
+         .linkVisibility(graph.linkVisibility())
          .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
 }
 
