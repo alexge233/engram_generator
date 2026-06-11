@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Engram Generator Benchmark Result",
+  "description": "Schema for submitting model results to the Engram Generator leaderboard.",
+  "type": "object",
+  "required": ["model", "architecture", "parameters", "training", "metrics", "dataset", "submitted"],
+  "properties": {
+    "model": {
+      "type": "object",
+      "required": ["name", "family", "version"],
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Display name, e.g. 'Engram-13M-v1'"
+        },
+        "family": {
+          "type": "string",
+          "description": "Model family, e.g. 'engram', 'baseline', 'llama', 'gpt2'"
+        },
+        "version": {
+          "type": "string",
+          "description": "Version tag, e.g. 'v0.1.0', 'phase1-fixed'"
+        },
+        "huggingface": {
+          "type": ["string", "null"],
+          "description": "HuggingFace model URL, e.g. 'https://huggingface.co/deepnet/engram-13m'"
+        },
+        "repo": {
+          "type": ["string", "null"],
+          "description": "Source code repository URL"
+        },
+        "description": {
+          "type": "string",
+          "description": "One-line description of what makes this model different"
+        }
+      }
+    },
+    "architecture": {
+      "type": "object",
+      "required": ["type", "d_model", "num_layers"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Architecture type, e.g. 'encoder-processor-decoder', 'engram-block', 'decoder-only'"
+        },
+        "d_model": { "type": "integer" },
+        "d_ff": { "type": "integer" },
+        "num_layers": { "type": "integer" },
+        "num_heads": { "type": "integer" },
+        "max_iterations": {
+          "type": ["integer", "null"],
+          "description": "Max loop iterations (Engram-specific, null for non-iterative)"
+        },
+        "memory_slots": {
+          "type": ["integer", "null"],
+          "description": "Number of memory slots (Engram-specific, null if none)"
+        },
+        "tokenizer": {
+          "type": "string",
+          "description": "Tokenizer type, e.g. 'char-135', 'bpe-32k', 'sentencepiece'"
+        },
+        "extra": {
+          "type": "object",
+          "description": "Additional architecture-specific fields"
+        }
+      }
+    },
+    "parameters": {
+      "type": "object",
+      "required": ["total", "trainable"],
+      "properties": {
+        "total": { "type": "integer", "description": "Total parameter count" },
+        "trainable": { "type": "integer", "description": "Trainable parameter count" }
+      }
+    },
+    "training": {
+      "type": "object",
+      "required": ["steps", "batch_size", "learning_rate"],
+      "properties": {
+        "steps": { "type": "integer" },
+        "batch_size": { "type": "integer", "description": "Effective batch size (batch * accumulation)" },
+        "learning_rate": { "type": "number" },
+        "weight_decay": { "type": "number" },
+        "warmup_steps": { "type": "integer" },
+        "precision": { "type": "string", "description": "e.g. 'bf16-mixed', 'fp16', 'fp32'" },
+        "loss_strategy": {
+          "type": "string",
+          "description": "e.g. 'fixed', 'uncertainty', 'pcgrad', 'gradnorm'"
+        },
+        "hardware": {
+          "type": "string",
+          "description": "e.g. 'RTX 3090 Ti', 'A100 80GB', '4xH100'"
+        },
+        "training_time_hours": {
+          "type": ["number", "null"],
+          "description": "Wall-clock training time in hours"
+        }
+      }
+    },
+    "dataset": {
+      "type": "object",
+      "required": ["generator_version", "num_generators", "difficulty_range"],
+      "properties": {
+        "generator_version": {
+          "type": "string",
+          "description": "engram-generator version, e.g. '0.1.0'"
+        },
+        "num_generators": { "type": "integer" },
+        "difficulty_range": {
+          "type": "array",
+          "items": { "type": "integer" },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[min_difficulty, max_difficulty]"
+        },
+        "train_samples_per_epoch": { "type": "integer" },
+        "tasks": {
+          "type": ["array", "string"],
+          "description": "List of task names, or 'all' for full curriculum"
+        },
+        "balanced_by_pattern": { "type": "boolean" }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "required": ["val_loss", "exact_match"],
+      "properties": {
+        "val_loss": { "type": ["number", "null"] },
+        "exact_match": {
+          "type": ["number", "null"],
+          "description": "Fraction of samples where predicted answer exactly matches target (0.0-1.0)"
+        },
+        "plateau_step": {
+          "type": ["integer", "null"],
+          "description": "Step at which validation loss stopped improving"
+        },
+        "per_difficulty": {
+          "type": ["object", "null"],
+          "description": "Exact match by difficulty level, e.g. {\"1\": 0.95, \"2\": 0.82, ...}"
+        },
+        "per_domain": {
+          "type": ["object", "null"],
+          "description": "Exact match by domain, e.g. {\"Mathematics\": 0.78, ...}"
+        },
+        "ood_exact_match": {
+          "type": ["number", "null"],
+          "description": "Exact match on out-of-distribution difficulty levels"
+        },
+        "extra": {
+          "type": "object",
+          "description": "Additional metrics"
+        }
+      }
+    },
+    "submitted": {
+      "type": "object",
+      "required": ["date", "by"],
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date",
+          "description": "ISO date, e.g. '2026-06-11'"
+        },
+        "by": {
+          "type": "string",
+          "description": "Organisation or individual, e.g. 'deepnet.one'"
+        }
+      }
+    }
+  }
+}
