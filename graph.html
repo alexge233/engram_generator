@@ -251,11 +251,9 @@ async function init(){
         .nodeOpacity(1)
         .nodeVal(n=> n.__dimmed ? 0 : n.__highlighted ? 2 : n.__prereq||n.__unlock ? 1.5 : 0.4 + n.tier * 0.15)
         .nodeLabel(n=> n.__dimmed ? "" : `${n.id.replace(/_/g," ")}\nTier ${n.tier} · ${n.domain} · ${n.pattern.replace(/_/g," ")}`)
-        .nodeVisibility(n=> !n.__dimmed)
         .linkColor(l=>{if(l.__highlighted)return"#ffcc44";if(l.__unlockEdge)return"#44ff88";const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if((sn&&sn.__dimmed)||(tn&&tn.__dimmed))return"rgba(0,0,0,0)";return"rgba(100,130,180,0.35)";})
         .linkWidth(l=>{if(l.__highlighted||l.__unlockEdge)return 2.5;const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if((sn&&sn.__dimmed)||(tn&&tn.__dimmed))return 0;return 1.2;})
         .linkOpacity(0.8)
-        .linkVisibility(l=>{if(l.__highlighted||l.__unlockEdge)return true;const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;return!(sn&&sn.__dimmed)&&!(tn&&tn.__dimmed);})
         .linkDirectionalArrowLength(l=>{if(l.__highlighted||l.__unlockEdge)return 5;const sn=typeof l.source==="object"?l.source:null;const tn=typeof l.target==="object"?l.target:null;if((sn&&sn.__dimmed)||(tn&&tn.__dimmed))return 0;return 3;})
         .linkDirectionalArrowRelPos(1)
         .linkDirectionalArrowColor(l=> l.__highlighted ? "#ffcc44" : l.__unlockEdge ? "#44ff88" : "rgba(100,130,180,0.35)")
@@ -293,8 +291,6 @@ async function init(){
         });
         graph.nodeColor(graph.nodeColor())
              .nodeVal(graph.nodeVal())
-             .nodeVisibility(graph.nodeVisibility())
-             .linkVisibility(graph.linkVisibility())
              .linkColor(graph.linkColor())
              .linkWidth(graph.linkWidth())
              .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
@@ -333,8 +329,6 @@ function applyFilter(){
     });
     graph.nodeColor(graph.nodeColor())
          .nodeVal(graph.nodeVal())
-         .nodeVisibility(graph.nodeVisibility())
-         .linkVisibility(graph.linkVisibility())
          .linkColor(graph.linkColor())
          .linkWidth(graph.linkWidth())
          .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
@@ -364,7 +358,6 @@ function selectNode(name){
          .nodeVal(graph.nodeVal())
          .linkColor(graph.linkColor())
          .linkWidth(graph.linkWidth())
-         .linkVisibility(graph.linkVisibility())
          .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
 
     // Focus camera
@@ -401,7 +394,6 @@ function closePanel(){
          .nodeVal(graph.nodeVal())
          .linkColor(graph.linkColor())
          .linkWidth(graph.linkWidth())
-         .linkVisibility(graph.linkVisibility())
          .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
 }
 
