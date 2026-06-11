@@ -239,7 +239,7 @@ async function init(){
         });
     });
 
-    const nodes = allNodes;
+    const nodes = allNodes.map(n=>({...n}));
     const links = allLinks.map(l=>({source:l.sourceId, target:l.targetId}));
 
     bar.style.width="50%";
@@ -329,7 +329,7 @@ function rebuildGraphData(domain, searchTerm, extraIds){
         if(domOk && srchOk) visibleIds.add(n.id);
     });
     if(extraIds) extraIds.forEach(id=>visibleIds.add(id));
-    const nodes = allNodes.filter(n=>visibleIds.has(n.id));
+    const nodes = allNodes.filter(n=>visibleIds.has(n.id)).map(n=>({...n}));
     const links = allLinks
         .filter(l=>visibleIds.has(l.sourceId)&&visibleIds.has(l.targetId))
         .map(l=>({source:l.sourceId, target:l.targetId}));
