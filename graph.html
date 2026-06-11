@@ -346,6 +346,8 @@ function selectNode(name){
         n.__highlighted = n.id===name;
         n.__prereq = prereqSet.has(n.id);
         n.__unlock = unlockSet.has(n.id);
+        // Un-hide prereqs and unlocks even if domain-filtered
+        if(n.__highlighted || n.__prereq || n.__unlock) n.__dimmed = false;
     });
     links.forEach(l=>{
         const sid=typeof l.source==="object"?l.source.id:l.source;
@@ -388,7 +390,11 @@ function selectNode(name){
 function closePanel(){
     document.getElementById("info").classList.remove("visible");
     const {nodes,links}=graph.graphData();
-    nodes.forEach(n=>{ n.__highlighted=false; n.__prereq=false; n.__unlock=false; });
+    nodes.forEach(n=>{
+        n.__highlighted=false; n.__prereq=false; n.__unlock=false;
+        // Re-apply domain filter
+        n.__dimmed = activeDomain ? n.domain!==activeDomain : false;
+    });
     links.forEach(l=>{ l.__highlighted=false; l.__unlockEdge=false; });
     graph.nodeColor(graph.nodeColor())
          .nodeVal(graph.nodeVal())
