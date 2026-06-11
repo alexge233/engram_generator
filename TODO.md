@@ -27,27 +27,12 @@ Current: **v0.1.0** -- 2,022 generators across 100+ scientific domains.
 | QFT | Tree-level only | Loop corrections, renormalisation, path integrals |
 | Category theory | Small categories | Topos theory depth, higher categories |
 
-### Tokenizer expansion for FOL and advanced notation
+### Update generators to use new tokenizer symbols
 
-Current character set: 98 characters + 5 special tokens = 103 vocab.
-
-To support proper first-order logic and advanced mathematical notation, add:
-
-| Symbol | Unicode | Purpose |
-|---|---|---|
-| forall | U+2200 | Universal quantifier |
-| exists | U+2203 | Existential quantifier |
-| not | U+00AC | Logical negation |
-| and | U+2227 | Logical conjunction |
-| or | U+2228 | Logical disjunction |
-| turnstile | U+22A2 | Syntactic consequence |
-| double turnstile | U+22A8 | Semantic consequence |
-| biconditional | U+2194 | If and only if |
-| bottom | U+22A5 | Contradiction/falsum |
-
-This expands vocab to ~112 tokens. Requires model retraining -- not backwards compatible.
-
-**Alternative**: keep ASCII notation (`forall`, `exists`, `not`, `and`, `or`, `|-`, `|=`). Works for training, less readable for humans.
+Tokenizer already expanded to 135 vocab (v0.1.0) with Greek letters,
+logic symbols, math relations, and calculus notation. Generators still
+produce ASCII workarounds (`alpha`, `<=`, `forall`). Migrate to proper
+symbols (α, ≤, ∀) incrementally.
 
 ## Later: New modalities (v0.3.0)
 
