@@ -291,7 +291,13 @@ async function init(){
         nodes.forEach(n=>{
             n.__dimmed = term ? !n.id.includes(term) : false;
         });
-        graph.nodeColor(graph.nodeColor()).nodeVal(graph.nodeVal());
+        graph.nodeColor(graph.nodeColor())
+             .nodeVal(graph.nodeVal())
+             .nodeVisibility(graph.nodeVisibility())
+             .linkVisibility(graph.linkVisibility())
+             .linkColor(graph.linkColor())
+             .linkWidth(graph.linkWidth())
+             .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
     });
 }
 
@@ -325,7 +331,13 @@ function applyFilter(){
     nodes.forEach(n=>{
         n.__dimmed = activeDomain ? n.domain!==activeDomain : false;
     });
-    graph.nodeColor(graph.nodeColor()).nodeVal(graph.nodeVal());
+    graph.nodeColor(graph.nodeColor())
+         .nodeVal(graph.nodeVal())
+         .nodeVisibility(graph.nodeVisibility())
+         .linkVisibility(graph.linkVisibility())
+         .linkColor(graph.linkColor())
+         .linkWidth(graph.linkWidth())
+         .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
 }
 
 function selectNode(name){
