@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BYM3F520NV"></script>
+    <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BYM3F520NV');</script>
+    <title>Engram Generator - Samples</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        window.MathJax = { tex: { inlineMath: [['$','$']], displayMath: [['$$','$$']] } };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" async></script>
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg-card: #12121a;
+            --bg-code: #080810;
+            --border: #1e1e2e;
+            --text: #e0e0e8;
+            --text-dim: #8888a0;
+            --cyan: #00d4ff;
+            --blue: #4488ff;
+            --magenta: #cc44ff;
+            --green: #44ff88;
+            --red: #ff4466;
+            --yellow: #ffcc44;
+            --orange: #ff8844;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', system-ui, sans-serif;
+            line-height: 1.7;
+        }
+
+        .header {
+            position: sticky; top: 0; z-index: 200;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            background: var(--bg);
+            display: flex; align-items: center; justify-content: space-between;
+            flex-wrap: wrap; gap: 12px;
+        }
+        .header h1 { font-size: 18px; font-weight: 700; }
+        .header h1 a { color: var(--text); text-decoration: none; }
+        .header .accent { color: var(--cyan); }
+
+        .controls { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-btn {
+            padding: 4px 10px; border-radius: 12px;
+            border: 1px solid var(--border); background: var(--bg-card);
+            color: var(--text-dim); font-size: 11px; cursor: pointer;
+        }
+        .filter-btn:hover { border-color: var(--text-dim); }
+        .filter-btn.active { border-color: var(--cyan); color: var(--text); background: rgba(0,212,255,0.1); }
+
+        .content { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+        .sample-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .sample-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .sample-header .task-name {
+            font-family: 'JetBrains Mono', monospace;
+            font-weight: 700; font-size: 14px;
+        }
+        .sample-header .meta {
+            font-size: 12px; color: var(--text-dim);
+        }
+        .sample-header .tier-tag {
+            display: inline-block; padding: 2px 8px; border-radius: 10px;
+            font-weight: 600; font-size: 11px; margin-right: 6px;
+        }
+
+        .sample-input {
+            padding: 8px 16px;
+            border-bottom: 1px solid var(--border);
+            font-size: 13px;
+        }
+        .sample-input .label { color: var(--yellow); font-weight: 600; margin-right: 6px; }
+
+        .sample-body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .sample-col {
+            padding: 14px 16px;
+        }
+        .sample-col:first-child {
+            border-right: 1px solid var(--border);
+        }
+
+        .col-label {
+            font-size: 10px; text-transform: uppercase;
+            letter-spacing: 1px; color: var(--text-dim);
+            margin-bottom: 8px; font-weight: 600;
+        }
+
+        .raw-content {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            background: var(--bg-code);
+            border-radius: 6px;
+            padding: 10px 12px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .raw-content .problem { color: var(--green); }
+        .raw-content .step { color: var(--text-dim); }
+        .raw-content .step-num { color: var(--magenta); }
+        .raw-content .answer { color: var(--cyan); font-weight: 700; }
+        .raw-content .sep { color: #333348; }
+
+        .rendered-content {
+            font-size: 15px;
+            min-height: 60px;
+        }
+        .rendered-content .r-problem {
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        .rendered-content .r-step {
+            color: var(--text-dim);
+            margin-bottom: 4px;
+            font-size: 14px;
+        }
+        .rendered-content .r-step .sn {
+            color: var(--magenta);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            margin-right: 6px;
+        }
+        .rendered-content .r-answer {
+            margin-top: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            color: var(--cyan);
+        }
+
+        @media (max-width: 700px) {
+            .sample-body { grid-template-columns: 1fr; }
+            .sample-col:first-child { border-right: none; border-bottom: 1px solid var(--border); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1><a href="index.html">Engram <span class="accent">Samples</span></a></h1>
+    <nav style="display:flex;gap:12px;align-items:center;font-size:13px">
+        <a href="index.html" style="color:var(--text-dim);text-decoration:none">Home</a>
+        <a href="tree.html" style="color:var(--text-dim);text-decoration:none">Skill Tree</a>
+        <a href="graph.html" style="color:var(--text-dim);text-decoration:none">3D Graph</a>
+        <a href="https://github.com/alexge233/engram_generator" style="color:var(--text-dim);text-decoration:none">GitHub</a>
+    </nav>
+    <div class="controls" id="tabs"></div>
+</div>
+
+<div class="content" id="cards"></div>
+
+<script>
+const TIER_COLORS = [
+    "#44ff88","#44ff88","#00d4ff","#00d4ff",
+    "#4488ff","#4488ff","#cc44ff","#cc44ff",
+    "#ff8844","#ff4466","#ff4466"
+];
+
+const EXAMPLES = [
+    {domain:"Arithmetic",tier:0,task:"addition",input:"add two 3 digit numbers",problem:"125 + 859",steps:["5+9=14","2+5+1=8","1+8=9"],answer:"984"},
+    {domain:"Arithmetic",tier:1,task:"multiplication",input:"multiply two 2 digit numbers",problem:"13 \\times 45",steps:["13*5=65","13*4=52","65+520=585"],answer:"585"},
+    {domain:"Number Theory",tier:2,task:"gcd",input:"find greatest common divisor",problem:"\\gcd(859, 125)",steps:["859 \\mod 125=109","125 \\mod 109=16","109 \\mod 16=13","16 \\mod 13=3","13 \\mod 3=1","3 \\mod 1=0"],answer:"1"},
+    {domain:"Algebra",tier:2,task:"quadratic",input:"find roots of quadratic equation",problem:"x^2+13x+42=0",steps:["\\delta=169-168=1","\\sqrt{1}=1","x=\\frac{-13\\pm 1}{2}"],answer:"-7, -6"},
+    {domain:"Calculus",tier:2,task:"derivative",input:"differentiate polynomial",problem:"\\frac{d}{dx}(-x^3-2x^2-2x-5)",steps:["-1 \\cdot 3x^2=-3x^2","-2 \\cdot 2x=-4x","-2 \\cdot 1=-2","0"],answer:"-3x^2-4x-2"},
+    {domain:"Calculus",tier:5,task:"definite_integral",input:"compute definite integral",problem:"\\int_{1}^{2} x^{2}+3x \\, dx",steps:["F(x)=\\frac{1}{3}x^{3}+\\frac{3}{2}x^{2}","F(2)-F(1)=\\frac{26}{3}-\\frac{11}{6}"],answer:"\\frac{41}{6}"},
+    {domain:"Linear Algebra",tier:3,task:"determinant",input:"compute matrix determinant",problem:"\\det\\begin{pmatrix} -15 & 8 \\\\ -7 & -8 \\end{pmatrix}",steps:["(-15)(-8) - (8)(-7) = 120 + 56 = 176"],answer:"176"},
+    {domain:"Linear Algebra",tier:4,task:"matrix_multiply",input:"multiply two matrices",problem:"\\begin{pmatrix} -5 & 3 \\\\ 2 & 2 \\end{pmatrix} \\times \\begin{pmatrix} -1 & -2 \\\\ -3 & 8 \\end{pmatrix}",steps:["c_{11}=-5(-1)+3(-3)=-4","c_{12}=-5(-2)+3(8)=34","c_{21}=2(-1)+2(-3)=-8","c_{22}=2(-2)+2(8)=12"],answer:"\\begin{pmatrix} -4 & 34 \\\\ -8 & 12 \\end{pmatrix}"},
+    {domain:"Graph Algorithms",tier:5,task:"dijkstra_trace",input:"trace Dijkstra's algorithm",problem:"Dijkstra from 0; edges: 0{\\to}1:1,\\; 1{\\to}2:6,\\; 2{\\to}3:3",steps:["visit 0, dist=0; update dist[1]=1","visit 1, dist=1; update dist[2]=7","visit 2, dist=7; update dist[3]=10","visit 3, dist=10"],answer:"\\text{dist} = [0,\\; 1,\\; 7,\\; 10]"},
+    {domain:"Dynamic Programming",tier:4,task:"edit_distance",input:"compute edit distance",problem:"\\text{edist}(\\texttt{axih},\\; \\texttt{hexd})",steps:["row0: 0,1,2,3,4","row1: 1,1,2,3,4","row2: 2,2,2,2,3","row3: 3,3,3,3,3","row4: 4,3,4,4,4"],answer:"4"},
+    {domain:"Cryptography",tier:6,task:"rsa_encrypt",input:"encrypt message using RSA",problem:"\\text{RSA}: m=19,\\; e=5,\\; n=129",steps:["c = 19^{5} \\mod 129","19^{5} = 2476099","2476099 \\mod 129 = 73"],answer:"c = 73"},
+    {domain:"Physics",tier:4,task:"kinematics_velocity",input:"find final velocity",problem:"v = v_0 + at",steps:["v = 3 + 26 \\times 11","v = 3 + 286"],answer:"v = 289\\; \\text{m/s}"},
+    {domain:"Relativity",tier:5,task:"lorentz_factor",input:"compute the Lorentz factor",problem:"\\gamma = \\frac{1}{\\sqrt{1 - v^2/c^2}}",steps:["\\beta = v/c = 0.11","\\beta^2 = 0.0121","1 - \\beta^2 = 0.9879","\\sqrt{0.9879} = 0.9939"],answer:"\\gamma = 1.0061"},
+    {domain:"Quantum",tier:5,task:"born_rule",input:"compute measurement probabilities",problem:"|\\psi\\rangle = 0.3162|a_0\\rangle + 0.9487|a_1\\rangle",steps:["P(a_0) = |0.3162|^2 = 0.1","P(a_1) = |0.9487|^2 = 0.9","\\sum P = 1"],answer:"P(a_0)=0.1,\\; P(a_1)=0.9"},
+    {domain:"Thermodynamics",tier:4,task:"carnot_efficiency",input:"compute Carnot efficiency",problem:"\\eta = 1 - \\frac{T_C}{T_H}",steps:["\\frac{T_C}{T_H} = \\frac{200}{1000} = 0.2","\\eta = 1 - 0.2"],answer:"\\eta = 0.8"},
+    {domain:"Chemistry",tier:2,task:"balancing_equation",input:"balance chemical equation",problem:"\\text{C}_3\\text{H}_4 + \\text{O}_2 \\to \\text{CO}_2 + \\text{H}_2\\text{O}",steps:["count atoms each side","adjust coefficients"],answer:"\\text{C}_3\\text{H}_4 + 4\\text{O}_2 \\to 3\\text{CO}_2 + 2\\text{H}_2\\text{O}"},
+    {domain:"Machine Learning",tier:5,task:"attention_score",input:"compute attention score",problem:"Q=[-3, 2],\\; K=[-1, -2],\\; d_k=2",steps:["QK^T = -3(-1)+2(-2) = -1","\\sqrt{d_k} = \\sqrt{2} = 1.4142","-1 / 1.4142 = -0.7071"],answer:"-0.7071"},
+    {domain:"Formal Logic",tier:7,task:"natural_deduction",input:"derive conclusion using natural deduction",problem:"\\text{Premises: } u,\\; u \\to q. \\;\\text{Derive: } q.",steps:["1.\\; u \\;\\text{(premise)}","2.\\; u \\to q \\;\\text{(premise)}","3.\\; q \\;({\\to}\\text{E on 1, 2})"],answer:"q"},
+    {domain:"Meta-Reasoning",tier:7,task:"proof_strategy",input:"select proof strategy",problem:"\\text{Prove that } \\log_2 3 \\text{ is irrational}",steps:["type: irrationality","strategy: contradiction","assume rational \\frac{p}{q}, derive 2^p = 3^q \\;\\text{(impossible)}"],answer:"\\text{contradiction}"},
+    {domain:"Self-Architecture",tier:10,task:"successor_design",input:"this model has a problem. propose a fix",problem:"d=768,\\; L=13.\\; \\text{Fails on long sequences}",steps:["\\text{cause: absolute PE cannot extrapolate}","\\text{fix: ALiBi (linear attention bias)}","\\text{no learned positions needed}","\\text{handles 2-4x training length}"],answer:"\\text{replace PE with ALiBi}"},
+    {domain:"Self-Architecture",tier:10,task:"compute_budget_allocate",input:"allocate compute budget optimally between model size and data",problem:"\\text{Budget: } 5 \\times 10^{24} \\text{ FLOPs},\\; L \\sim N^{-0.076} \\cdot D^{-0.095}",steps:["\\text{constraint: } C = 6ND = 5 \\times 10^{24}","\\text{optimal } D/N = 0.076/0.095 = 0.8","N_{\\text{opt}} = \\sqrt{C/(6 \\cdot 0.8)} = 1.02 \\times 10^{12}","D_{\\text{opt}} = 0.8N = 8.17 \\times 10^{11}"],answer:"N = 1.02T,\\; D = 817B"},
+];
+
+function esc(s){ return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function renderCards(domain){
+    const exs = domain==="All" ? EXAMPLES : EXAMPLES.filter(e=>e.domain===domain);
+    const container = document.getElementById("cards");
+
+    container.innerHTML = exs.map(e=>{
+        const tc = TIER_COLORS[e.tier];
+        const rawSteps = e.steps.map((s,i)=>
+            `<span class="step"><span class="step-num">step ${i+1}:</span> ${esc(s)}</span>`
+        ).join("\n");
+        const rawTarget = `<span class="problem">${esc(e.problem)}</span>\n${rawSteps}\n<span class="answer">= ${esc(e.answer)}</span>`;
+
+        const renderedSteps = e.steps.map((s,i)=>
+            `<div class="r-step"><span class="sn">step ${i+1}</span>$${s}$</div>`
+        ).join("");
+
+        return `<div class="sample-card">
+            <div class="sample-header">
+                <div>
+                    <span class="task-name">${e.task.replace(/_/g," ")}</span>
+                    <span class="meta" style="margin-left:8px">${e.domain}</span>
+                </div>
+                <span class="tier-tag" style="background:${tc}22;color:${tc};border:1px solid ${tc}">Tier ${e.tier}</span>
+            </div>
+            <div class="sample-input"><span class="label">Input:</span>${esc(e.input)}</div>
+            <div class="sample-body">
+                <div class="sample-col">
+                    <div class="col-label">Raw (what the model sees)</div>
+                    <div class="raw-content">${rawTarget}</div>
+                </div>
+                <div class="sample-col">
+                    <div class="col-label">Rendered</div>
+                    <div class="rendered-content">
+                        <div class="r-problem">$${e.problem}$</div>
+                        ${renderedSteps}
+                        <div class="r-answer">$${e.answer}$</div>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join("");
+
+    if(window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise();
+}
+
+(function(){
+    const tabs = document.getElementById("tabs");
+    const domains = [...new Set(EXAMPLES.map(e=>e.domain))];
+    tabs.innerHTML = `<button class="filter-btn active" data-d="All">All</button>` +
+        domains.map(d=>`<button class="filter-btn" data-d="${d}">${d}</button>`).join("");
+    tabs.querySelectorAll(".filter-btn").forEach(btn=>{
+        btn.addEventListener("click",()=>{
+            tabs.querySelectorAll(".filter-btn").forEach(b=>b.classList.remove("active"));
+            btn.classList.add("active");
+            renderCards(btn.dataset.d);
+        });
+    });
+    renderCards("All");
+})();
+</script>
+
+</body>
+</html>
