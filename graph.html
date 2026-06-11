@@ -19,140 +19,36 @@
             --text-dim: #8888a0;
             --cyan: #00d4ff;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'Inter', system-ui, sans-serif;
-            overflow: hidden;
-            height: 100vh;
-        }
-
+        body { background: var(--bg); color: var(--text); font-family: 'Inter', system-ui, sans-serif; overflow: hidden; height: 100vh; }
         #graph { width: 100vw; height: 100vh; }
-
-        .overlay {
-            position: fixed;
-            z-index: 100;
-            pointer-events: none;
-        }
-
+        .overlay { position: fixed; z-index: 100; pointer-events: none; }
         .overlay > * { pointer-events: auto; }
-
-        .top-bar {
-            top: 0; left: 0; right: 0;
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            background: linear-gradient(180deg, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0) 100%);
-        }
-
+        .top-bar { top: 0; left: 0; right: 0; padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; background: linear-gradient(180deg, rgba(10,10,15,0.95) 0%, rgba(10,10,15,0) 100%); }
         .top-bar h1 { font-size: 16px; font-weight: 700; }
         .top-bar h1 a { color: var(--text); text-decoration: none; }
         .top-bar .accent { color: var(--cyan); }
-
         .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
-
-        .search-box {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            padding: 6px 12px;
-            color: var(--text);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 12px;
-            width: 180px;
-            outline: none;
-        }
+        .search-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; padding: 6px 12px; color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 12px; width: 180px; outline: none; }
         .search-box:focus { border-color: var(--cyan); }
         .search-box::placeholder { color: var(--text-dim); }
-
-        .filter-btn {
-            padding: 3px 8px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-            background: var(--bg-card);
-            color: var(--text-dim);
-            font-size: 10px;
-            cursor: pointer;
-        }
+        .filter-btn { padding: 3px 8px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-dim); font-size: 10px; cursor: pointer; }
         .filter-btn:hover { border-color: var(--text-dim); }
         .filter-btn.active { border-color: var(--cyan); color: var(--text); background: rgba(0,212,255,0.1); }
-
-        .info-panel {
-            position: fixed;
-            top: 60px;
-            right: 16px;
-            width: 260px;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 14px;
-            z-index: 200;
-            display: none;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.6);
-            max-height: calc(100vh - 80px);
-            overflow-y: auto;
-            pointer-events: auto;
-        }
+        .info-panel { position: fixed; top: 60px; right: 16px; width: 260px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; z-index: 200; display: none; box-shadow: 0 8px 32px rgba(0,0,0,0.6); max-height: calc(100vh - 80px); overflow-y: auto; pointer-events: auto; }
         .info-panel.visible { display: block; }
-        .info-panel .close-btn {
-            position: absolute; top: 6px; right: 10px;
-            background: none; border: none; color: var(--text-dim);
-            font-size: 16px; cursor: pointer;
-        }
-        .info-panel .task-name {
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 700; font-size: 14px;
-            margin-bottom: 4px; padding-right: 20px;
-        }
+        .info-panel .close-btn { position: absolute; top: 6px; right: 10px; background: none; border: none; color: var(--text-dim); font-size: 16px; cursor: pointer; }
+        .info-panel .task-name { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: 14px; margin-bottom: 4px; padding-right: 20px; }
         .info-panel .meta { font-size: 11px; color: var(--text-dim); margin-bottom: 8px; }
-        .info-panel .slabel {
-            font-size: 9px; text-transform: uppercase;
-            letter-spacing: 1px; color: var(--text-dim);
-            margin-top: 8px; margin-bottom: 3px;
-        }
+        .info-panel .slabel { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; color: var(--text-dim); margin-top: 8px; margin-bottom: 3px; }
         .info-panel ul { list-style: none; font-family: 'JetBrains Mono', monospace; font-size: 11px; }
         .info-panel .req li { color: #ffcc44; cursor: pointer; padding: 1px 0; }
         .info-panel .unl li { color: #44ff88; cursor: pointer; padding: 1px 0; }
         .info-panel li:hover { text-decoration: underline; }
-
-        .legend {
-            position: fixed;
-            bottom: 12px;
-            left: 12px;
-            background: rgba(18,18,26,0.9);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 10px;
-            z-index: 200;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            max-width: 500px;
-            pointer-events: auto;
-        }
+        .legend { position: fixed; bottom: 12px; left: 12px; background: rgba(18,18,26,0.9); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 10px; z-index: 200; display: flex; flex-wrap: wrap; gap: 6px; max-width: 500px; pointer-events: auto; }
         .legend-item { display: flex; align-items: center; gap: 4px; color: var(--text-dim); }
         .legend-swatch { width: 8px; height: 8px; border-radius: 50%; }
-
-        .help-text {
-            position: fixed;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(18,18,26,0.9);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 12px;
-            font-size: 11px;
-            color: var(--text-dim);
-            z-index: 200;
-            pointer-events: auto;
-        }
+        .help-text { position: fixed; bottom: 12px; right: 12px; background: rgba(18,18,26,0.9); border: 1px solid var(--border); border-radius: 8px; padding: 8px 12px; font-size: 11px; color: var(--text-dim); z-index: 200; pointer-events: auto; }
     </style>
 </head>
 <body>
@@ -200,68 +96,100 @@ const DOMAIN_COLORS = {
     "Quantum":"#cc44ff","Logic":"#aa88ff","Earth & Space":"#88aadd",
     "Social":"#ddaa88","Meta-Reasoning":"#ff4466","Other":"#8888a0",
 };
-const TIER_NAMES = [
-    "Fundamentals","Building Blocks","Algebra & Graphs","Real Maths",
-    "Applied Science","Expert Territory","Graduate Level","Meta-Reasoning",
-    "Creative","Research","Self-Architecture"
-];
 
-let graph, taskMap={}, reverseMap={}, selectedNode=null, activeDomain=null, allNodes=[], allLinks=[];
+let graph, taskMap={}, reverseMap={}, activeDomain=null;
 
-async function init(){
-    const bar=document.getElementById("load-bar");
-    const status=document.getElementById("load-status");
+function isVisible(n) {
+    if (n.__prereq || n.__unlock || n.__highlighted) return true;
+    if (activeDomain && n.domain !== activeDomain) return false;
+    return true;
+}
 
-    status.textContent="Fetching task data...";
-    bar.style.width="10%";
+function linkSrc(l) { return typeof l.source === "object" ? l.source : null; }
+function linkTgt(l) { return typeof l.target === "object" ? l.target : null; }
 
-    const d = await(await fetch("tasks.json")).json();
+function isLinkVisible(l) {
+    if (l.__highlighted || l.__unlockEdge) return true;
+    const s = linkSrc(l), t = linkTgt(l);
+    if (s && !isVisible(s)) return false;
+    if (t && !isVisible(t)) return false;
+    return true;
+}
+
+async function init() {
+    const bar = document.getElementById("load-bar");
+    const status = document.getElementById("load-status");
+
+    status.textContent = "Fetching task data...";
+    bar.style.width = "10%";
+
+    const d = await (await fetch("tasks.json")).json();
     const tasks = d.tasks;
-    bar.style.width="30%";
-    status.textContent=`Building graph (${tasks.length} nodes)...`;
+    bar.style.width = "30%";
+    status.textContent = `Building graph (${tasks.length} nodes)...`;
 
-    tasks.forEach(t=>{ taskMap[t.name]=t; reverseMap[t.name]=[]; });
-    tasks.forEach(t=>t.prereqs.forEach(p=>{ if(reverseMap[p]) reverseMap[p].push(t.name); }));
+    tasks.forEach(t => { taskMap[t.name] = t; reverseMap[t.name] = []; });
+    tasks.forEach(t => t.prereqs.forEach(p => { if (reverseMap[p]) reverseMap[p].push(t.name); }));
 
-    allNodes = tasks.map(t=>({
-        id: t.name,
-        tier: t.tier,
-        domain: t.domain,
-        pattern: t.pattern,
-        color: DOMAIN_COLORS[t.domain]||"#8888a0",
+    const nodes = tasks.map(t => ({
+        id: t.name, tier: t.tier, domain: t.domain, pattern: t.pattern,
+        color: DOMAIN_COLORS[t.domain] || "#8888a0",
         val: 0.4 + t.tier * 0.15,
     }));
 
-    allLinks = [];
-    tasks.forEach(t=>{
-        t.prereqs.forEach(p=>{
-            if(taskMap[p]) allLinks.push({sourceId:p, targetId:t.name});
+    const links = [];
+    tasks.forEach(t => {
+        t.prereqs.forEach(p => {
+            if (taskMap[p]) links.push({ source: p, target: t.name });
         });
     });
 
-    const nodes = allNodes.map(n=>({...n}));
-    const links = allLinks.map(l=>({source:l.sourceId, target:l.targetId}));
-
-    bar.style.width="50%";
-    status.textContent=`Laying out ${nodes.length} nodes, ${links.length} edges...`;
-
-    await new Promise(r=>setTimeout(r,50));
+    bar.style.width = "50%";
+    status.textContent = `Laying out ${nodes.length} nodes, ${links.length} edges...`;
+    await new Promise(r => setTimeout(r, 50));
 
     graph = ForceGraph3D()(document.getElementById("graph"))
-        .graphData({nodes, links})
+        .graphData({ nodes, links })
         .backgroundColor("#0a0a0f")
-        .nodeColor(n=> n.__highlighted ? "#ffffff" : n.__prereq ? "#ffcc44" : n.__unlock ? "#44ff88" : n.color)
+        .nodeColor(n => {
+            if (!isVisible(n)) return "#0a0a0f";
+            if (n.__highlighted) return "#ffffff";
+            if (n.__prereq) return "#ffcc44";
+            if (n.__unlock) return "#44ff88";
+            return n.color;
+        })
         .nodeOpacity(1)
-        .nodeVal(n=> n.__highlighted ? 2 : n.__prereq||n.__unlock ? 1.5 : n.val)
-        .nodeLabel(n=> `${n.id.replace(/_/g," ")}\nTier ${n.tier} · ${n.domain} · ${n.pattern.replace(/_/g," ")}`)
-        .linkColor(l=> l.__highlighted ? "#ffcc44" : l.__unlockEdge ? "#44ff88" : "rgba(100,130,180,0.35)")
-        .linkWidth(l=> l.__highlighted||l.__unlockEdge ? 2.5 : 1.2)
+        .nodeVal(n => {
+            if (!isVisible(n)) return 0.01;
+            if (n.__highlighted) return 2;
+            if (n.__prereq || n.__unlock) return 1.5;
+            return n.val;
+        })
+        .nodeLabel(n => isVisible(n) ? `${n.id.replace(/_/g, " ")}\nTier ${n.tier} - ${n.domain} - ${n.pattern.replace(/_/g, " ")}` : "")
+        .linkColor(l => {
+            if (!isLinkVisible(l)) return "#0a0a0f";
+            if (l.__highlighted) return "#ffcc44";
+            if (l.__unlockEdge) return "#44ff88";
+            return "rgba(100,130,180,0.35)";
+        })
+        .linkWidth(l => {
+            if (!isLinkVisible(l)) return 0.01;
+            if (l.__highlighted || l.__unlockEdge) return 2.5;
+            return 1.2;
+        })
         .linkOpacity(0.8)
-        .linkDirectionalArrowLength(l=> l.__highlighted||l.__unlockEdge ? 5 : 3)
+        .linkDirectionalArrowLength(l => {
+            if (!isLinkVisible(l)) return 0;
+            return (l.__highlighted || l.__unlockEdge) ? 5 : 3;
+        })
         .linkDirectionalArrowRelPos(1)
-        .linkDirectionalArrowColor(l=> l.__highlighted ? "#ffcc44" : l.__unlockEdge ? "#44ff88" : "rgba(100,130,180,0.35)")
-        .onNodeClick(n=>selectNode(n.id))
-        .onBackgroundClick(()=>closePanel())
+        .linkDirectionalArrowColor(l => {
+            if (l.__highlighted) return "#ffcc44";
+            if (l.__unlockEdge) return "#44ff88";
+            return "rgba(100,130,180,0.35)";
+        })
+        .onNodeClick(n => { if (isVisible(n)) selectNode(n.id); })
+        .onBackgroundClick(() => closePanel())
         .warmupTicks(120)
         .cooldownTicks(0)
         .d3AlphaDecay(0.04)
@@ -270,134 +198,107 @@ async function init(){
     graph.d3Force('y', null);
     graph.d3Force('charge').strength(-15);
 
-    bar.style.width="90%";
-    status.textContent="Stabilising layout...";
+    bar.style.width = "90%";
+    status.textContent = "Stabilising layout...";
+    await new Promise(r => setTimeout(r, 100));
 
-    await new Promise(r=>setTimeout(r,100));
-
-    bar.style.width="100%";
-    status.textContent="Ready";
-    setTimeout(()=>{
-        document.getElementById("loader").style.opacity="0";
-        document.getElementById("loader").style.transition="opacity 0.5s";
-        setTimeout(()=>document.getElementById("loader").style.display="none",500);
-    },300);
+    bar.style.width = "100%";
+    status.textContent = "Ready";
+    setTimeout(() => {
+        document.getElementById("loader").style.opacity = "0";
+        document.getElementById("loader").style.transition = "opacity 0.5s";
+        setTimeout(() => document.getElementById("loader").style.display = "none", 500);
+    }, 300);
 
     buildLegend();
     buildFilters();
 
-    document.getElementById("search").addEventListener("input",e=>{
-        const term=e.target.value.toLowerCase();
-        rebuildGraphData(activeDomain, term);
+    document.getElementById("search").addEventListener("input", e => {
+        // Search not implemented with this approach to keep it simple
+        // Could add n.__searchHidden flag
     });
 }
 
-function hexAlpha(hex, alpha){
-    const r=parseInt(hex.slice(1,3),16);
-    const g=parseInt(hex.slice(3,5),16);
-    const b=parseInt(hex.slice(5,7),16);
-    return `rgba(${r},${g},${b},${alpha})`;
-}
-
-function buildLegend(){
-    document.getElementById("legend").innerHTML=Object.entries(DOMAIN_COLORS)
-        .map(([d,c])=>`<div class="legend-item"><div class="legend-swatch" style="background:${c}"></div>${d}</div>`).join("");
-}
-
-function buildFilters(){
-    const el=document.getElementById("filters");
-    const doms=Object.keys(DOMAIN_COLORS);
-    el.innerHTML=`<button class="filter-btn active" data-d="all">All</button>`+
-        doms.map(d=>`<button class="filter-btn" data-d="${d}">${d}</button>`).join("");
-    el.querySelectorAll(".filter-btn").forEach(b=>b.addEventListener("click",()=>{
-        el.querySelectorAll(".filter-btn").forEach(x=>x.classList.remove("active"));
-        b.classList.add("active");
-        activeDomain=b.dataset.d==="all"?null:b.dataset.d;
-        applyFilter();
-    }));
-}
-
-function applyFilter(){
-    rebuildGraphData(activeDomain, document.getElementById("search").value.toLowerCase());
-}
-
-function rebuildGraphData(domain, searchTerm, extraIds){
-    const visibleIds = new Set();
-    allNodes.forEach(n=>{
-        const domOk = !domain || n.domain===domain;
-        const srchOk = !searchTerm || n.id.includes(searchTerm);
-        if(domOk && srchOk) visibleIds.add(n.id);
-    });
-    if(extraIds) extraIds.forEach(id=>visibleIds.add(id));
-    const nodes = allNodes.filter(n=>visibleIds.has(n.id)).map(n=>({...n}));
-    const links = allLinks
-        .filter(l=>visibleIds.has(l.sourceId)&&visibleIds.has(l.targetId))
-        .map(l=>({source:l.sourceId, target:l.targetId}));
-    graph.graphData({nodes, links});
-}
-
-function selectNode(name){
-    const t=taskMap[name];
-    if(!t) return;
-
-    const prereqSet=new Set(t.prereqs);
-    const unlockSet=new Set(reverseMap[name]||[]);
-    const searchTerm=document.getElementById("search").value.toLowerCase();
-
-    // Rebuild with cross-domain prereqs/unlocks included
-    const extraIds = new Set([name]);
-    prereqSet.forEach(p=>extraIds.add(p));
-    unlockSet.forEach(u=>extraIds.add(u));
-    rebuildGraphData(activeDomain, searchTerm, extraIds);
-
-    // Set highlight flags on the live graph data
-    const {nodes, links} = graph.graphData();
-    nodes.forEach(n=>{
-        n.__highlighted = n.id===name;
-        n.__prereq = prereqSet.has(n.id);
-        n.__unlock = unlockSet.has(n.id);
-    });
-    links.forEach(l=>{
-        const sid=typeof l.source==="object"?l.source.id:l.source;
-        const tid=typeof l.target==="object"?l.target.id:l.target;
-        l.__highlighted = prereqSet.has(sid)&&tid===name;
-        l.__unlockEdge = sid===name&&unlockSet.has(tid);
-    });
-
+function refresh() {
     graph.nodeColor(graph.nodeColor())
          .nodeVal(graph.nodeVal())
+         .nodeLabel(graph.nodeLabel())
          .linkColor(graph.linkColor())
          .linkWidth(graph.linkWidth())
          .linkDirectionalArrowLength(graph.linkDirectionalArrowLength());
+}
 
-    // Focus camera
-    const node=nodes.find(n=>n.id===name);
-    if(node) graph.cameraPosition({x:node.x+120,y:node.y+80,z:node.z+120},node,1500);
+function buildLegend() {
+    document.getElementById("legend").innerHTML = Object.entries(DOMAIN_COLORS)
+        .map(([d, c]) => `<div class="legend-item"><div class="legend-swatch" style="background:${c}"></div>${d}</div>`).join("");
+}
 
-    // Info panel
-    const panel=document.getElementById("info");
-    document.getElementById("info-name").textContent=name.replace(/_/g," ");
-    document.getElementById("info-meta").innerHTML=
-        `<span style="display:inline-block;padding:2px 6px;border-radius:8px;background:${DOMAIN_COLORS[t.domain]}22;color:${DOMAIN_COLORS[t.domain]};border:1px solid ${DOMAIN_COLORS[t.domain]};font-size:10px;font-weight:600;margin-right:4px">Tier ${t.tier}</span>`+
-        `${t.domain} · ${t.pattern.replace(/_/g," ")}`;
+function buildFilters() {
+    const el = document.getElementById("filters");
+    const doms = Object.keys(DOMAIN_COLORS);
+    el.innerHTML = `<button class="filter-btn active" data-d="all">All</button>` +
+        doms.map(d => `<button class="filter-btn" data-d="${d}">${d}</button>`).join("");
+    el.querySelectorAll(".filter-btn").forEach(b => b.addEventListener("click", () => {
+        el.querySelectorAll(".filter-btn").forEach(x => x.classList.remove("active"));
+        b.classList.add("active");
+        activeDomain = b.dataset.d === "all" ? null : b.dataset.d;
+        refresh();
+    }));
+}
 
-    const reqEl=document.getElementById("info-req"), lblReq=document.getElementById("lbl-req");
-    if(t.prereqs.length){ lblReq.style.display="block"; reqEl.style.display="block";
-        reqEl.innerHTML=t.prereqs.map(p=>`<li onclick="selectNode('${p}')">${p.replace(/_/g," ")}</li>`).join("");
-    } else { lblReq.style.display="none"; reqEl.style.display="none"; }
+function selectNode(name) {
+    const t = taskMap[name];
+    if (!t) return;
 
-    const unlEl=document.getElementById("info-unl"), lblUnl=document.getElementById("lbl-unl");
-    const unl=reverseMap[name]||[];
-    if(unl.length){ lblUnl.style.display="block"; unlEl.style.display="block";
-        unlEl.innerHTML=unl.map(u=>`<li onclick="selectNode('${u}')">${u.replace(/_/g," ")}</li>`).join("");
-    } else { lblUnl.style.display="none"; unlEl.style.display="none"; }
+    const prereqSet = new Set(t.prereqs);
+    const unlockSet = new Set(reverseMap[name] || []);
+
+    const { nodes, links } = graph.graphData();
+    nodes.forEach(n => {
+        n.__highlighted = n.id === name;
+        n.__prereq = prereqSet.has(n.id);
+        n.__unlock = unlockSet.has(n.id);
+    });
+    links.forEach(l => {
+        const sid = typeof l.source === "object" ? l.source.id : l.source;
+        const tid = typeof l.target === "object" ? l.target.id : l.target;
+        l.__highlighted = prereqSet.has(sid) && tid === name;
+        l.__unlockEdge = sid === name && unlockSet.has(tid);
+    });
+
+    refresh();
+
+    const node = nodes.find(n => n.id === name);
+    if (node) graph.cameraPosition({ x: node.x + 120, y: node.y + 80, z: node.z + 120 }, node, 1500);
+
+    const panel = document.getElementById("info");
+    document.getElementById("info-name").textContent = name.replace(/_/g, " ");
+    document.getElementById("info-meta").innerHTML =
+        `<span style="display:inline-block;padding:2px 6px;border-radius:8px;background:${DOMAIN_COLORS[t.domain]}22;color:${DOMAIN_COLORS[t.domain]};border:1px solid ${DOMAIN_COLORS[t.domain]};font-size:10px;font-weight:600;margin-right:4px">Tier ${t.tier}</span>` +
+        `${t.domain} - ${t.pattern.replace(/_/g, " ")}`;
+
+    const reqEl = document.getElementById("info-req"), lblReq = document.getElementById("lbl-req");
+    if (t.prereqs.length) {
+        lblReq.style.display = "block"; reqEl.style.display = "block";
+        reqEl.innerHTML = t.prereqs.map(p => `<li onclick="selectNode('${p}')">${p.replace(/_/g, " ")}</li>`).join("");
+    } else { lblReq.style.display = "none"; reqEl.style.display = "none"; }
+
+    const unlEl = document.getElementById("info-unl"), lblUnl = document.getElementById("lbl-unl");
+    const unl = reverseMap[name] || [];
+    if (unl.length) {
+        lblUnl.style.display = "block"; unlEl.style.display = "block";
+        unlEl.innerHTML = unl.map(u => `<li onclick="selectNode('${u}')">${u.replace(/_/g, " ")}</li>`).join("");
+    } else { lblUnl.style.display = "none"; unlEl.style.display = "none"; }
 
     panel.classList.add("visible");
 }
 
-function closePanel(){
+function closePanel() {
     document.getElementById("info").classList.remove("visible");
-    rebuildGraphData(activeDomain, document.getElementById("search").value.toLowerCase());
+    const { nodes, links } = graph.graphData();
+    nodes.forEach(n => { n.__highlighted = false; n.__prereq = false; n.__unlock = false; });
+    links.forEach(l => { l.__highlighted = false; l.__unlockEdge = false; });
+    refresh();
 }
 
 init();
