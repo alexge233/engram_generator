@@ -7,6 +7,8 @@
           G E N E R A T O R
 ```
 
+[Website](https://www.engram.one) | [Samples](https://www.engram.one/samples.html) | [Skill Tree](https://www.engram.one/tree.html) | [3D Graph](https://www.engram.one/graph.html) | [PyPI](https://pypi.org/project/engram-generator/)
+
 **2,022 generators. 100+ scientific domains. 10^81 unique problems.**
 
 A procedural dataset that encodes the breadth of human scientific knowledge -- mathematics, physics, chemistry, biology, computer science, engineering, quantum theory, earth sciences, economics, logic, and more -- as step-by-step reasoning problems. The goal is not to build a benchmark. The goal is to teach machines how humans reason, discover, and invent.
