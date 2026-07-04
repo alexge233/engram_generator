@@ -297,8 +297,27 @@ class StepGenerator(ABC):
     _INTERNAL_KEYS = frozenset({
         "target", "answer", "solve_for", "mode", "type", "kind",
         "direction", "method", "strategy", "approach", "variant",
+        "result", "converges", "diverges", "is_cauchy", "is_analytic",
+        "is_valid", "is_stable", "is_bounded", "is_connected",
+        "is_in_ring", "has_fp", "path_connected", "b_converges",
+        "eigenvalue", "eigenvalues", "discriminant", "disc",
+        "trace", "det", "determinant",
+        "alg_mult", "geo_mult", "lef",
+        "mag_sum", "pair_sum", "nb", "nr",
+        "q_re", "q_im", "r_re", "r_im",
+        "a_coeff", "b_coeff", "c_coeff",
+        "conclusion_val", "given_val",
+        "H", "E", "U", "W", "S",
+        "r1", "r2", "r3",
+        "constant", "degree",
+        "a_re", "a_im", "b_re", "b_im",
     })
 
+    _RESULT_KEY_PATTERNS = re.compile(
+        r"^(is_|has_|can_|should_)"
+        r"|_(sum|mult|result|answer|output)$"
+        r"|^(converges|diverges|stable|unstable|bounded|analytic|connected)$"
+    )
 
     @classmethod
     def _enrich_problem(cls, problem: str, steps: list[str],
@@ -364,12 +383,18 @@ class StepGenerator(ABC):
         for key, val in solution_data.items():
             if key in cls._INTERNAL_KEYS or key == target_var:
                 continue
+            if cls._RESULT_KEY_PATTERNS.search(key):
+                continue
+            if isinstance(val, bool):
+                continue
             if not isinstance(val, (int, float)):
                 continue
             val_s = str(val)
             # Only include values that appear in step 1 (given params)
             # but not values that only appear in later steps or the answer
-            if val_s not in step1 and str(abs(val)) not in step1:
+            abs_s = str(abs(val))
+            val_in_step1 = val_s in step1 or (len(abs_s) > 1 and abs_s in step1)
+            if not val_in_step1:
                 continue
             # Skip if this is the final answer
             if val_s == answer_str:
