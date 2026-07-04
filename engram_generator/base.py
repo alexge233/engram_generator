@@ -300,7 +300,7 @@ class StepGenerator(ABC):
         "result", "converges", "diverges", "is_cauchy", "is_analytic",
         "is_valid", "is_stable", "is_bounded", "is_connected",
         "is_in_ring", "has_fp", "path_connected", "b_converges",
-        "eigenvalue", "eigenvalues", "discriminant", "disc",
+        "discriminant", "disc",
         "trace", "det", "determinant",
         "alg_mult", "geo_mult", "lef",
         "mag_sum", "pair_sum", "nb", "nr",
@@ -315,13 +315,31 @@ class StepGenerator(ABC):
         "force", "v_esc", "r_s",
         "time_term", "ratio",
         "d_stress", "d_strain",
+        "root", "count", "posterior", "products",
     })
 
     _RESULT_KEY_PATTERNS = re.compile(
         r"^(is_|has_|can_|should_)"
-        r"|_(sum|mult|result|answer|output|sq|term)$"
+        r"|_(sum|mult|result|answer|output|sq|term|products?)$"
         r"|^(converges|diverges|stable|unstable|bounded|analytic|connected)$"
     )
+
+    @staticmethod
+    def _format_list(val) -> str:
+        from fractions import Fraction
+        parts = []
+        for item in val:
+            if isinstance(item, Fraction):
+                parts.append(f"{item.numerator}/{item.denominator}")
+            elif isinstance(item, (list, tuple)):
+                inner = ", ".join(
+                    f"{x.numerator}/{x.denominator}" if isinstance(x, Fraction) else str(x)
+                    for x in item
+                )
+                parts.append(f"[{inner}]")
+            else:
+                parts.append(str(item))
+        return f"[{', '.join(parts)}]"
 
     @classmethod
     def _enrich_problem(cls, problem: str, steps: list[str],
@@ -395,7 +413,15 @@ class StepGenerator(ABC):
             if isinstance(val, (list, tuple)):
                 if not cls._list_appears_in(val, step1, answer_str):
                     continue
-                given_parts.append(f"{key}={val}")
+                given_parts.append(f"{key}={cls._format_list(val)}")
+                continue
+
+            from fractions import Fraction
+            if isinstance(val, Fraction):
+                frac_s = f"\\frac{{{val.numerator}}}{{{val.denominator}}}"
+                alt_s = f"{val.numerator}/{val.denominator}"
+                if frac_s in step1 or alt_s in step1:
+                    given_parts.append(f"{key}={val}")
                 continue
 
             if not isinstance(val, (int, float)):
@@ -457,32 +483,39 @@ class StepGenerator(ABC):
         from fractions import Fraction
         if len(val) > 10:
             return False
-        nums = []
+        items_with_orig = []
         for item in val:
             if isinstance(item, bool):
                 return False
             if isinstance(item, Fraction):
-                nums.append(float(item))
+                items_with_orig.append((float(item), item))
             elif isinstance(item, (int, float)):
-                nums.append(item)
+                items_with_orig.append((item, None))
             elif isinstance(item, (list, tuple)) and len(item) <= 4:
                 for sub in item:
                     if isinstance(sub, bool):
                         continue
                     if isinstance(sub, Fraction):
-                        nums.append(float(sub))
+                        items_with_orig.append((float(sub), sub))
                     elif isinstance(sub, (int, float)):
-                        nums.append(sub)
+                        items_with_orig.append((sub, None))
             else:
                 return False
-        if not nums:
+        if not items_with_orig:
             return False
-        meaningful = [n for n in nums
+        meaningful = [(n, orig) for n, orig in items_with_orig
                       if abs(n) > 2 or (isinstance(n, float) and n != int(n))]
         if not meaningful:
             return False
-        matched = sum(1 for n in meaningful
-                      if cls._val_in_text(n, str(n), step1))
+        matched = 0
+        for n, orig in meaningful:
+            if cls._val_in_text(n, str(n), step1):
+                matched += 1
+            elif isinstance(orig, Fraction):
+                frac_s = f"\\frac{{{orig.numerator}}}{{{orig.denominator}}}"
+                alt_s = f"{orig.numerator}/{orig.denominator}"
+                if frac_s in step1 or alt_s in step1:
+                    matched += 1
         if matched < len(meaningful) * 0.5:
             return False
         list_str = str(val)
