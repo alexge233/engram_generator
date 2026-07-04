@@ -311,11 +311,15 @@ class StepGenerator(ABC):
         "r1", "r2", "r3",
         "constant", "degree",
         "a_re", "a_im", "b_re", "b_im",
+        "two_gm", "r_sq", "c_sq", "numerator", "denominator",
+        "force", "v_esc", "r_s",
+        "time_term", "ratio",
+        "d_stress", "d_strain",
     })
 
     _RESULT_KEY_PATTERNS = re.compile(
         r"^(is_|has_|can_|should_)"
-        r"|_(sum|mult|result|answer|output)$"
+        r"|_(sum|mult|result|answer|output|sq|term)$"
         r"|^(converges|diverges|stable|unstable|bounded|analytic|connected)$"
     )
 
@@ -387,17 +391,29 @@ class StepGenerator(ABC):
                 continue
             if isinstance(val, bool):
                 continue
+
+            if isinstance(val, (list, tuple)):
+                if not cls._list_appears_in(val, step1, answer_str):
+                    continue
+                given_parts.append(f"{key}={val}")
+                continue
+
             if not isinstance(val, (int, float)):
                 continue
+
             val_s = str(val)
-            # Only include values that appear in step 1 (given params)
-            # but not values that only appear in later steps or the answer
+            if val_s == answer_str:
+                continue
+
             abs_s = str(abs(val))
             val_in_step1 = val_s in step1 or (len(abs_s) > 1 and abs_s in step1)
+
             if not val_in_step1:
-                continue
-            # Skip if this is the final answer
-            if val_s == answer_str:
+                sig = cls._significand(val)
+                if sig and len(sig) >= 3 and sig in step1:
+                    val_in_step1 = True
+
+            if not val_in_step1:
                 continue
             given_parts.append(f"{key}={val}")
 
@@ -405,3 +421,61 @@ class StepGenerator(ABC):
             return problem
 
         return f"{problem}, {', '.join(given_parts)}"
+
+    @staticmethod
+    def _significand(val: float) -> str:
+        """Extract the significand from a float for fuzzy matching.
+
+        Returns the base digits (e.g. ``6.674`` from ``6.674e-11``) only
+        when the value uses scientific notation (very large or very small).
+        Returns empty string otherwise.
+        """
+        if val == 0 or not isinstance(val, float):
+            return ""
+        av = abs(val)
+        if 0.01 <= av < 1e4:
+            return ""
+        formatted = f"{val:.4g}"
+        if "e" in formatted:
+            return formatted.split("e")[0].rstrip("0").rstrip(".")
+        return ""
+
+    @classmethod
+    def _list_appears_in(cls, val: list | tuple, step1: str,
+                         answer_str: str) -> bool:
+        """Check if a short numeric list's values appear in step 1."""
+        if len(val) > 10:
+            return False
+        nums = []
+        for item in val:
+            if isinstance(item, bool):
+                return False
+            if isinstance(item, (int, float)):
+                nums.append(item)
+            elif isinstance(item, (list, tuple)) and len(item) <= 4:
+                for sub in item:
+                    if isinstance(sub, (int, float)) and not isinstance(sub, bool):
+                        nums.append(sub)
+            else:
+                return False
+        if not nums:
+            return False
+        meaningful = [n for n in nums
+                      if abs(n) > 2 or (isinstance(n, float) and n != int(n))]
+        if not meaningful:
+            return False
+        matched = 0
+        for n in meaningful:
+            s = str(n)
+            if s in step1:
+                matched += 1
+            elif isinstance(n, float):
+                sig = cls._significand(n)
+                if sig and len(sig) >= 3 and sig in step1:
+                    matched += 1
+        if matched < len(meaningful) * 0.5:
+            return False
+        list_str = str(val)
+        if list_str == answer_str or list_str.strip("[]()") == answer_str:
+            return False
+        return True
