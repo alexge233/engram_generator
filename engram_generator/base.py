@@ -405,14 +405,7 @@ class StepGenerator(ABC):
             if val_s == answer_str:
                 continue
 
-            abs_s = str(abs(val))
-            val_in_step1 = val_s in step1 or (len(abs_s) > 1 and abs_s in step1)
-
-            if not val_in_step1:
-                sig = cls._significand(val)
-                if sig and len(sig) >= 3 and sig in step1:
-                    val_in_step1 = True
-
+            val_in_step1 = cls._val_in_text(val, val_s, step1)
             if not val_in_step1:
                 continue
             given_parts.append(f"{key}={val}")
@@ -441,20 +434,44 @@ class StepGenerator(ABC):
         return ""
 
     @classmethod
+    def _val_in_text(cls, val: float, val_s: str, text: str) -> bool:
+        """Check if a numeric value appears in text, with fuzzy matching."""
+        if val_s in text:
+            return True
+        abs_s = str(abs(val))
+        if len(abs_s) > 1 and abs_s in text:
+            return True
+        if isinstance(val, float) and val == int(val) and abs(val) > 2:
+            int_s = str(int(val))
+            if len(int_s) > 2 and int_s in text:
+                return True
+        sig = cls._significand(val)
+        if sig and len(sig) >= 3 and sig in text:
+            return True
+        return False
+
+    @classmethod
     def _list_appears_in(cls, val: list | tuple, step1: str,
                          answer_str: str) -> bool:
         """Check if a short numeric list's values appear in step 1."""
+        from fractions import Fraction
         if len(val) > 10:
             return False
         nums = []
         for item in val:
             if isinstance(item, bool):
                 return False
-            if isinstance(item, (int, float)):
+            if isinstance(item, Fraction):
+                nums.append(float(item))
+            elif isinstance(item, (int, float)):
                 nums.append(item)
             elif isinstance(item, (list, tuple)) and len(item) <= 4:
                 for sub in item:
-                    if isinstance(sub, (int, float)) and not isinstance(sub, bool):
+                    if isinstance(sub, bool):
+                        continue
+                    if isinstance(sub, Fraction):
+                        nums.append(float(sub))
+                    elif isinstance(sub, (int, float)):
                         nums.append(sub)
             else:
                 return False
@@ -464,15 +481,8 @@ class StepGenerator(ABC):
                       if abs(n) > 2 or (isinstance(n, float) and n != int(n))]
         if not meaningful:
             return False
-        matched = 0
-        for n in meaningful:
-            s = str(n)
-            if s in step1:
-                matched += 1
-            elif isinstance(n, float):
-                sig = cls._significand(n)
-                if sig and len(sig) >= 3 and sig in step1:
-                    matched += 1
+        matched = sum(1 for n in meaningful
+                      if cls._val_in_text(n, str(n), step1))
         if matched < len(meaningful) * 0.5:
             return False
         list_str = str(val)
