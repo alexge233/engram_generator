@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 import random
+import re
 
 
 STEP_TOKEN = "<step>"
@@ -222,6 +223,7 @@ class StepGenerator(ABC):
                 problem, solution_data = self._create_problem(difficulty)
                 steps = self._create_steps(solution_data)
                 answer = self._create_answer(solution_data)
+                problem = self._enrich_problem(problem, steps, solution_data)
                 target = self._format_target(problem, steps, answer)
 
                 if len(target) > 512 and difficulty > 1:
@@ -291,3 +293,90 @@ class StepGenerator(ABC):
         lower = 10 ** (difficulty - 1) if difficulty > 1 else 0
         upper = 10 ** difficulty - 1
         return lower, upper
+
+    _INTERNAL_KEYS = frozenset({
+        "target", "answer", "solve_for", "mode", "type", "kind",
+        "direction", "method", "strategy", "approach", "variant",
+    })
+
+
+    @classmethod
+    def _enrich_problem(cls, problem: str, steps: list[str],
+                        solution_data: dict | None = None) -> str:
+        """Append given values if the problem is a bare formula.
+
+        Many generators return a formula template (e.g. ``V = IR``) as the
+        problem but only introduce the concrete parameter values in step 1
+        or keep them only in the solution data dict. This detects that case
+        and folds the given values into the problem so the model has all
+        information needed to solve it.
+
+        Args:
+            problem: Original problem string from ``_create_problem``.
+            steps: Solution steps from ``_create_steps``.
+            solution_data: The solution data dict from ``_create_problem``.
+
+        Returns:
+            Enriched problem string, or the original if no enrichment needed.
+        """
+        if not steps:
+            return problem
+
+        step1 = steps[0]
+
+        # Try to extract var=value assignments from step 1
+        assignments = re.findall(
+            r"[A-Za-z_][A-Za-z_0-9]*\s*=\s*-?[\d.eE+\-]+(?:/[\d.]+)?",
+            step1,
+        )
+
+        if assignments:
+            values_in_step1 = set()
+            for match in assignments:
+                nums = re.findall(
+                    r"[\d]+\.?[\d]*", match.split("=", 1)[1],
+                )
+                values_in_step1.update(
+                    n for n in nums if len(n) > 1 or int(n) > 2
+                )
+
+            if values_in_step1:
+                problem_nums = set(re.findall(r"[\d]+\.?[\d]*", problem))
+                overlap = values_in_step1 & problem_nums
+                if len(overlap) < len(values_in_step1) * 0.5:
+                    given = ", ".join(a.strip() for a in assignments)
+                    return f"{problem}, {given}"
+
+        # Fallback: use solution_data dict if the problem has no numbers
+        # and step 1 uses substitution format like (10)(9) instead of var=val
+        if solution_data is None:
+            return problem
+
+        problem_nums = set(re.findall(r"[\d]+\.?[\d]*", problem))
+        meaningful = {n for n in problem_nums if len(n) > 1 or int(n) > 2}
+        if meaningful:
+            return problem
+
+        target_var = solution_data.get("target", "")
+        answer_str = str(solution_data.get("answer", ""))
+
+        given_parts = []
+        for key, val in solution_data.items():
+            if key in cls._INTERNAL_KEYS or key == target_var:
+                continue
+            if not isinstance(val, (int, float)):
+                continue
+            val_s = str(val)
+            # Only include values that appear in step 1 (given params)
+            # but not values that only appear in later steps or the answer
+            if val_s not in step1 and str(abs(val)) not in step1:
+                continue
+            # Skip if this is the final answer
+            if val_s == answer_str:
+                continue
+            given_parts.append(f"{key}={val}")
+
+        if not given_parts:
+            return problem
+
+        return f"{problem}, {', '.join(given_parts)}"
