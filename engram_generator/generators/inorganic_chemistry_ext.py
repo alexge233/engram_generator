@@ -796,7 +796,9 @@ class MolecularOrbitalDiagramGenerator(StepGenerator):
         mol = self._rng.choice(self.DIATOMICS[:pool_size])
 
         return (
-            f"MO diagram of {mol['molecule']}: bond order and magnetism?",
+            f"MO diagram of {mol['molecule']} "
+            f"({mol['total_e']} electrons): "
+            f"bond order and magnetism?",
             {"mol": mol},
         )
 

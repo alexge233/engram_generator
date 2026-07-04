@@ -1223,8 +1223,11 @@ class GeneticCodeRedundancyGenerator(StepGenerator):
         degeneracy = round(total_sense / len(sense_aas), 4)
         steps.append(f"avg codons/aa: {degeneracy}")
 
-        aa_desc = ", ".join(query_aas)
-        problem = f"count codons for: {aa_desc}"
+        aa_with_codons = []
+        for aa in query_aas:
+            codons = sorted(c for c, a in CODON_TABLE.items() if a == aa)
+            aa_with_codons.append(f"{aa} ({','.join(codons)})")
+        problem = f"count codons for: {', '.join(aa_with_codons)}"
         return problem, {
             "query_aas": query_aas, "results": results,
             "total_sense": total_sense, "stop_count": stop_count,

@@ -144,7 +144,12 @@ class SchwarzschildMetricGenerator(StepGenerator):
         one_minus = 1.0 - ratio
         g_tt = round(-one_minus * _C_SQ, 4)
         g_rr = round(1.0 / one_minus, 4)
-        formula = "ds^2 = -(1-r_s/r)c^2dt^2 + (1-r_s/r)^{-1}dr^2 + r^2 d\\Omega^2"
+        m_str = _GRFormatter.format_sci(mass)
+        formula = (
+            "ds^2 = -(1-r_s/r)c^2dt^2 + (1-r_s/r)^{-1}dr^2 + r^2 d\\Omega^2, "
+            f"M={m_str} kg, r={r_mult} r_s, "
+            f"G=6.674 \\times 10^{{-11}}, c=2.998 \\times 10^{{8}}"
+        )
         return formula, {
             "M": mass, "solar_mult": solar_mult,
             "r_s": r_s, "r": r, "r_mult": r_mult,

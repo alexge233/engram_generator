@@ -101,7 +101,10 @@ class MolarMassGenerator(ChemistryGenerator):
             formula += elem + (str(count) if count > 1 else "")
 
         mass = round(sum(self.ATOMIC_MASSES[e] * n for e, n in parts), 3)
-        return f"molar mass of {formula}", {
+        masses = ", ".join(
+            f"{e}={self.ATOMIC_MASSES[e]}" for e, _ in parts
+        )
+        return f"molar mass of {formula}, {masses}", {
             "formula": formula, "parts": parts, "mass": mass,
         }
 
