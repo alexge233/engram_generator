@@ -223,7 +223,9 @@ class StepGenerator(ABC):
                 problem, solution_data = self._create_problem(difficulty)
                 steps = self._create_steps(solution_data)
                 answer = self._create_answer(solution_data)
-                problem = self._enrich_problem(problem, steps, solution_data)
+                problem = self._enrich_problem(
+                    problem, steps, solution_data, answer,
+                )
                 target = self._format_target(problem, steps, answer)
 
                 if len(target) > 512 and difficulty > 1:
@@ -330,7 +332,7 @@ class StepGenerator(ABC):
 
         Converts Fraction objects to readable ``n/d`` notation instead
         of the default ``Fraction(n, d)`` repr. Nested lists are
-        formatted recursively.
+        formatted one level deep.
 
         Args:
             val: List or tuple of numeric values, possibly containing
@@ -356,7 +358,8 @@ class StepGenerator(ABC):
 
     @classmethod
     def _enrich_problem(cls, problem: str, steps: list[str],
-                        solution_data: dict | None = None) -> str:
+                        solution_data: dict | None = None,
+                        answer: str | None = None) -> str:
         """Append given values if the problem is a bare formula.
 
         Many generators return a formula template (e.g. ``V = IR``) as the
@@ -369,6 +372,7 @@ class StepGenerator(ABC):
             problem: Original problem string from ``_create_problem``.
             steps: Solution steps from ``_create_steps``.
             solution_data: The solution data dict from ``_create_problem``.
+            answer: The computed answer string from ``_create_answer``.
 
         Returns:
             Enriched problem string, or the original if no enrichment needed.
@@ -412,7 +416,7 @@ class StepGenerator(ABC):
             return problem
 
         target_var = solution_data.get("target", "")
-        answer_str = str(solution_data.get("answer", ""))
+        answer_str = str(answer) if answer else str(solution_data.get("answer", ""))
 
         given_parts = []
         for key, val in solution_data.items():
@@ -474,20 +478,46 @@ class StepGenerator(ABC):
 
     @classmethod
     def _val_in_text(cls, val: float, val_s: str, text: str) -> bool:
-        """Check if a numeric value appears in text, with fuzzy matching."""
-        if val_s in text:
+        """Check if a numeric value appears in text, with fuzzy matching.
+
+        Uses digit-boundary awareness to avoid false positives where a
+        short number like ``25`` matches inside ``125``.
+
+        Args:
+            val: The numeric value to search for.
+            val_s: String representation of val.
+            text: The text to search in (typically step 1).
+
+        Returns:
+            True if the value appears as a standalone number in the text.
+        """
+        if cls._digit_boundary_match(val_s, text):
             return True
         abs_s = str(abs(val))
-        if len(abs_s) > 1 and abs_s in text:
+        if len(abs_s) > 1 and cls._digit_boundary_match(abs_s, text):
             return True
         if isinstance(val, float) and val == int(val) and abs(val) > 2:
             int_s = str(int(val))
-            if len(int_s) > 2 and int_s in text:
+            if len(int_s) > 2 and cls._digit_boundary_match(int_s, text):
                 return True
         sig = cls._significand(val)
         if sig and len(sig) >= 3 and sig in text:
             return True
         return False
+
+    @staticmethod
+    def _digit_boundary_match(needle: str, haystack: str) -> bool:
+        """Check if needle appears in haystack at digit boundaries.
+
+        Args:
+            needle: The numeric string to find.
+            haystack: The text to search in.
+
+        Returns:
+            True if needle appears and is not embedded inside a larger number.
+        """
+        pattern = r"(?<!\d)" + re.escape(needle) + r"(?!\d)"
+        return bool(re.search(pattern, haystack))
 
     @classmethod
     def _list_appears_in(cls, val: list | tuple, step1: str,

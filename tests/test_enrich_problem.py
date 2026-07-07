@@ -7,8 +7,6 @@ with domain-specific data embed it in the problem field.
 import re
 from fractions import Fraction
 
-import pytest
-
 from engram_generator.base import StepGenerator
 from engram_generator.curriculum.registry import get_generator
 
@@ -16,12 +14,12 @@ from engram_generator.curriculum.registry import get_generator
 class TestSignificand:
     """Tests for StepGenerator._significand extraction."""
 
-    def test_scientific_notation_large(self) -> None:
-        """Verify significand is extracted from large floats."""
+    def test_scientific_notation_small(self) -> None:
+        """Verify significand is extracted from very small floats."""
         assert StepGenerator._significand(6.674e-11) == "6.674"
 
-    def test_scientific_notation_small(self) -> None:
-        """Verify significand is extracted from small floats."""
+    def test_scientific_notation_large(self) -> None:
+        """Verify significand is extracted from very large floats."""
         assert StepGenerator._significand(1.989e30) == "1.989"
 
     def test_normal_range_returns_empty(self) -> None:
@@ -72,6 +70,14 @@ class TestValInText:
     def test_no_match_returns_false(self) -> None:
         """Verify False when value is not present in any form."""
         assert not StepGenerator._val_in_text(99.5, "99.5", "no numbers here")
+
+    def test_digit_boundary_rejects_embedded(self) -> None:
+        """Verify 25 does not match inside 125."""
+        assert not StepGenerator._val_in_text(25, "25", "x = 125 + 3")
+
+    def test_digit_boundary_accepts_standalone(self) -> None:
+        """Verify 25 matches when standalone."""
+        assert StepGenerator._val_in_text(25, "25", "x = 25 + 3")
 
 
 class TestFormatList:
@@ -219,15 +225,28 @@ class TestEnrichProblem:
     def test_answer_value_not_leaked_via_fallback(self) -> None:
         """Verify solution_data values equal to the answer are not appended.
 
-        The answer-leak guard only applies in the solution_data fallback
-        path (when step1 has no ``var=value`` assignments).
+        The answer-leak guard uses the explicit ``answer`` parameter
+        passed from ``_generate_one``.
         """
         problem = "compute F"
         steps = ["substitute (100)(9.8) = 980"]
-        sd = {"m": 100, "g": 9.8, "answer": 980}
-        result = StepGenerator._enrich_problem(problem, steps, sd)
+        sd = {"m": 100, "g": 9.8}
+        result = StepGenerator._enrich_problem(problem, steps, sd, answer="980")
         assert "m=100" in result
         assert "g=9.8" in result
+
+    def test_answer_leak_blocked_without_sd_answer_key(self) -> None:
+        """Verify leak guard works even when solution_data has no 'answer' key.
+
+        Before the fix, the guard relied on ``solution_data.get('answer')``,
+        which was often empty. Now it uses the explicit ``answer`` parameter.
+        """
+        problem = "compute F"
+        steps = ["substitute (100)(9.8) = 980"]
+        sd = {"m": 100, "g": 9.8, "F": 980}
+        result = StepGenerator._enrich_problem(problem, steps, sd, answer="980")
+        assert "F=980" not in result
+        assert "m=100" in result
 
 
 class TestGeneratorDomainKnowledge:
