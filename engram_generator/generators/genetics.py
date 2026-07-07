@@ -243,7 +243,9 @@ class DihybridCrossGenerator(GeneticsGenerator):
         ratio = "9:3:3:1"
 
         return (
-            f"cross {p1} x {p2}",
+            f"cross {p1} x {p2}, "
+            f"{d1}={dn1}/{r1}={rn1}, "
+            f"{d2}={dn2}/{r2}={rn2}",
             {
                 "p1": p1, "p2": p2,
                 "trait1": (d1, r1, dn1, rn1),

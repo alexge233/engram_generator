@@ -437,7 +437,13 @@ class HamiltonianGenerator(StepGenerator):
         else:
             v_q = round(b * q_val * q_val + c * q_val ** 4, 4)
         h_val = round(p_val * p_val / (4.0 * a) + v_q, 4)
-        return "H = p\\dot{q} - L", {
+        if pot_type == "harmonic":
+            v_expr = f"{b}q^2"
+        elif pot_type == "shifted":
+            v_expr = f"{b}q^2 - {c}q"
+        else:
+            v_expr = f"{b}q^2 + {c}q^4"
+        return f"L = {a}\\dot{{q}}^2 - ({v_expr}), H = p\\dot{{q}} - L", {
             "a": a, "b": b, "c": c, "pot_type": pot_type,
             "p": p_val, "q": q_val, "q_dot": q_dot,
             "V": v_q, "H": h_val,
@@ -816,7 +822,7 @@ class PhaseSpaceGenerator(StepGenerator):
         """
         a = self._rng.randint(1, 3 + difficulty)
         d2v = 2 * a
-        return "H = p^2/2 + V(q)", {
+        return f"H = p^2/2 + V(q), V(q) = {a}q^2", {
             "V_str": f"{a}q^2", "dV": f"{2*a}q",
             "fixed_points": ["q* = 0"],
             "d2V_at_fp": [d2v],
@@ -837,7 +843,7 @@ class PhaseSpaceGenerator(StepGenerator):
         q_star = round(math.sqrt(a / (2.0 * b)), 4)
         d2v_0 = -2 * a
         d2v_side = round(-2 * a + 12 * b * q_star * q_star, 4)
-        return "H = p^2/2 + V(q)", {
+        return f"H = p^2/2 + V(q), V(q) = -{a}q^2 + {b}q^4", {
             "V_str": f"-{a}q^2 + {b}q^4",
             "dV": f"-{2*a}q + {4*b}q^3",
             "fixed_points": ["q* = 0", f"q* = +/-{_MechFormatter.fmt(q_star)}"],
@@ -861,7 +867,7 @@ class PhaseSpaceGenerator(StepGenerator):
         d2v_q = round(2 * a + 6 * b * q_star, 4)
         t0 = "center" if d2v_0 > 0 else "saddle"
         tq = "center" if d2v_q > 0 else "saddle"
-        return "H = p^2/2 + V(q)", {
+        return f"H = p^2/2 + V(q), V(q) = {a}q^2 + {b}q^3", {
             "V_str": f"{a}q^2 + {b}q^3",
             "dV": f"{2*a}q + {3*b}q^2",
             "fixed_points": ["q* = 0", f"q* = {_MechFormatter.fmt(q_star)}"],

@@ -838,16 +838,22 @@ class HeatTreatmentGenerator(StepGenerator):
                 key=lambda t: self._HARDNESS_RANK.index(t),
             )
             props = {t: self._TREATMENTS[t] for t in treatments}
-            return "rank treatments by hardness", {
+            info = "; ".join(
+                f"{t}: {props[t]['hardness']}" for t in treatments
+            )
+            return f"rank treatments by hardness: {info}", {
                 "mode": "rank", "treatments": treatments,
                 "ranking": ranking, "props": props,
             }
 
         treatment = self._rng.choice(pool)
         props = self._TREATMENTS[treatment]
-        return f"treatment: {treatment}", {
-            "mode": "single", "treatment": treatment, "props": props,
-        }
+        return (
+            f"treatment: {treatment}, "
+            f"produces {props['structure']}, "
+            f"hardness {props['hardness']}",
+            {"mode": "single", "treatment": treatment, "props": props},
+        )
 
     def _create_steps(self, data: dict) -> list[str]:
         """Generate heat treatment classification steps.

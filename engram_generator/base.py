@@ -2,6 +2,7 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
 import random
+import re
 
 
 STEP_TOKEN = "<step>"
@@ -222,6 +223,9 @@ class StepGenerator(ABC):
                 problem, solution_data = self._create_problem(difficulty)
                 steps = self._create_steps(solution_data)
                 answer = self._create_answer(solution_data)
+                problem = self._enrich_problem(
+                    problem, steps, solution_data, answer,
+                )
                 target = self._format_target(problem, steps, answer)
 
                 if len(target) > 512 and difficulty > 1:
@@ -291,3 +295,273 @@ class StepGenerator(ABC):
         lower = 10 ** (difficulty - 1) if difficulty > 1 else 0
         upper = 10 ** difficulty - 1
         return lower, upper
+
+    _INTERNAL_KEYS = frozenset({
+        "target", "answer", "solve_for", "mode", "type", "kind",
+        "direction", "method", "strategy", "approach", "variant",
+        "result", "converges", "diverges", "is_cauchy", "is_analytic",
+        "is_valid", "is_stable", "is_bounded", "is_connected",
+        "is_in_ring", "has_fp", "path_connected", "b_converges",
+        "discriminant", "disc",
+        "trace", "det", "determinant",
+        "alg_mult", "geo_mult", "lef",
+        "mag_sum", "pair_sum", "nb", "nr",
+        "q_re", "q_im", "r_re", "r_im",
+        "a_coeff", "b_coeff", "c_coeff",
+        "conclusion_val", "given_val",
+        "H", "E", "U", "W", "S",
+        "r1", "r2", "r3",
+        "constant", "degree",
+        "a_re", "a_im", "b_re", "b_im",
+        "two_gm", "r_sq", "c_sq", "numerator", "denominator",
+        "force", "v_esc", "r_s",
+        "time_term", "ratio",
+        "d_stress", "d_strain",
+        "root", "count", "posterior", "products",
+    })
+
+    _RESULT_KEY_PATTERNS = re.compile(
+        r"^(is_|has_|can_|should_)"
+        r"|_(sum|mult|result|answer|output|sq|term|products?)$"
+        r"|^(converges|diverges|stable|unstable|bounded|analytic|connected)$"
+    )
+
+    @staticmethod
+    def _format_list(val: list | tuple) -> str:
+        """Format a list for display in a problem string.
+
+        Converts Fraction objects to readable ``n/d`` notation instead
+        of the default ``Fraction(n, d)`` repr. Nested lists are
+        formatted one level deep.
+
+        Args:
+            val: List or tuple of numeric values, possibly containing
+                ``fractions.Fraction`` objects or nested sequences.
+
+        Returns:
+            Bracket-enclosed, comma-separated string of formatted values.
+        """
+        from fractions import Fraction
+        parts = []
+        for item in val:
+            if isinstance(item, Fraction):
+                parts.append(f"{item.numerator}/{item.denominator}")
+            elif isinstance(item, (list, tuple)):
+                inner = ", ".join(
+                    f"{x.numerator}/{x.denominator}" if isinstance(x, Fraction) else str(x)
+                    for x in item
+                )
+                parts.append(f"[{inner}]")
+            else:
+                parts.append(str(item))
+        return f"[{', '.join(parts)}]"
+
+    @classmethod
+    def _enrich_problem(cls, problem: str, steps: list[str],
+                        solution_data: dict | None = None,
+                        answer: str | None = None) -> str:
+        """Append given values if the problem is a bare formula.
+
+        Many generators return a formula template (e.g. ``V = IR``) as the
+        problem but only introduce the concrete parameter values in step 1
+        or keep them only in the solution data dict. This detects that case
+        and folds the given values into the problem so the model has all
+        information needed to solve it.
+
+        Args:
+            problem: Original problem string from ``_create_problem``.
+            steps: Solution steps from ``_create_steps``.
+            solution_data: The solution data dict from ``_create_problem``.
+            answer: The computed answer string from ``_create_answer``.
+
+        Returns:
+            Enriched problem string, or the original if no enrichment needed.
+        """
+        if not steps:
+            return problem
+
+        step1 = steps[0]
+
+        # Try to extract var=value assignments from step 1
+        assignments = re.findall(
+            r"[A-Za-z_][A-Za-z_0-9]*\s*=\s*-?[\d.eE+\-]+(?:/[\d.]+)?",
+            step1,
+        )
+
+        if assignments:
+            values_in_step1 = set()
+            for match in assignments:
+                nums = re.findall(
+                    r"[\d]+\.?[\d]*", match.split("=", 1)[1],
+                )
+                values_in_step1.update(
+                    n for n in nums if len(n) > 1 or int(n) > 2
+                )
+
+            if values_in_step1:
+                problem_nums = set(re.findall(r"[\d]+\.?[\d]*", problem))
+                overlap = values_in_step1 & problem_nums
+                if len(overlap) < len(values_in_step1) * 0.5:
+                    given = ", ".join(a.strip() for a in assignments)
+                    return f"{problem}, {given}"
+
+        # Fallback: use solution_data dict if the problem has no numbers
+        # and step 1 uses substitution format like (10)(9) instead of var=val
+        if solution_data is None:
+            return problem
+
+        problem_nums = set(re.findall(r"[\d]+\.?[\d]*", problem))
+        meaningful = {n for n in problem_nums if len(n) > 1 or int(n) > 2}
+        if meaningful:
+            return problem
+
+        target_var = solution_data.get("target", "")
+        answer_str = str(answer) if answer else str(solution_data.get("answer", ""))
+
+        given_parts = []
+        for key, val in solution_data.items():
+            if key in cls._INTERNAL_KEYS or key == target_var:
+                continue
+            if cls._RESULT_KEY_PATTERNS.search(key):
+                continue
+            if isinstance(val, bool):
+                continue
+
+            if isinstance(val, (list, tuple)):
+                if not cls._list_appears_in(val, step1, answer_str):
+                    continue
+                given_parts.append(f"{key}={cls._format_list(val)}")
+                continue
+
+            from fractions import Fraction
+            if isinstance(val, Fraction):
+                frac_s = f"\\frac{{{val.numerator}}}{{{val.denominator}}}"
+                alt_s = f"{val.numerator}/{val.denominator}"
+                if frac_s in step1 or alt_s in step1:
+                    given_parts.append(f"{key}={val}")
+                continue
+
+            if not isinstance(val, (int, float)):
+                continue
+
+            val_s = str(val)
+            if val_s == answer_str:
+                continue
+
+            val_in_step1 = cls._val_in_text(val, val_s, step1)
+            if not val_in_step1:
+                continue
+            given_parts.append(f"{key}={val}")
+
+        if not given_parts:
+            return problem
+
+        return f"{problem}, {', '.join(given_parts)}"
+
+    @staticmethod
+    def _significand(val: float) -> str:
+        """Extract the significand from a float for fuzzy matching.
+
+        Returns the base digits (e.g. ``6.674`` from ``6.674e-11``) only
+        when the value uses scientific notation (very large or very small).
+        Returns empty string otherwise.
+        """
+        if val == 0 or not isinstance(val, float):
+            return ""
+        av = abs(val)
+        if 0.01 <= av < 1e4:
+            return ""
+        formatted = f"{val:.4g}"
+        if "e" in formatted:
+            return formatted.split("e")[0].rstrip("0").rstrip(".")
+        return ""
+
+    @classmethod
+    def _val_in_text(cls, val: float, val_s: str, text: str) -> bool:
+        """Check if a numeric value appears in text, with fuzzy matching.
+
+        Uses digit-boundary awareness to avoid false positives where a
+        short number like ``25`` matches inside ``125``.
+
+        Args:
+            val: The numeric value to search for.
+            val_s: String representation of val.
+            text: The text to search in (typically step 1).
+
+        Returns:
+            True if the value appears as a standalone number in the text.
+        """
+        if cls._digit_boundary_match(val_s, text):
+            return True
+        abs_s = str(abs(val))
+        if len(abs_s) > 1 and cls._digit_boundary_match(abs_s, text):
+            return True
+        if isinstance(val, float) and val == int(val) and abs(val) > 2:
+            int_s = str(int(val))
+            if len(int_s) > 2 and cls._digit_boundary_match(int_s, text):
+                return True
+        sig = cls._significand(val)
+        if sig and len(sig) >= 3 and sig in text:
+            return True
+        return False
+
+    @staticmethod
+    def _digit_boundary_match(needle: str, haystack: str) -> bool:
+        """Check if needle appears in haystack at digit boundaries.
+
+        Args:
+            needle: The numeric string to find.
+            haystack: The text to search in.
+
+        Returns:
+            True if needle appears and is not embedded inside a larger number.
+        """
+        pattern = r"(?<!\d)" + re.escape(needle) + r"(?!\d)"
+        return bool(re.search(pattern, haystack))
+
+    @classmethod
+    def _list_appears_in(cls, val: list | tuple, step1: str,
+                         answer_str: str) -> bool:
+        """Check if a short numeric list's values appear in step 1."""
+        from fractions import Fraction
+        if len(val) > 10:
+            return False
+        items_with_orig = []
+        for item in val:
+            if isinstance(item, bool):
+                return False
+            if isinstance(item, Fraction):
+                items_with_orig.append((float(item), item))
+            elif isinstance(item, (int, float)):
+                items_with_orig.append((item, None))
+            elif isinstance(item, (list, tuple)) and len(item) <= 4:
+                for sub in item:
+                    if isinstance(sub, bool):
+                        continue
+                    if isinstance(sub, Fraction):
+                        items_with_orig.append((float(sub), sub))
+                    elif isinstance(sub, (int, float)):
+                        items_with_orig.append((sub, None))
+            else:
+                return False
+        if not items_with_orig:
+            return False
+        meaningful = [(n, orig) for n, orig in items_with_orig
+                      if abs(n) > 2 or (isinstance(n, float) and n != int(n))]
+        if not meaningful:
+            return False
+        matched = 0
+        for n, orig in meaningful:
+            if cls._val_in_text(n, str(n), step1):
+                matched += 1
+            elif isinstance(orig, Fraction):
+                frac_s = f"\\frac{{{orig.numerator}}}{{{orig.denominator}}}"
+                alt_s = f"{orig.numerator}/{orig.denominator}"
+                if frac_s in step1 or alt_s in step1:
+                    matched += 1
+        if matched < len(meaningful) * 0.5:
+            return False
+        list_str = str(val)
+        if list_str == answer_str or list_str.strip("[]()") == answer_str:
+            return False
+        return True

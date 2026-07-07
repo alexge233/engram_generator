@@ -526,7 +526,8 @@ class HybridisationGenerator(GeneralChemistryBase):
         mol_name = self._rng.choice(pool)
         mol = self.SIMPLE_MOLECULES[mol_name]
         return (
-            f"hybridisation of {mol['central']} in {mol_name}",
+            f"hybridisation of {mol['central']} in {mol_name}, "
+            f"bonds={mol['bonds']}, lone_pairs={mol['lone_pairs']}",
             {"molecule": mol_name, "central": mol["central"],
              "bonds": mol["bonds"], "lone_pairs": mol["lone_pairs"],
              "geometry": mol["geometry"],
