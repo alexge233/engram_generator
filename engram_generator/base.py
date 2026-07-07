@@ -325,7 +325,20 @@ class StepGenerator(ABC):
     )
 
     @staticmethod
-    def _format_list(val) -> str:
+    def _format_list(val: list | tuple) -> str:
+        """Format a list for display in a problem string.
+
+        Converts Fraction objects to readable ``n/d`` notation instead
+        of the default ``Fraction(n, d)`` repr. Nested lists are
+        formatted recursively.
+
+        Args:
+            val: List or tuple of numeric values, possibly containing
+                ``fractions.Fraction`` objects or nested sequences.
+
+        Returns:
+            Bracket-enclosed, comma-separated string of formatted values.
+        """
         from fractions import Fraction
         parts = []
         for item in val:
