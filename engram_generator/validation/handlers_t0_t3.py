@@ -81,13 +81,16 @@ def register_handlers(h: dict) -> None:
     h["division"] = _division
 
     def _expression_simplify(d):
-        import sympy
-        x = sympy.Symbol("x")
         x_coeffs = d.get("x_coeffs", [])
         constants = d.get("constants", [])
-        if x_coeffs:
-            return sum(x_coeffs)
-        return d.get("result", sum(constants))
+        lib_x = sum(x_coeffs)
+        lib_c = sum(constants)
+        answer_parts = []
+        if lib_x != 0:
+            answer_parts.append(f"{lib_x}x" if lib_x not in (1, -1) else ("x" if lib_x == 1 else "-x"))
+        if lib_c != 0 or not answer_parts:
+            answer_parts.append(str(lib_c))
+        return " ".join(answer_parts)
     h["expression_simplify"] = _expression_simplify
 
     def _fibonacci(d):
@@ -393,12 +396,33 @@ def register_handlers(h: dict) -> None:
     h["counting_sort"] = _counting_sort
 
     def _cycle_detect_handler(d):
-        has_cycle = d.get("has_cycle", False)
-        return 1 if has_cycle else -1
+        import networkx as nx
+        graph = d.get("graph")
+        if graph is None:
+            return None
+        adj = getattr(graph, "adj", None) or d.get("adj", {})
+        G = nx.DiGraph()
+        for node, neighbors in (adj.items() if isinstance(adj, dict) else []):
+            for nb in neighbors:
+                G.add_edge(node, nb)
+        lib_has_cycle = len(list(nx.simple_cycles(G))) > 0 if G.edges else False
+        gen_has_cycle = d.get("has_cycle", False)
+        return 1 if lib_has_cycle == gen_has_cycle else -1
     h["cycle_detect"] = _cycle_detect_handler
 
-    h["dfa_accept"] = lambda d: 1 if d.get("accepted", False) else -1
-    h["dfa_complement"] = lambda d: 1 if d.get("comp_accept", False) else -1
+    def _dfa_accept_handler(d):
+        inp = d.get("input", "")
+        trace = d.get("trace", [])
+        accept_states = d.get("accept_states", set())
+        gen_accepted = d.get("accepted", False)
+        if trace:
+            final_state = trace[-1]
+            lib_accepted = final_state in accept_states
+            return 1 if lib_accepted == gen_accepted else -1
+        return None
+    h["dfa_accept"] = _dfa_accept_handler
+
+    h["dfa_complement"] = lambda d: 1 if not d.get("accepted", True) == d.get("comp_accept", False) else -1
 
     def _dfs_order(d):
         import networkx as nx

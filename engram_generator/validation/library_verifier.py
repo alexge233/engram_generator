@@ -85,12 +85,12 @@ class LibraryVerifier:
                     task_name=task_name, match=None,
                     reason="handler_returned_none",
                 )
-            if lib_result == 1 and isinstance(lib_result, int):
+            if lib_result == 1 and isinstance(lib_result, int) and not isinstance(lib_result, bool):
                 return LibraryResult(
                     task_name=task_name, match=True,
                     expected=answer, computed="verified",
                 )
-            if lib_result == -1 and isinstance(lib_result, int):
+            if lib_result == -1 and isinstance(lib_result, int) and not isinstance(lib_result, bool):
                 return LibraryResult(
                     task_name=task_name, match=False,
                     expected=answer, computed="MISMATCH",

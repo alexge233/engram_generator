@@ -88,7 +88,17 @@ def register_handlers(h: dict) -> None:
     h["continued_fraction"] = _continued_fraction
 
     h["continued_fraction_convergent"] = lambda d: d.get("convergents")
-    h["euler_criterion"] = lambda d: d.get("legendre")
+    def _euler_criterion(d):
+        import sympy
+        a, p = d.get("a"), d.get("p")
+        if a is None or p is None:
+            return None
+        lib_val = int(sympy.legendre_symbol(a, p))
+        gen_val = d.get("legendre", d.get("result"))
+        if gen_val is None:
+            return lib_val if lib_val not in (1, -1) else None
+        return 1 if lib_val == gen_val else -1
+    h["euler_criterion"] = _euler_criterion
 
     def _wilson_theorem(d):
         p = d.get("p", 2)
@@ -100,10 +110,24 @@ def register_handlers(h: dict) -> None:
 
     def _jacobi_symbol(d):
         import sympy
-        return int(sympy.jacobi_symbol(d["a"], d["n"]))
+        lib_js = int(sympy.jacobi_symbol(d["a"], d["n"]))
+        gen_js = d.get("js", d.get("result"))
+        if gen_js is None:
+            return None
+        return 1 if lib_js == int(gen_js) else -1
     h["jacobi_symbol"] = _jacobi_symbol
 
-    h["legendre_symbol_compute"] = lambda d: d.get("ls")
+    def _legendre_symbol_compute(d):
+        import sympy
+        a, p = d.get("a"), d.get("p")
+        if a is None or p is None:
+            return None
+        lib_val = int(sympy.legendre_symbol(a, p))
+        gen_val = d.get("ls", d.get("legendre"))
+        if gen_val is None:
+            return None
+        return 1 if lib_val == gen_val else -1
+    h["legendre_symbol_compute"] = _legendre_symbol_compute
     h["primitive_root"] = lambda d: d.get("root")
     h["order_element"] = lambda d: d.get("order")
 
@@ -120,7 +144,18 @@ def register_handlers(h: dict) -> None:
     h["divisor_function"] = _divisor_function
 
     h["quadratic_reciprocity"] = lambda d: d.get("pq")
-    h["quadratic_residue"] = lambda d: 1 if d.get("is_qr") else -1
+    def _quadratic_residue(d):
+        import sympy
+        a, p = d.get("a"), d.get("p")
+        if a is None or p is None:
+            return None
+        lib_ls = int(sympy.legendre_symbol(a, p))
+        gen_is_qr = d.get("is_qr")
+        if gen_is_qr is None:
+            return None
+        lib_is_qr = lib_ls == 1
+        return 1 if lib_is_qr == gen_is_qr else -1
+    h["quadratic_residue"] = _quadratic_residue
 
     def _pell_equation(d):
         x, y, dd = d.get("x"), d.get("y"), d.get("d")
@@ -136,7 +171,11 @@ def register_handlers(h: dict) -> None:
 
     def _mobius_function(d):
         import sympy
-        return int(sympy.mobius(d["n"]))
+        lib_mu = int(sympy.mobius(d["n"]))
+        gen_mu = d.get("mu")
+        if gen_mu is None:
+            return None
+        return 1 if lib_mu == gen_mu else -1
     h["mobius_function"] = _mobius_function
 
     h["multiplicative_function"] = lambda d: 1 if d.get("phi_ok") and d.get("tau_ok") else -1
@@ -326,7 +365,20 @@ def register_handlers(h: dict) -> None:
     h["boundary_value"] = lambda d: d.get("solution")
     h["bifurcation_detect"] = lambda d: d.get("r_bif")
     h["lyapunov_exponent"] = lambda d: d.get("lyapunov")
-    h["chaos_sensitivity"] = lambda d: 1 if d.get("sensitive") else -1
+    def _chaos_sensitivity(d):
+        r = d.get("r"); x0 = d.get("x0"); delta = d.get("delta", 0.01)
+        n = d.get("n_iter", 10)
+        if r is None or x0 is None:
+            return None
+        x, xd = x0, x0 + delta
+        for _ in range(n):
+            x = r * x * (1 - x)
+            xd = r * xd * (1 - xd)
+        lib_sep = abs(x - xd)
+        lib_sensitive = lib_sep > 10 * delta
+        gen_sensitive = d.get("sensitive", False)
+        return 1 if lib_sensitive == gen_sensitive else -1
+    h["chaos_sensitivity"] = _chaos_sensitivity
     h["strange_attractor"] = lambda d: (d.get("x_final"), d.get("y_final"))
 
     # -- PDEs --
@@ -786,6 +838,9 @@ def register_handlers(h: dict) -> None:
         for lam in eigenvalues:
             if lam > 1e-12:
                 entropy -= lam * math.log2(lam)
+        gen_entropy = d.get("entropy", None)
+        if gen_entropy is not None:
+            return 1 if abs(round(entropy, 4) - round(gen_entropy, 4)) < 5e-3 else -1
         return round(entropy, 4)
     h["entanglement_measure"] = _entanglement_measure
 
