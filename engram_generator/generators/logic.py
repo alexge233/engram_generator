@@ -31,29 +31,41 @@ class BooleanEvalGenerator(StepGenerator):
         n_ops = min(1 + difficulty, 6)
         vals = [self._rng.choice([True, False]) for _ in range(n_ops + 1)]
         ops = [self._rng.choice(["AND", "OR"]) for _ in range(n_ops)]
-
-        expr_parts = [str(vals[0])]
-        for i in range(n_ops):
-            expr_parts.append(ops[i])
-            expr_parts.append(str(vals[i + 1]))
+        not_positions: set[int] = set()
 
         if difficulty >= 3 and self._rng.random() < 0.5:
-            idx = self._rng.randint(0, len(vals) - 1)
-            vals[idx] = not vals[idx]
-            expr_parts = [str(vals[0])]
-            for i in range(n_ops):
-                expr_parts.append(ops[i])
-                expr_parts.append(str(vals[i + 1]))
-            expr_parts.insert(self._rng.randint(0, len(expr_parts)), "NOT")
+            n_nots = 1 + (difficulty >= 5)
+            for _ in range(n_nots):
+                pos = self._rng.randint(0, n_ops)
+                not_positions.add(pos)
 
-        result = vals[0]
-        steps = [f"start: {vals[0]}"]
-        for i in range(n_ops):
-            if ops[i] == "AND":
-                result = result and vals[i + 1]
+        effective_vals = list(vals)
+        for pos in not_positions:
+            effective_vals[pos] = not effective_vals[pos]
+
+        expr_parts = []
+        for i, val in enumerate(vals):
+            if i in not_positions:
+                expr_parts.append(f"NOT {val}")
             else:
-                result = result or vals[i + 1]
-            steps.append(f"{ops[i]} {vals[i + 1]} = {result}")
+                expr_parts.append(str(val))
+            if i < n_ops:
+                expr_parts.append(ops[i])
+
+        result = effective_vals[0]
+        steps = []
+        if not_positions and 0 in not_positions:
+            steps.append(f"NOT {vals[0]} = {effective_vals[0]}")
+        steps.append(f"start: {effective_vals[0]}")
+        for i in range(n_ops):
+            operand = effective_vals[i + 1]
+            if (i + 1) in not_positions:
+                steps.append(f"NOT {vals[i + 1]} = {operand}")
+            if ops[i] == "AND":
+                result = result and operand
+            else:
+                result = result or operand
+            steps.append(f"{ops[i]} {operand} = {result}")
 
         expr = " ".join(expr_parts)
         return expr, {"result": result, "eval_steps": steps}
@@ -1227,9 +1239,21 @@ class KnightsKnavesGenerator(StepGenerator):
 
     def _create_steps(self, sd: dict) -> list[str]:
         steps = []
-        for name, t in sd["types"].items():
-            steps.append(f"assume {name} is {t}")
-        steps.append("check consistency with all statements")
+        types = sd["types"]
+        statements = sd["statements"]
+        for stmt in statements:
+            steps.append(f"given: {stmt}")
+        for name in types:
+            other_type = "knight" if types[name] == "knave" else "knave"
+            steps.append(
+                f"test {name}=knight vs {name}=knave"
+            )
+            for stmt in statements:
+                if stmt.startswith(f"{name} says:"):
+                    steps.append(f"if {name}=knight then claim is true")
+                    steps.append(f"if {name}=knave then claim is false")
+                    break
+        steps.append(f"consistent assignment found")
         return steps
 
     def _create_answer(self, sd: dict) -> str:
@@ -1261,29 +1285,77 @@ class LogicalPuzzleGenerator(StepGenerator):
         return "solve logic puzzle"
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
+        from itertools import permutations
+
         n = min(2 + difficulty // 2, 4)
         names = ["Alice", "Bob", "Carol", "Dave"][:n]
         colors = ["red", "blue", "green", "yellow"][:n]
         self._rng.shuffle(colors)
         assignment = dict(zip(names, colors))
 
-        clues = []
-        for i, name in enumerate(names):
-            c = assignment[name]
-            other = self._rng.choice([n for n in names if n != name])
-            oc = assignment[other]
-            wrong = self._rng.choice([col for col in colors if col != oc])
-            clues.append(f"{name} has {c}")
-            clues.append(f"{other} does not have {wrong}")
+        one_reveal = self._rng.choice(names)
+        revealed = {one_reveal}
+        clues = [f"{one_reveal} has {assignment[one_reveal]}"]
+
+        for _ in range(20):
+            name = self._rng.choice(names)
+            wrong = self._rng.choice(
+                [c for c in colors if c != assignment[name]]
+            )
+            clue = f"{name} does not have {wrong}"
+            if clue not in clues:
+                clues.append(clue)
+            if self._is_unique(names, colors, clues, assignment):
+                break
 
         self._rng.shuffle(clues)
-        clues = clues[:n + 1]
         problem = "; ".join(clues)
-        return problem, {"assignment": assignment, "clues": clues}
+        return problem, {
+            "assignment": assignment,
+            "clues": clues,
+            "revealed": revealed,
+        }
+
+    @staticmethod
+    def _is_unique(names, colors, clues, expected):
+        """Check if clues uniquely determine the assignment."""
+        from itertools import permutations
+
+        count = 0
+        for perm in permutations(colors):
+            candidate = dict(zip(names, perm))
+            ok = True
+            for clue in clues:
+                if " has " in clue and "does not" not in clue:
+                    parts = clue.split(" has ")
+                    if candidate.get(parts[0]) != parts[1]:
+                        ok = False
+                        break
+                elif "does not have" in clue:
+                    parts = clue.split(" does not have ")
+                    if candidate.get(parts[0]) == parts[1]:
+                        ok = False
+                        break
+            if ok:
+                count += 1
+                if count > 1:
+                    return False
+        return count == 1
 
     def _create_steps(self, sd: dict) -> list[str]:
-        steps = [f"clue: {c}" for c in sd["clues"]]
-        steps.append("eliminate and assign")
+        steps = []
+        assignment = sd["assignment"]
+        revealed = sd["revealed"]
+        remaining = [n for n in assignment if n not in revealed]
+        for name in revealed:
+            steps.append(f"given: {name} = {assignment[name]}")
+        all_colors = set(assignment.values())
+        used = {assignment[n] for n in revealed}
+        for name in remaining:
+            avail = all_colors - used
+            steps.append(f"eliminate for {name}: options = {sorted(avail)}")
+            steps.append(f"assign {name} = {assignment[name]}")
+            used.add(assignment[name])
         return steps
 
     def _create_answer(self, sd: dict) -> str:

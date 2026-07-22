@@ -618,9 +618,17 @@ class PolygonAreaGenerator(StepGenerator):
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         n = min(3 + difficulty, 8)
         r = 5 * difficulty
+        cx, cy = 0, 0
+        seen = set()
         pts = []
-        for _ in range(n):
-            pts.append((self._rng.randint(-r, r), self._rng.randint(-r, r)))
+        while len(pts) < n:
+            pt = (self._rng.randint(-r, r), self._rng.randint(-r, r))
+            if pt not in seen:
+                seen.add(pt)
+                pts.append(pt)
+        cx = sum(p[0] for p in pts) / n
+        cy = sum(p[1] for p in pts) / n
+        pts.sort(key=lambda p: math.atan2(p[1] - cy, p[0] - cx))
         s = 0
         for i in range(n):
             j = (i + 1) % n

@@ -58,6 +58,7 @@ class Atom:
     content: str
     tier: int
     domain: str
+    example: str = ""
     source: str = ""
     source_url: str = ""
     prerequisites: list[str] = field(default_factory=list)
@@ -73,7 +74,10 @@ class StepGenerator(ABC):
         task_name: Unique identifier for this task type.
         tier: Skill tree tier (0-10).
         prerequisites: Task names required before this unlocks.
+        DECIMAL_PLACES: Maximum decimal places in numeric outputs.
     """
+
+    DECIMAL_PLACES = 4
 
     def __init__(self, min_difficulty: int = 1, max_difficulty: int = 8,
                  seed: int = 42) -> None:
@@ -179,8 +183,8 @@ class StepGenerator(ABC):
             min_difficulty: New minimum.
             max_difficulty: New maximum.
         """
-        self._min_difficulty = min_difficulty
-        self._max_difficulty = max_difficulty
+        self._min_difficulty = int(min_difficulty)
+        self._max_difficulty = int(max_difficulty)
 
     def generate(self, num_samples: int,
                  include_atom: bool = False) -> list[Sample]:
@@ -223,6 +227,8 @@ class StepGenerator(ABC):
                 problem, solution_data = self._create_problem(difficulty)
                 steps = self._create_steps(solution_data)
                 answer = self._create_answer(solution_data)
+                steps = [self._cap_decimals(s) for s in steps]
+                answer = self._cap_decimals(answer)
                 problem = self._enrich_problem(
                     problem, steps, solution_data, answer,
                 )
@@ -282,6 +288,36 @@ class StepGenerator(ABC):
         """
         parts = [problem] + steps + [answer]
         return f" {STEP_TOKEN} ".join(parts)
+
+    @classmethod
+    def _cap_decimals(cls, text: str) -> str:
+        """Round floating-point numbers in text to DECIMAL_PLACES.
+
+        Finds all decimal numbers (e.g. 3.141592653) and rounds them.
+        Integers and scientific notation exponents are left unchanged.
+
+        Args:
+            text: String potentially containing decimal numbers.
+
+        Returns:
+            String with decimals capped.
+        """
+        dp = cls.DECIMAL_PLACES
+
+        def _round_match(m: re.Match) -> str:
+            full = m.group(0)
+            if 'e' in full.lower():
+                parts = re.split(r'[eE]', full)
+                mantissa = round(float(parts[0]), dp)
+                mant_s = f"{mantissa:.{dp}f}".rstrip('0').rstrip('.')
+                return f"{mant_s}e{parts[1]}"
+            val = round(float(full), dp)
+            if val == int(val) and '.' not in full[:full.index('.') + 1]:
+                return str(int(val))
+            rounded = f"{val:.{dp}f}".rstrip('0').rstrip('.')
+            return rounded
+
+        return re.sub(r'-?\d+\.\d{5,}(?:[eE][+-]?\d+)?', _round_match, text)
 
     def normalise_step(self, step: str) -> str:
         """Normalise a reasoning step for comparison.
@@ -359,8 +395,9 @@ class StepGenerator(ABC):
 
     _RESULT_KEY_PATTERNS = re.compile(
         r"^(is_|has_|can_|should_)"
-        r"|_(sum|mult|result|answer|output|sq|term|products?)$"
+        r"|_(sum|mult|result|answer|output|sq|term|products?|value)$"
         r"|^(converges|diverges|stable|unstable|bounded|analytic|connected)$"
+        r"|^(solution|confidence|trap_value|target_acc|verbose|roots)$"
     )
 
     @staticmethod
@@ -426,10 +463,20 @@ class StepGenerator(ABC):
         )
 
         if assignments:
+            answer_str_early = str(answer) if answer else ""
+            safe_assignments = []
             values_in_step1 = set()
             for match in assignments:
+                rhs = match.split("=", 1)[1].strip()
+                try:
+                    if answer_str_early and float(rhs) == float(answer_str_early):
+                        continue
+                except (ValueError, TypeError):
+                    if rhs == answer_str_early:
+                        continue
+                safe_assignments.append(match)
                 nums = re.findall(
-                    r"[\d]+\.?[\d]*", match.split("=", 1)[1],
+                    r"[\d]+\.?[\d]*", rhs,
                 )
                 values_in_step1.update(
                     n for n in nums if len(n) > 1 or int(n) > 2
@@ -439,8 +486,9 @@ class StepGenerator(ABC):
                 problem_nums = set(re.findall(r"[\d]+\.?[\d]*", problem))
                 overlap = values_in_step1 & problem_nums
                 if len(overlap) < len(values_in_step1) * 0.5:
-                    given = ", ".join(a.strip() for a in assignments)
-                    return f"{problem}, {given}"
+                    given = ", ".join(a.strip() for a in safe_assignments)
+                    if given:
+                        return f"{problem}, {given}"
 
         # Fallback: use solution_data dict if the problem has no numbers
         # and step 1 uses substitution format like (10)(9) instead of var=val
@@ -482,8 +530,12 @@ class StepGenerator(ABC):
                 continue
 
             val_s = str(val)
-            if val_s == answer_str:
-                continue
+            try:
+                if float(val_s) == float(answer_str):
+                    continue
+            except (ValueError, TypeError):
+                if val_s == answer_str:
+                    continue
 
             val_in_step1 = cls._val_in_text(val, val_s, step1)
             if not val_in_step1:

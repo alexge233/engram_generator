@@ -647,13 +647,13 @@ class ModPowGenerator(StepGenerator):
             List of (power_of_2, raw_value, reduced_value) tuples.
         """
         squares: list[tuple[int, int, int]] = []
-        current = base % mod
+        current = base
         power = 1
         while power <= exp:
             raw = current
             reduced = current % mod
             squares.append((power, raw, reduced))
-            current = (reduced * reduced) % mod
+            current = reduced * reduced
             power *= 2
         return squares
 

@@ -830,18 +830,22 @@ class ErrorDetectionGenerator(StepGenerator):
 
     def _corrupt_step(self, correct_steps: list[int],
                       error_idx: int) -> list[int]:
-        """Corrupt one step by changing its value.
+        """Corrupt one step and cascade the error forward.
+
+        The error propagates to all subsequent running totals so the
+        final shown total is always wrong, preventing answer leaks.
 
         Args:
             correct_steps: List of correct running totals.
             error_idx: Index of the step to corrupt.
 
         Returns:
-            New list with one corrupted value.
+            New list with cascaded corruption from error_idx onward.
         """
         corrupted = correct_steps[:]
         offset = self._rng.choice([-2, -1, 1, 2, 10, -10])
-        corrupted[error_idx] = correct_steps[error_idx] + offset
+        for i in range(error_idx, len(corrupted)):
+            corrupted[i] = correct_steps[i] + offset
         return corrupted
 
     def _format_chain(self, operands: list[int],
@@ -1933,7 +1937,7 @@ class DeriveFormulaGenerator(StepGenerator):
         lhs, rhs = self._compute_verify(derivation["name"], va, vb)
         derivation["verify_lhs"] = lhs
         derivation["verify_rhs"] = rhs
-        problem = f"derive: {derivation['name']} ({derivation['statement']}) [verify a={va},b={vb}]"
+        problem = f"derive: {derivation['name']} [verify a={va},b={vb}]"
         return problem, {"derivation": derivation}
 
     def _compute_verify(self, name: str, a: int, b: int) -> tuple:

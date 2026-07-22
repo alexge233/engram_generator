@@ -963,8 +963,8 @@ class GrainSizeGenerator(StepGenerator):
         else:
             d_um = round(self._rng.uniform(0.05, 1.0), 4)
 
-        d_m = round(d_um * 1e-6, 4)
-        sqrt_d = round(math.sqrt(d_m), 4)
+        d_m = d_um * 1e-6
+        sqrt_d = math.sqrt(d_m)
         hp_term = round(k_y / sqrt_d, 4)
         sigma_y = round(sigma_0 + hp_term, 4)
 

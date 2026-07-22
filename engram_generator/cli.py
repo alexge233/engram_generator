@@ -389,7 +389,7 @@ def _print_skill_tree() -> None:
     generators = get_all_generators()
     by_tier, name_to_tier = _group_by_tier(generators)
 
-    root = Tree("[bold]Engram Curriculum[/bold] (373 tasks)")
+    root = Tree(f"[bold]Engram Curriculum[/bold] ({len(generators)} tasks)")
     for tier in sorted(by_tier.keys()):
         _add_tier_branch(root, tier, by_tier[tier], name_to_tier)
 

@@ -823,9 +823,10 @@ class PoissonDistGenerator(StepGenerator):
         """
         lam, k = self._sample_parameters(difficulty)
         lam_k = lam ** k
-        exp_neg_lam = round(math.exp(-lam), 4)
+        exp_neg_lam_exact = math.exp(-lam)
         k_fact = math.factorial(k)
-        prob = round(lam_k * exp_neg_lam / k_fact, 4)
+        prob = round(lam_k * exp_neg_lam_exact / k_fact, 4)
+        exp_neg_lam = round(exp_neg_lam_exact, 4)
 
         return f"P(X={k}), \\lambda={lam}", {
             "lam": lam, "k": k, "lam_k": lam_k,

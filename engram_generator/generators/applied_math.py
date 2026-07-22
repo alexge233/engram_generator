@@ -1165,11 +1165,14 @@ class MatrixInverseGenerator(StepGenerator):
         """
         bound = min(3 + difficulty, 10)
         det = self._rng.choice([-1, 1])
-        a = self._nonzero_randint(bound)
-        b = self._rng.randint(-bound, bound)
-        c = self._rng.randint(-bound, bound)
-        d = (det + b * c) // a if (det + b * c) % a == 0 else self._fix_d(a, b, c, det)
-        return [[a, b], [c, d]], det
+        for _ in range(200):
+            a = self._nonzero_randint(bound)
+            b = self._rng.randint(-bound, bound)
+            c = self._rng.randint(-bound, bound)
+            if (det + b * c) % a == 0:
+                d = (det + b * c) // a
+                return [[a, b], [c, d]], det
+        return [[1, 0], [0, det]], det
 
     def _nonzero_randint(self, bound: int) -> int:
         """Generate a nonzero random integer in [-bound, bound].

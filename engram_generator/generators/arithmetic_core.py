@@ -296,6 +296,10 @@ class SubtractionGenerator(StepGenerator):
         if top < b:
             top += 10
             new_borrow = 1
+            diff = top - b
+            if borrow > 0:
+                return f"{a}-{borrow}={a - borrow}: borrow, {top}-{b}={diff}", new_borrow
+            return f"{a}-{b}: borrow, {top}-{b}={diff}", new_borrow
 
         diff = top - b
         if borrow > 0:

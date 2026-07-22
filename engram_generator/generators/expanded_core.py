@@ -1021,14 +1021,25 @@ class ImplicitDiffGenerator(StepGenerator):
         b = self._rng.randint(1, 5)
         c = self._rng.randint(1, 20)
         problem = f"d/dx({a}x^2 + {b}y^2 = {c})"
-        dy_dx = f"-{a}x/({b}y)"
-        return problem, {"a": a, "b": b, "c": c, "dy_dx": dy_dx}
+        from math import gcd
+        num = 2 * a
+        den = 2 * b
+        g = gcd(num, den)
+        num_s, den_s = num // g, den // g
+        num_str = str(num_s) if num_s != 1 else ""
+        den_str = f"({den_s}y)" if den_s != 1 else "y"
+        dy_dx = f"-{num_str}x/{den_str}"
+        return problem, {
+            "a": a, "b": b, "c": c, "dy_dx": dy_dx,
+            "raw_num": 2 * a, "raw_den": 2 * b,
+        }
 
     def _create_steps(self, sd: dict) -> list[str]:
         return [
-            f"{2*sd['a']}x + {2*sd['b']}y*dy/dx = 0",
-            f"{2*sd['b']}y*dy/dx = -{2*sd['a']}x",
-            f"dy/dx = -{2*sd['a']}x/({2*sd['b']}y)",
+            f"{sd['raw_num']}x + {sd['raw_den']}y*dy/dx = 0",
+            f"{sd['raw_den']}y*dy/dx = -{sd['raw_num']}x",
+            f"dy/dx = -{sd['raw_num']}x/({sd['raw_den']}y)",
+            f"dy/dx = {sd['dy_dx']}",
         ]
 
     def _create_answer(self, sd: dict) -> str:

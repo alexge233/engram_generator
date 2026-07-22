@@ -1,5 +1,78 @@
 # Changes
 
+## 2026-07-22
+
+### v0.2.0 -- audit fixes and evaluation module
+
+Full codebase audit across 2,022 generators. Fixed 10 issues, added 18 tests.
+
+**Bug fixes:**
+
+- `BooleanEvalGenerator`: NOT token was inserted randomly but never evaluated.
+  Rewrote to track NOT positions, negate the correct operand, and show NOT
+  evaluation in reasoning steps. ~49% of difficulty 3+ samples were incorrect.
+- `LogicalPuzzleGenerator`: clues directly stated all answer assignments
+  ("Alice has red"), making the puzzle trivially solvable. Rewrote to reveal
+  only one assignment and generate negative clues ("does not have") until
+  the puzzle is uniquely solvable. Verified with brute-force permutation
+  check: 200/200 puzzles have exactly one valid solution.
+- `KnightsKnavesGenerator`: reasoning steps stated the answer directly
+  ("assume A is knight"). Replaced with testing-based reasoning steps that
+  show the deduction process without revealing the solution.
+- `PolygonAreaGenerator`: random unordered vertices could produce
+  self-intersecting polygons, giving wrong shoelace formula results. Fixed by
+  sorting vertices by angle from centroid before computing area.
+- `ImplicitDiffGenerator`: answer showed `(1y)` instead of `y` when
+  coefficients reduced to 1. Added GCD simplification and a final
+  simplification step.
+- `OperationNormaliser`: crashed with `OverflowError` on `inf`, `-inf`, `nan`,
+  or `1e309` inputs. Added `math.isfinite()` guard before int conversion.
+- `_enrich_problem` leak guard: regex-based enrichment path did not check if
+  extracted values equalled the answer (float/int type mismatch: `str(45.0)`
+  vs `"45"` bypassed the string comparison). Added float comparison in both
+  the regex and solution_data enrichment paths.
+- `set_difficulty()`: accepted float arguments, causing `random.randint()`
+  `DeprecationWarning` (will be an error in future Python). Added int cast.
+- CLI skill tree: hardcoded "373 tasks", now uses actual generator count.
+- `DeriveFormulaGenerator`: answer formula was embedded in the problem text.
+  Removed formula from problem, keeping only the derivation name and
+  verification values.
+- `ErrorDetectionGenerator` / `ErrorCorrectionGenerator`: running totals
+  in the problem included the correct final answer. Fixed by cascading
+  corruption offset to all subsequent totals so the final shown value is
+  always wrong.
+- `ScalingPredictionGenerator`: prediction target could match an observed
+  data point, making the task a lookup. Fixed by ensuring the target N is
+  never one of the observed Ns.
+- `SelfEvaluationGenerator`: quadratic roots and trap values were enriched
+  into the problem text via `_enrich_problem`. Added `roots`, `trap_value`,
+  `solution`, `confidence`, `target_acc`, `verbose` to `_RESULT_KEY_PATTERNS`.
+- `SolutionEleganceGenerator`: verbose computation included the final answer.
+  Removed computed result from the problem string.
+- `DielectricConstantGenerator`: bare formula problem allowed `eps_r` to be
+  enriched from solution_data. Embedded parameters directly in the problem.
+- `PolygonAreaGenerator`: duplicate vertices possible. Added uniqueness check.
+- `SubtractionGenerator`: borrow steps showed `3-5=8` instead of
+  `3-5: borrow, 13-5=8`. The final answer was correct but the reasoning
+  steps taught wrong arithmetic (457 wrong steps across 100 seeds).
+- `ModPowGenerator`: steps showed `8^1=1` instead of `8^1=8≡1 (mod 7)`.
+  The `_compute_squares` method reduced the base before storing the raw
+  value, hiding the modular reduction step (1,832 wrong steps).
+- `GrainSizeGenerator`: division by zero at difficulty 7-8 because
+  `round(d_um * 1e-6, 4)` rounded nanocrystalline grain sizes to 0.
+  Removed premature rounding of `d_m` and `sqrt_d`.
+- Version bumped from 0.1.0 to 0.2.0 in both `__init__.py` and
+  `pyproject.toml`.
+
+**New tests (`tests/test_audit_fixes.py`):**
+
+18 tests across 9 test classes covering all audit fixes:
+`TestNormaliserInfHandling` (6), `TestBooleanEvalNotLogic` (2),
+`TestLogicalPuzzleNoLeak` (2), `TestKnightsKnavesSteps` (2),
+`TestPolygonAreaOrdering` (1), `TestImplicitDiffFormatting` (2),
+`TestSetDifficultyValidation` (1), `TestLeakGuardTypeMatch` (1),
+`TestVersionBumped` (1).
+
 ## 2026-07-07
 
 ### Problem field enrichment (fix/problem-field-missing-values)

@@ -488,11 +488,23 @@ class DielectricConstantGenerator(StepGenerator):
 
         cap = round(eps_r * _EPS_0 * area_m2 / d_m, 4)
 
-        return "C = \\varepsilon_r \\varepsilon_0 A / d", {
+        target = "C" if difficulty < 7 else "eps_r"
+        if target == "C":
+            problem = (
+                f"C = \\varepsilon_r \\varepsilon_0 A / d, "
+                f"material={name} (eps_r={eps_r}), "
+                f"A={area_cm2} cm^2, d={d_mm} mm"
+            )
+        else:
+            problem = (
+                f"find eps_r: C = \\varepsilon_r \\varepsilon_0 A / d, "
+                f"C={cap:.4e} F, A={area_cm2} cm^2, d={d_mm} mm"
+            )
+        return problem, {
             "material": name, "eps_r": eps_r,
             "A_cm2": area_cm2, "A_m2": area_m2,
             "d_mm": d_mm, "d_m": d_m,
-            "C": cap, "target": "C" if difficulty < 7 else "eps_r",
+            "C": cap, "target": target,
         }
 
     def _create_steps(self, data: dict) -> list[str]:

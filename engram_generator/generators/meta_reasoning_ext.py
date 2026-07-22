@@ -951,7 +951,8 @@ class ErrorCorrectionGenerator(StepGenerator):
         error_idx = self._rng.randint(0, len(correct_running) - 1)
         corrupted = correct_running[:]
         offset = self._rng.choice([-3, -2, -1, 1, 2, 3])
-        corrupted[error_idx] = correct_running[error_idx] + offset
+        for i in range(error_idx, len(corrupted)):
+            corrupted[i] = correct_running[i] + offset
         ops_str = "+".join(str(x) for x in operands)
         shown_str = ",".join(str(s) for s in corrupted)
         problem = f"{ops_str}; shown steps: {shown_str}"
@@ -1629,12 +1630,12 @@ class SolutionEleganceGenerator(StepGenerator):
         b = base + d
         result = a * b
         verbose_steps = 3
-        verbose = f"{a}*{b} = {a}*{base} + {a}*{d} = {a * base}+{a * d} = {result} ({verbose_steps} steps)"
+        verbose = f"{a}*{b} via {a}*{base} + {a}*{d} ({verbose_steps} steps)"
         shortcut = f"({base}-{d})({base}+{d}) = {base}^2-{d}^2 = {base * base}-{d * d} = {result}"
         return verbose, {
             "result": result, "verbose_steps": verbose_steps,
             "short_steps": 1, "insight": f"difference of squares: {base}^2-{d}^2",
-            "shortcut": shortcut,
+            "shortcut": shortcut, "verbose": verbose,
         }
 
     def _build_grouping(self, difficulty: int) -> tuple[str, dict]:
@@ -1672,7 +1673,7 @@ class SolutionEleganceGenerator(StepGenerator):
         """
         base = self._rng.randint(10, 20)
         result = base * base
-        verbose = f"{base}^2 = {base}*{base}, long multiply (4+ digit operations)"
+        verbose = f"compute {base}^2 via long multiply (4+ digit operations)"
         d = base - 10 * (base // 10)
         tens = 10 * (base // 10)
         shortcut = f"({tens}+{d})^2 = {tens}^2+2*{tens}*{d}+{d}^2 = {tens * tens}+{2 * tens * d}+{d * d} = {result}"

@@ -7,6 +7,7 @@ Only applies commutativity sorting to simple numeric expressions.
 Complex expressions (assignments, function calls, LaTeX) are left
 as-is to prevent incorrect reordering.
 """
+import math
 import re
 
 
@@ -90,10 +91,12 @@ class OperationNormaliser:
         """
         try:
             value = float(text)
+            if not math.isfinite(value):
+                return text
             if value == int(value) and 'e' not in text:
                 return str(int(value))
             return text
-        except ValueError:
+        except (ValueError, OverflowError):
             return None
 
     def _try_expression(self, text: str) -> str | None:

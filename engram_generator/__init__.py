@@ -6,4 +6,4 @@ unique step-by-step problem-solution pairs that force models to learn
 algorithms rather than memorise answers.
 """
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"

@@ -976,12 +976,19 @@ class ScalingPredictionGenerator(StepGenerator):
         acc1 = round(model.predict(base_n), 1)
         n2 = base_n * 2
         acc2 = round(model.predict(n2), 1)
+        n3 = base_n * 3
+        acc3 = round(model.predict(n3), 1)
+        observed_ns = {base_n, n2, n3}
         target_n = base_n * factor
+        while target_n in observed_ns:
+            factor += 1
+            target_n = base_n * factor
         target_acc = round(model.predict(target_n), 1)
-        problem = f"observed: N={base_n} -> acc={acc1}, N={n2} -> acc={acc2}"
+        problem = f"observed: N={base_n} -> acc={acc1}, N={n2} -> acc={acc2}, N={n3} -> acc={acc3}"
         return problem, {
-            "base_n": base_n, "n2": n2, "target_n": target_n,
-            "acc1": acc1, "acc2": acc2, "target_acc": target_acc,
+            "base_n": base_n, "n2": n2, "n3": n3, "target_n": target_n,
+            "acc1": acc1, "acc2": acc2, "acc3": acc3,
+            "target_acc": target_acc,
             "alpha": alpha, "c": c, "factor": factor,
         }
 

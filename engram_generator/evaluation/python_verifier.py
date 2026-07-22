@@ -18,6 +18,7 @@ import math
 import warnings
 
 _MAX_EXPONENT = 1000
+_TOLERANCE = 5e-4
 
 
 class PythonVerifier:
@@ -83,6 +84,8 @@ class PythonVerifier:
             self._parse_div_with_remainder,
             self._parse_power_expression,
             self._parse_gcd_expression,
+            self._parse_sqrt_expression,
+            self._parse_log_expression,
         ):
             result = parser(cleaned)
             if result is not None:
@@ -135,6 +138,10 @@ class PythonVerifier:
             VerifyResult or None if not parseable.
         """
         stripped = text.replace(" ", "")
+        if '\\' in stripped or '^{' in stripped or '≡' in stripped:
+            return None
+        if re.match(r'^\(\d+/\d+\)=-?\d+$', stripped):
+            return None
         match = re.match(
             r'^([\d\.\+\-\*/\(\)]+)=([\-\d\.]+)$', stripped,
         )
@@ -147,11 +154,12 @@ class PythonVerifier:
         try:
             computed = self._safe_eval(expr)
             expected = float(stated)
-            valid = abs(computed - expected) < 1e-9
+            valid = abs(computed - expected) < _TOLERANCE
             return VerifyResult(
                 valid=valid, expected=expected, computed=computed,
             )
-        except (ValueError, SyntaxError, ZeroDivisionError, OverflowError):
+        except (ValueError, SyntaxError, ZeroDivisionError,
+                OverflowError, TypeError):
             return None
 
     def _parse_mod_expression(self, text: str) -> "VerifyResult | None":
@@ -240,12 +248,15 @@ class PythonVerifier:
         Returns:
             VerifyResult or None if not parseable.
         """
+        if '\\equiv' in text or '\\mod' in text or 'mod' in text.lower():
+            return None
         match = re.match(
             r'^(\d+)\s*\^\s*(\{?\d+\}?)\s*=\s*([\-\d\.]+)$', text,
         )
         if not match:
             return None
 
+        has_braces = '{' in match.group(2)
         base = int(match.group(1))
         exp = int(match.group(2).strip("{}"))
         stated = float(match.group(3))
@@ -264,8 +275,11 @@ class PythonVerifier:
                 reason="overflow",
             )
 
+        is_correct = abs(computed - stated) < _TOLERANCE
+        if not is_correct and has_braces:
+            return None
         return VerifyResult(
-            valid=abs(computed - stated) < 1e-9,
+            valid=is_correct,
             expected=stated,
             computed=computed,
         )
@@ -296,6 +310,70 @@ class PythonVerifier:
             computed=float(computed),
         )
 
+    def _parse_sqrt_expression(self, text: str) -> "VerifyResult | None":
+        """Parse square root: sqrt(144)=12, \\sqrt{9}=3.
+
+        Args:
+            text: Cleaned step string.
+
+        Returns:
+            VerifyResult or None if not parseable.
+        """
+        match = re.match(
+            r'^\\?sqrt[\(\{](\d+\.?\d*)[\)\}]\s*=\s*([\-\d\.]+)$', text,
+        )
+        if not match:
+            return None
+
+        radicand = float(match.group(1))
+        stated = float(match.group(2))
+        computed = math.sqrt(radicand)
+        return VerifyResult(
+            valid=abs(computed - stated) < _TOLERANCE,
+            expected=stated,
+            computed=computed,
+        )
+
+    def _parse_log_expression(self, text: str) -> "VerifyResult | None":
+        """Parse logarithm: log2(8)=3, ln(7.389)=2, log(100)=2.
+
+        Args:
+            text: Cleaned step string.
+
+        Returns:
+            VerifyResult or None if not parseable.
+        """
+        match = re.match(
+            r'^(ln|log(\d*))\s*\(?\s*([\d\.]+)\s*\)?\s*=\s*([\-\d\.]+)$',
+            text,
+        )
+        if not match:
+            return None
+
+        func = match.group(1)
+        base_str = match.group(2)
+        arg = float(match.group(3))
+        stated = float(match.group(4))
+
+        if arg <= 0:
+            return VerifyResult(
+                valid=False, expected=stated, computed=None,
+                reason="log of non-positive",
+            )
+
+        if func == "ln":
+            computed = math.log(arg)
+        elif base_str:
+            computed = math.log(arg) / math.log(int(base_str))
+        else:
+            computed = math.log10(arg)
+
+        return VerifyResult(
+            valid=abs(computed - stated) < _TOLERANCE,
+            expected=stated,
+            computed=computed,
+        )
+
     @staticmethod
     def _safe_eval(expr: str) -> float:
         """Evaluate a simple arithmetic expression safely.
@@ -319,7 +397,9 @@ class PythonVerifier:
             raise ValueError(f"Unsafe characters in expression: {expr}")
         if "**" in expr or "//" in expr:
             raise ValueError(f"Operator not allowed: {expr}")
-        return float(eval(expr, {"__builtins__": {}}, {}))
+        safe = re.sub(r'(\d)\(', r'\1*(', expr)
+        safe = re.sub(r'\)(\d)', r')*\1', safe)
+        return float(eval(safe, {"__builtins__": {}}, {}))
 
 
 class VerifyResult:
