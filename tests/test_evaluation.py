@@ -227,6 +227,92 @@ class TestReasoningMetrics:
         assert report.total_samples == 0
 
 
+class TestLevenshteinAndRouge:
+    """Tests for Levenshtein distance, step similarity, and ROUGE-L."""
+
+    def setup_method(self):
+        """Create a normaliser for each test."""
+        self.n = OperationNormaliser()
+
+    def test_levenshtein_identical(self):
+        """Identical strings have zero distance."""
+        assert self.n.levenshtein("abc", "abc") == 0
+
+    def test_levenshtein_one_edit(self):
+        """One character difference is distance 1."""
+        assert self.n.levenshtein("abc", "adc") == 1
+
+    def test_levenshtein_empty(self):
+        """Empty vs non-empty is length of the other."""
+        assert self.n.levenshtein("", "abc") == 3
+
+    def test_step_similarity_exact(self):
+        """Exact match is 1.0."""
+        assert self.n.step_similarity("3*9=27", "9*3=27") == 1.0
+
+    def test_step_similarity_partial(self):
+        """Near-miss is between 0 and 1."""
+        sim = self.n.step_similarity("4+5=9", "4+5=8")
+        assert 0.5 < sim < 1.0
+
+    def test_step_similarity_completely_different(self):
+        """Totally different strings are near 0."""
+        sim = self.n.step_similarity("abc", "xyz")
+        assert sim < 0.5
+
+    def test_rouge_l_identical(self):
+        """Identical sequences score 1.0."""
+        assert self.n.rouge_l(["a", "b", "c"], ["a", "b", "c"]) == 1.0
+
+    def test_rouge_l_partial(self):
+        """Partial overlap scores between 0 and 1."""
+        score = self.n.rouge_l(["a", "b", "c", "d"], ["a", "c", "d"])
+        assert 0.5 < score < 1.0
+
+    def test_rouge_l_no_overlap(self):
+        """No common subsequence scores 0."""
+        assert self.n.rouge_l(["a", "b"], ["c", "d"]) == 0.0
+
+    def test_rouge_l_empty(self):
+        """Empty input scores 0."""
+        assert self.n.rouge_l([], ["a"]) == 0.0
+
+
+class TestChainMetrics:
+    """Tests for ROUGE-L, similarity, recall, precision on chains."""
+
+    def test_perfect_chain_metrics(self):
+        """Perfect chain has all metrics at 1.0."""
+        gt = ReasoningChain("a <step> 1+2=3 <step> 3")
+        pred = ReasoningChain("a <step> 1+2=3 <step> 3")
+        r = gt.compare(pred, skip_problem=True)
+        assert r.rouge_l == 1.0
+        assert r.mean_step_similarity == 1.0
+        assert r.step_recall == 1.0
+        assert r.step_precision == 1.0
+
+    def test_partial_chain_metrics(self):
+        """Wrong step reduces similarity but not to zero."""
+        gt = ReasoningChain("a <step> 4+5=9 <step> 1+2=3 <step> 339")
+        pred = ReasoningChain("a <step> 4+5=9 <step> 1+2=4 <step> 349")
+        r = gt.compare(pred, skip_problem=True)
+        assert 0.0 < r.rouge_l < 1.0
+        assert 0.0 < r.mean_step_similarity < 1.0
+
+    def test_report_includes_new_metrics(self):
+        """Report includes ROUGE-L and similarity."""
+        metrics = ReasoningMetrics()
+        report = metrics.evaluate(
+            ["a <step> x <step> y"],
+            ["a <step> x <step> y"],
+        )
+        d = report.to_dict()
+        assert "mean_rouge_l" in d
+        assert "mean_step_similarity" in d
+        assert "mean_step_recall" in d
+        assert "mean_step_precision" in d
+
+
 class TestStepGeneratorNormalise:
     """Tests for base StepGenerator.normalise_step()."""
 

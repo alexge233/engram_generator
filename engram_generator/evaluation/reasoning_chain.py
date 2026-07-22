@@ -56,6 +56,10 @@ class ChainComparison:
     num_predicted: int
     expected_answer: str
     predicted_answer: str
+    rouge_l: float = 0.0
+    mean_step_similarity: float = 0.0
+    step_recall: float = 0.0
+    step_precision: float = 0.0
 
 
 class ReasoningChain:
@@ -204,6 +208,30 @@ class ReasoningChain:
         num_correct = sum(s.correct for s in step_comparisons)
         total = len(step_comparisons)
 
+        exp_normalised = self._normaliser.normalise_chain(expected_parts)
+        pred_normalised = self._normaliser.normalise_chain(predicted_parts)
+
+        rouge = OperationNormaliser.rouge_l(exp_normalised, pred_normalised)
+
+        similarities = []
+        for i in range(min(len(expected_parts), len(predicted_parts))):
+            sim = self._normaliser.step_similarity(
+                expected_parts[i], predicted_parts[i],
+            )
+            similarities.append(sim)
+        mean_sim = (
+            sum(similarities) / len(similarities) if similarities else 0.0
+        )
+
+        step_recall = (
+            num_correct / len(expected_parts)
+            if expected_parts else 0.0
+        )
+        step_precision = (
+            num_correct / len(predicted_parts)
+            if predicted_parts else 0.0
+        )
+
         return ChainComparison(
             steps=step_comparisons,
             first_failure=first_failure,
@@ -214,4 +242,8 @@ class ReasoningChain:
             num_predicted=len(predicted_parts),
             expected_answer=self._answer,
             predicted_answer=predicted.answer,
+            rouge_l=rouge,
+            mean_step_similarity=mean_sim,
+            step_recall=step_recall,
+            step_precision=step_precision,
         )

@@ -31,6 +31,10 @@ class ReasoningReport:
     mean_step_accuracy: float = 0.0
     perfect_chains: float = 0.0
     mean_first_failure: float = -1.0
+    mean_rouge_l: float = 0.0
+    mean_step_similarity: float = 0.0
+    mean_step_recall: float = 0.0
+    mean_step_precision: float = 0.0
     step_accuracy_by_position: dict[int, float] = field(default_factory=dict)
     comparisons: list[ChainComparison] = field(default_factory=list)
 
@@ -46,6 +50,10 @@ class ReasoningReport:
             "mean_step_accuracy": round(self.mean_step_accuracy, 4),
             "perfect_chains": round(self.perfect_chains, 4),
             "mean_first_failure": round(self.mean_first_failure, 2),
+            "mean_rouge_l": round(self.mean_rouge_l, 4),
+            "mean_step_similarity": round(self.mean_step_similarity, 4),
+            "mean_step_recall": round(self.mean_step_recall, 4),
+            "mean_step_precision": round(self.mean_step_precision, 4),
             "step_accuracy_by_position": {
                 str(k): round(v, 4)
                 for k, v in self.step_accuracy_by_position.items()
@@ -150,6 +158,11 @@ class ReasoningMetrics:
             for pos in sorted(position_total)
         }
 
+        rouge_scores = [c.rouge_l for c in comparisons]
+        sim_scores = [c.mean_step_similarity for c in comparisons]
+        recall_scores = [c.step_recall for c in comparisons]
+        precision_scores = [c.step_precision for c in comparisons]
+
         return ReasoningReport(
             total_samples=total,
             final_answer_accuracy=final_correct / total,
@@ -158,6 +171,10 @@ class ReasoningMetrics:
             mean_first_failure=(
                 sum(failures) / len(failures) if failures else -1.0
             ),
+            mean_rouge_l=sum(rouge_scores) / len(rouge_scores),
+            mean_step_similarity=sum(sim_scores) / len(sim_scores),
+            mean_step_recall=sum(recall_scores) / len(recall_scores),
+            mean_step_precision=sum(precision_scores) / len(precision_scores),
             step_accuracy_by_position=position_accuracy,
             comparisons=comparisons,
         )
@@ -174,6 +191,10 @@ class ReasoningMetrics:
         print(f"  Final answer accuracy:  {report.final_answer_accuracy:.1%}")
         print(f"  Mean step accuracy:     {report.mean_step_accuracy:.1%}")
         print(f"  Perfect chains:         {report.perfect_chains:.1%}")
+        print(f"  ROUGE-L (chain):        {report.mean_rouge_l:.3f}")
+        print(f"  Step similarity:        {report.mean_step_similarity:.3f}")
+        print(f"  Step recall:            {report.mean_step_recall:.1%}")
+        print(f"  Step precision:         {report.mean_step_precision:.1%}")
         if report.mean_first_failure >= 0:
             print(
                 f"  Mean first failure at:  step {report.mean_first_failure:.1f}"

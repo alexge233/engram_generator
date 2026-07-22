@@ -163,3 +163,90 @@ class OperationNormaliser:
         """
         other_ops = {'+', '-', '*', '/'} - {target_op}
         return any(op in lhs for op in other_ops)
+
+    @staticmethod
+    def levenshtein(a: str, b: str) -> int:
+        """Compute Levenshtein edit distance between two strings.
+
+        Args:
+            a: First string.
+            b: Second string.
+
+        Returns:
+            Minimum number of single-character edits.
+        """
+        if len(a) < len(b):
+            return OperationNormaliser.levenshtein(b, a)
+        if not b:
+            return len(a)
+        prev = list(range(len(b) + 1))
+        for i, ca in enumerate(a):
+            curr = [i + 1]
+            for j, cb in enumerate(b):
+                cost = 0 if ca == cb else 1
+                curr.append(min(
+                    curr[j] + 1,
+                    prev[j + 1] + 1,
+                    prev[j] + cost,
+                ))
+            prev = curr
+        return prev[-1]
+
+    def step_similarity(self, a: str, b: str) -> float:
+        """Compute normalised similarity between two steps.
+
+        Returns 1.0 for exact match, 0.0 for completely different.
+        Based on Levenshtein distance over the longer string.
+
+        Args:
+            a: First step string.
+            b: Second step string.
+
+        Returns:
+            Similarity score in [0.0, 1.0].
+        """
+        na = self.normalise(a)
+        nb = self.normalise(b)
+        if na == nb:
+            return 1.0
+        max_len = max(len(na), len(nb))
+        if max_len == 0:
+            return 1.0
+        dist = self.levenshtein(na, nb)
+        return 1.0 - (dist / max_len)
+
+    @staticmethod
+    def rouge_l(expected: list[str], predicted: list[str]) -> float:
+        """Compute ROUGE-L F1 score between two step sequences.
+
+        Uses longest common subsequence (LCS) over step lists,
+        not characters. Measures structural overlap of reasoning
+        chains even when steps are reordered or missing.
+
+        Args:
+            expected: Ground truth step list.
+            predicted: Predicted step list.
+
+        Returns:
+            ROUGE-L F1 score in [0.0, 1.0].
+        """
+        if not expected or not predicted:
+            return 0.0
+
+        m = len(expected)
+        n = len(predicted)
+        table = [[0] * (n + 1) for _ in range(m + 1)]
+
+        for i in range(1, m + 1):
+            for j in range(1, n + 1):
+                if expected[i - 1] == predicted[j - 1]:
+                    table[i][j] = table[i - 1][j - 1] + 1
+                else:
+                    table[i][j] = max(table[i - 1][j], table[i][j - 1])
+
+        lcs_len = table[m][n]
+        precision = lcs_len / n
+        recall = lcs_len / m
+        if precision + recall == 0:
+            return 0.0
+        return 2 * precision * recall / (precision + recall)
