@@ -97,6 +97,20 @@ class LibraryVerifier:
                 )
             gen_result = self._extract_gen_result(task_name, solution_data)
             match = self._compare_values(lib_result, gen_result)
+            if not match and isinstance(gen_result, dict):
+                for val in gen_result.values():
+                    if self._compare_values(lib_result, val):
+                        match = True
+                        gen_result = val
+                        break
+                if not match:
+                    for val in gen_result.values():
+                        if self._compare_rounded(lib_result, val):
+                            match = True
+                            gen_result = val
+                            break
+                if not match and isinstance(lib_result, (tuple, list)):
+                    match = self._compare_tuple_to_dict(lib_result, gen_result)
             if not match:
                 match = self._compare(lib_result, answer)
             return LibraryResult(
@@ -214,6 +228,57 @@ class LibraryVerifier:
             return abs(float(lib_result) - float(gen_result)) < self._tolerance
         except (ValueError, TypeError):
             return str(lib_result).strip() == str(gen_result).strip()
+
+    def _compare_tuple_to_dict(self, lib_tuple: tuple | list,
+                                sol_data: dict) -> bool:
+        """Check if every element in lib_tuple matches some value in sol_data.
+
+        For handlers that return (x, y) where x and y are stored in
+        separate keys of solution_data.
+
+        Args:
+            lib_tuple: Tuple/list from the handler.
+            sol_data: Generator's solution_data dict.
+
+        Returns:
+            True if all elements found in dict values.
+        """
+        vals = list(sol_data.values())
+        matched = 0
+        for elem in lib_tuple:
+            for val in vals:
+                if self._compare_rounded(elem, val):
+                    matched += 1
+                    break
+        return matched == len(lib_tuple) and len(lib_tuple) > 0
+
+    def _compare_rounded(self, lib_result: Any, gen_result: Any) -> bool:
+        """Compare after rounding both sides to generator precision.
+
+        Generators round to 2-4 decimal places. This catches cases
+        where the handler computes full precision but the generator
+        stored a rounded value.
+
+        Args:
+            lib_result: Value from library computation.
+            gen_result: Value from solution_data.
+
+        Returns:
+            True if they match after rounding.
+        """
+        try:
+            lib_f = float(lib_result)
+            gen_f = float(gen_result)
+            for dp in (2, 3, 4):
+                if abs(round(lib_f, dp) - round(gen_f, dp)) < 1e-9:
+                    return True
+        except (ValueError, TypeError):
+            pass
+        if isinstance(lib_result, (list, tuple)) and isinstance(gen_result, (list, tuple)):
+            if len(lib_result) != len(gen_result):
+                return False
+            return all(self._compare_rounded(a, b) for a, b in zip(lib_result, gen_result))
+        return False
 
     def _compare(self, computed: Any, answer: str) -> bool:
         """Compare computed value to answer string.
