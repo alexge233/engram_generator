@@ -286,26 +286,35 @@ class StepGenerator(ABC):
         equivalence (125.0 matches 125), and whitespace. Generators
         with task-specific step formats can override this method.
 
+        Uses a cached normaliser instance to avoid per-call overhead.
+
         Args:
             step: Raw step string from the reasoning chain.
 
         Returns:
             Canonical form for comparison.
         """
-        from engram_generator.evaluation.normaliser import OperationNormaliser
-        return OperationNormaliser().normalise(step)
+        if not hasattr(self, "_normaliser"):
+            from engram_generator.evaluation.normaliser import OperationNormaliser
+            self._normaliser = OperationNormaliser()
+        return self._normaliser.normalise(step)
 
-    def parse_chain(self, target_text: str) -> "ReasoningChain":
+    def parse_chain(
+        self, target_text: str, has_problem: bool = True,
+    ) -> "ReasoningChain":
         """Parse a target string into a ReasoningChain.
 
         Args:
             target_text: Full target with <step> delimiters.
+            has_problem: If True (default), first segment is the
+                problem statement. Set False for model outputs
+                that only contain reasoning steps.
 
         Returns:
             ReasoningChain with problem, steps, and answer.
         """
         from engram_generator.evaluation.reasoning_chain import ReasoningChain
-        return ReasoningChain(target_text)
+        return ReasoningChain(target_text, has_problem=has_problem)
 
     def _operand_range(self, difficulty: int) -> tuple[int, int]:
         """Return the (lower, upper) bounds for operands at given difficulty.

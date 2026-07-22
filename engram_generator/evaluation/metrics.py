@@ -81,6 +81,8 @@ class ReasoningMetrics:
         expected_texts: list[str],
         predicted_texts: list[str],
         skip_problem: bool = True,
+        *,
+        predicted_has_problem: bool = True,
     ) -> ReasoningReport:
         """Evaluate a batch of expected vs predicted reasoning chains.
 
@@ -89,14 +91,29 @@ class ReasoningMetrics:
             predicted_texts: Model output strings with <step> delimiters.
             skip_problem: If True, skip the problem statement in
                 comparison (for LLMs that don't repeat it).
+            predicted_has_problem: If False, predicted chains are
+                parsed without a problem segment (for LLM outputs
+                that only contain reasoning steps + answer).
 
         Returns:
             ReasoningReport with aggregate and per-position metrics.
+
+        Raises:
+            ValueError: If expected and predicted lists differ in length.
         """
+        if len(expected_texts) != len(predicted_texts):
+            raise ValueError(
+                f"Expected {len(expected_texts)} samples but got "
+                f"{len(predicted_texts)} predictions"
+            )
+
         comparisons = []
         for exp_text, pred_text in zip(expected_texts, predicted_texts):
             exp_chain = ReasoningChain(exp_text, self._normaliser)
-            pred_chain = ReasoningChain(pred_text, self._normaliser)
+            pred_chain = ReasoningChain(
+                pred_text, self._normaliser,
+                has_problem=predicted_has_problem,
+            )
             comparison = exp_chain.compare(pred_chain, skip_problem=skip_problem)
             comparisons.append(comparison)
 
@@ -107,6 +124,8 @@ class ReasoningMetrics:
         expected_text: str,
         predicted_text: str,
         skip_problem: bool = True,
+        *,
+        predicted_has_problem: bool = True,
     ) -> ChainComparison:
         """Evaluate a single sample.
 
@@ -114,12 +133,17 @@ class ReasoningMetrics:
             expected_text: Ground truth with <step> delimiters.
             predicted_text: Model output with <step> delimiters.
             skip_problem: If True, skip the problem statement.
+            predicted_has_problem: If False, predicted chain is parsed
+                without a problem segment.
 
         Returns:
             ChainComparison with per-step results.
         """
         exp_chain = ReasoningChain(expected_text, self._normaliser)
-        pred_chain = ReasoningChain(predicted_text, self._normaliser)
+        pred_chain = ReasoningChain(
+            predicted_text, self._normaliser,
+            has_problem=predicted_has_problem,
+        )
         return exp_chain.compare(pred_chain, skip_problem=skip_problem)
 
     def _aggregate(self, comparisons: list[ChainComparison]) -> ReasoningReport:

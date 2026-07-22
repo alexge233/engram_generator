@@ -313,6 +313,63 @@ class TestChainMetrics:
         assert "mean_step_precision" in d
 
 
+class TestWhitespaceHandling:
+    """Tests for whitespace-insensitive step parsing."""
+
+    def test_no_spaces_around_step(self):
+        """Parses correctly without spaces around <step>."""
+        chain = ReasoningChain("a<step>b<step>c")
+        assert chain.problem == "a"
+        assert chain.steps == ["b"]
+        assert chain.answer == "c"
+
+    def test_extra_whitespace(self):
+        """Parses correctly with irregular whitespace."""
+        chain = ReasoningChain("a  <step>  b  <step>  c")
+        assert chain.problem == "a"
+        assert chain.steps == ["b"]
+        assert chain.answer == "c"
+
+    def test_newlines_around_step(self):
+        """Parses correctly with newlines around delimiter."""
+        chain = ReasoningChain("a\n<step>\nb\n<step>\nc")
+        assert chain.problem == "a"
+        assert chain.steps == ["b"]
+        assert chain.answer == "c"
+
+
+class TestPredictedHasProblem:
+    """Tests for predicted_has_problem in metrics."""
+
+    def test_evaluate_sample_no_problem(self):
+        """LLM output without problem parses correctly."""
+        metrics = ReasoningMetrics()
+        result = metrics.evaluate_sample(
+            "214 + 125 <step> 4+5=9 <step> 1+2=3 <step> 339",
+            "4+5=9 <step> 1+2=3 <step> 339",
+            skip_problem=True,
+            predicted_has_problem=False,
+        )
+        assert result.chain_correct
+
+    def test_evaluate_batch_no_problem(self):
+        """Batch evaluation with predicted_has_problem=False."""
+        metrics = ReasoningMetrics()
+        report = metrics.evaluate(
+            ["a <step> 1+2=3 <step> 3"],
+            ["1+2=3 <step> 3"],
+            skip_problem=True,
+            predicted_has_problem=False,
+        )
+        assert report.perfect_chains == 1.0
+
+    def test_evaluate_length_mismatch_raises(self):
+        """Mismatched list lengths raise ValueError."""
+        metrics = ReasoningMetrics()
+        with pytest.raises(ValueError, match="Expected 2"):
+            metrics.evaluate(["a", "b"], ["c"])
+
+
 class TestStepGeneratorNormalise:
     """Tests for base StepGenerator.normalise_step()."""
 
@@ -323,6 +380,15 @@ class TestStepGeneratorNormalise:
         gen = gens[0]
         assert gen.normalise_step("9*3=27") == "3*9=27"
 
+    def test_generator_normalise_cached(self):
+        """Normaliser is cached, not recreated per call."""
+        from engram_generator.curriculum.registry import get_all_generators
+        gens = get_all_generators()
+        gen = gens[0]
+        gen.normalise_step("1+2=3")
+        gen.normalise_step("3*4=12")
+        assert hasattr(gen, "_normaliser")
+
     def test_generator_parse_chain(self):
         """Generator can parse a target text into a chain."""
         from engram_generator.curriculum.registry import get_all_generators
@@ -330,5 +396,15 @@ class TestStepGeneratorNormalise:
         gen = gens[0]
         chain = gen.parse_chain("a <step> b <step> c")
         assert chain.problem == "a"
+        assert chain.steps == ["b"]
+        assert chain.answer == "c"
+
+    def test_generator_parse_chain_no_problem(self):
+        """Generator can parse without problem statement."""
+        from engram_generator.curriculum.registry import get_all_generators
+        gens = get_all_generators()
+        gen = gens[0]
+        chain = gen.parse_chain("b <step> c", has_problem=False)
+        assert chain.problem == ""
         assert chain.steps == ["b"]
         assert chain.answer == "c"

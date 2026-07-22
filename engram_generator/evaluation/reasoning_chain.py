@@ -93,10 +93,10 @@ class ReasoningChain:
         """
         self._normaliser = normaliser or OperationNormaliser()
         self._raw = text
-        parts = [p.strip() for p in text.split(f" {STEP_TOKEN} ") if p.strip()]
-
-        if not parts:
-            parts = [p.strip() for p in text.split(STEP_TOKEN) if p.strip()]
+        import re
+        parts = [p.strip() for p in re.split(
+            r'\s*' + re.escape(STEP_TOKEN) + r'\s*', text,
+        ) if p.strip()]
 
         if not has_problem:
             self._problem = ""
