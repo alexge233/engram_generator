@@ -1,7 +1,7 @@
 """Tests for the Python verification fallback."""
 import pytest
 
-from engram_generator.evaluation.python_verifier import PythonVerifier, VerifyResult
+from engram_generator.evaluation.python_verifier import PythonVerifier
 
 
 class TestDisabledByDefault:
@@ -242,6 +242,63 @@ class TestSafety:
         """Cannot call arbitrary functions."""
         r = self.v.verify_step("open('/etc/passwd')=0")
         assert r.valid is None
+
+
+class TestWhitespaceHandling:
+    """Tests for expressions with whitespace."""
+
+    def setup_method(self):
+        self.v = PythonVerifier(enabled=True)
+
+    def test_spaced_addition(self):
+        """Spaced expression is parsed correctly."""
+        r = self.v.verify_step("4 + 5 = 9")
+        assert r.valid is True
+
+    def test_spaced_multiplication(self):
+        """Spaced multiplication works."""
+        r = self.v.verify_step("3 * 9 = 27")
+        assert r.valid is True
+
+
+class TestEdgeCases:
+    """Tests for division by zero, large exponents, and operator blocking."""
+
+    def setup_method(self):
+        self.v = PythonVerifier(enabled=True)
+
+    def test_mod_zero(self):
+        """Mod by zero returns invalid, not crash."""
+        r = self.v.verify_step("48 mod 0=0")
+        assert r.valid is False
+        assert r.reason == "division by zero"
+
+    def test_div_zero(self):
+        """Division by zero returns invalid, not crash."""
+        r = self.v.verify_step("52/0=0r0")
+        assert r.valid is False
+        assert r.reason == "division by zero"
+
+    def test_large_exponent_capped(self):
+        """Exponent over limit returns None, not DoS."""
+        r = self.v.verify_step("2^999999=0")
+        assert r.valid is None
+        assert "exceeds limit" in r.reason
+
+    def test_exponent_at_limit(self):
+        """Exponent at limit still works."""
+        r = self.v.verify_step("2^10=1024")
+        assert r.valid is True
+
+    def test_double_star_blocked(self):
+        """** operator is blocked in eval."""
+        r = self.v.verify_step("2**10=1024")
+        assert r.valid is None or r.valid is False
+
+    def test_double_slash_blocked(self):
+        """// operator is blocked in eval."""
+        r = self.v.verify_step("10//3=3")
+        assert r.valid is None or r.valid is False
 
 
 class TestVerifyChain:

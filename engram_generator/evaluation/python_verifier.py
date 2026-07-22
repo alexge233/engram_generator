@@ -17,6 +17,8 @@ import re
 import math
 import warnings
 
+_MAX_EXPONENT = 1000
+
 
 class PythonVerifier:
     """Verifies reasoning steps by evaluating arithmetic in Python.
@@ -27,21 +29,14 @@ class PythonVerifier:
 
     Parses expressions like "4+5=9", "48 mod 18=12", "3^4=81" and
     checks if the arithmetic is correct. Only evaluates parsed
-    numeric expressions through a whitelist of safe characters.
+    numeric expressions through a whitelist of safe characters
+    and operators.
 
     Example:
         >>> v = PythonVerifier(enabled=True)
         >>> v.verify_step("4+5=9")
         VerifyResult(valid=True, expected=9.0, computed=9.0)
     """
-
-    _SAFE_NAMES = {
-        "gcd": math.gcd,
-        "abs": abs,
-        "sqrt": math.sqrt,
-        "floor": math.floor,
-        "ceil": math.ceil,
-    }
 
     def __init__(self, enabled: bool = False):
         """Initialise the verifier.
@@ -115,9 +110,11 @@ class PythonVerifier:
         Returns:
             List of VerifyResult, one per step.
         """
+        failure_set = set(only_failures) if only_failures is not None else None
+
         results = []
         for i, step in enumerate(steps):
-            if only_failures is not None and i not in only_failures:
+            if failure_set is not None and i not in failure_set:
                 results.append(VerifyResult(
                     valid=None, expected=None, computed=None,
                     reason="skipped",
@@ -127,7 +124,9 @@ class PythonVerifier:
         return results
 
     def _parse_simple_arithmetic(self, text: str) -> "VerifyResult | None":
-        """Parse simple arithmetic: 4+5=9, 3*9=27, 10-3=7.
+        """Parse simple arithmetic: 4+5=9, 3*9=27, 4 + 5 = 9.
+
+        Strips whitespace before matching to handle spaced expressions.
 
         Args:
             text: Cleaned step string.
@@ -135,8 +134,9 @@ class PythonVerifier:
         Returns:
             VerifyResult or None if not parseable.
         """
+        stripped = text.replace(" ", "")
         match = re.match(
-            r'^([\d\.\+\-\*/\(\)]+)\s*=\s*([\-\d\.]+)$', text,
+            r'^([\d\.\+\-\*/\(\)]+)=([\-\d\.]+)$', stripped,
         )
         if not match:
             return None
@@ -151,13 +151,14 @@ class PythonVerifier:
             return VerifyResult(
                 valid=valid, expected=expected, computed=computed,
             )
-        except (ValueError, SyntaxError, ZeroDivisionError):
+        except (ValueError, SyntaxError, ZeroDivisionError, OverflowError):
             return None
 
     def _parse_mod_expression(self, text: str) -> "VerifyResult | None":
         """Parse modular arithmetic: 48 mod 18=12, 381 mod 125=6.
 
-        Handles both "mod" and "\\mod" notation.
+        Handles both "mod" and "\\mod" notation. Guards against
+        division by zero.
 
         Args:
             text: Cleaned step string.
@@ -174,6 +175,13 @@ class PythonVerifier:
         a = int(match.group(1))
         b = int(match.group(2))
         stated = int(match.group(3))
+
+        if b == 0:
+            return VerifyResult(
+                valid=False, expected=float(stated), computed=None,
+                reason="division by zero",
+            )
+
         computed = a % b
         return VerifyResult(
             valid=computed == stated,
@@ -183,6 +191,8 @@ class PythonVerifier:
 
     def _parse_div_with_remainder(self, text: str) -> "VerifyResult | None":
         """Parse division with remainder: 52/13=4r0, 267/214=1r53.
+
+        Guards against division by zero.
 
         Args:
             text: Cleaned step string.
@@ -201,6 +211,12 @@ class PythonVerifier:
         quotient = int(match.group(3))
         remainder = int(match.group(4))
 
+        if b == 0:
+            return VerifyResult(
+                valid=False, expected=float(quotient), computed=None,
+                reason="division by zero",
+            )
+
         computed_q = a // b
         computed_r = a % b
         valid = computed_q == quotient and computed_r == remainder
@@ -214,6 +230,9 @@ class PythonVerifier:
 
     def _parse_power_expression(self, text: str) -> "VerifyResult | None":
         """Parse exponentiation: 2^4=16, 3^3=27.
+
+        Caps exponent at _MAX_EXPONENT to prevent DoS from
+        extremely large computations.
 
         Args:
             text: Cleaned step string.
@@ -230,7 +249,21 @@ class PythonVerifier:
         base = int(match.group(1))
         exp = int(match.group(2).strip("{}"))
         stated = float(match.group(3))
-        computed = float(base ** exp)
+
+        if exp > _MAX_EXPONENT:
+            return VerifyResult(
+                valid=None, expected=stated, computed=None,
+                reason=f"exponent {exp} exceeds limit {_MAX_EXPONENT}",
+            )
+
+        try:
+            computed = float(base ** exp)
+        except (OverflowError, MemoryError):
+            return VerifyResult(
+                valid=None, expected=stated, computed=None,
+                reason="overflow",
+            )
+
         return VerifyResult(
             valid=abs(computed - stated) < 1e-9,
             expected=stated,
@@ -267,8 +300,9 @@ class PythonVerifier:
     def _safe_eval(expr: str) -> float:
         """Evaluate a simple arithmetic expression safely.
 
-        Only allows digits, operators (+, -, *, /), parentheses,
-        and decimal points. No function calls, no variable access.
+        Only allows digits, single-character operators (+, -, *, /),
+        parentheses, and decimal points. Blocks ** and // to prevent
+        exponentiation via eval and integer division ambiguity.
 
         Args:
             expr: Arithmetic expression string.
@@ -277,12 +311,14 @@ class PythonVerifier:
             Numeric result.
 
         Raises:
-            ValueError: If expression contains unsafe characters.
+            ValueError: If expression contains unsafe characters or operators.
             SyntaxError: If expression is malformed.
         """
         allowed = set("0123456789+-*/.() ")
         if not all(c in allowed for c in expr):
             raise ValueError(f"Unsafe characters in expression: {expr}")
+        if "**" in expr or "//" in expr:
+            raise ValueError(f"Operator not allowed: {expr}")
         return float(eval(expr, {"__builtins__": {}}, {}))
 
 
@@ -291,7 +327,7 @@ class VerifyResult:
 
     Attributes:
         valid: True if computation matches, False if wrong,
-            None if step was unparseable or skipped.
+            None if step was unparseable, skipped, or disabled.
         expected: The value stated in the step.
         computed: The value computed by Python.
         reason: Explanation for failures or skips.
