@@ -2,6 +2,22 @@
 
 Current: **v0.1.0** -- 2,022 generators across 100+ scientific domains.
 
+## Next: Python Verification Fallback (evaluation module)
+
+Add a `PythonVerifier` as a third evaluation tier:
+
+1. Step exact match (after normalisation) -- fast, first pass
+2. ROUGE-L / similarity -- catches near-misses
+3. **Python verification (fallback)** -- for steps that fail 1 and 2, parse the arithmetic expression and evaluate it in Python to check if the maths is correct even if the format differs
+
+This catches cases where an LLM uses a different but valid reasoning strategy (e.g. square-and-multiply instead of repeated multiplication for exponentiation, or starting GCD from either operand).
+
+Requirements:
+- Sandboxed eval (no arbitrary code execution)
+- Only runs on failures from levels 1 and 2
+- Reports "format mismatch but computationally correct" vs "genuinely wrong"
+- Handles LaTeX notation parsing for expressions like `\frac{1}{2}`, `\mod`, `\gcd`
+
 ## Next: Depth & Coverage (v0.2.0)
 
 ### Missing domains to add
