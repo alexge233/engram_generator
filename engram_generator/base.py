@@ -279,6 +279,34 @@ class StepGenerator(ABC):
         parts = [problem] + steps + [answer]
         return f" {STEP_TOKEN} ".join(parts)
 
+    def normalise_step(self, step: str) -> str:
+        """Normalise a reasoning step for comparison.
+
+        Handles commutativity (3*9=27 matches 9*3=27), numeric
+        equivalence (125.0 matches 125), and whitespace. Generators
+        with task-specific step formats can override this method.
+
+        Args:
+            step: Raw step string from the reasoning chain.
+
+        Returns:
+            Canonical form for comparison.
+        """
+        from engram_generator.evaluation.normaliser import OperationNormaliser
+        return OperationNormaliser().normalise(step)
+
+    def parse_chain(self, target_text: str) -> "ReasoningChain":
+        """Parse a target string into a ReasoningChain.
+
+        Args:
+            target_text: Full target with <step> delimiters.
+
+        Returns:
+            ReasoningChain with problem, steps, and answer.
+        """
+        from engram_generator.evaluation.reasoning_chain import ReasoningChain
+        return ReasoningChain(target_text)
+
     def _operand_range(self, difficulty: int) -> tuple[int, int]:
         """Return the (lower, upper) bounds for operands at given difficulty.
 
