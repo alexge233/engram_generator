@@ -589,6 +589,26 @@ class LibraryVerifier:
 
         h["logic_gate_eval"] = lambda d: d.get("result", 0)
 
+        from engram_generator.validation.handlers_t0_t3 import (
+            register_handlers as _reg_t0_t3,
+        )
+        _reg_t0_t3(h)
+
+        from engram_generator.validation.handlers_t4 import (
+            register_handlers as _reg_t4,
+        )
+        _reg_t4(h)
+
+        from engram_generator.validation.handlers_t5 import (
+            register_handlers as _reg_t5,
+        )
+        _reg_t5(h)
+
+        from engram_generator.validation.handlers_t6_t8 import (
+            register_handlers as _reg_t6_t8,
+        )
+        _reg_t6_t8(h)
+
         return h
 
     def supported_tasks(self) -> list[str]:
