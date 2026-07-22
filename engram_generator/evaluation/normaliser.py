@@ -2,6 +2,10 @@
 
 Handles commutativity (3*9=27 matches 9*3=27), numeric equivalence
 (125.0 matches 125), whitespace, and common formatting variations.
+
+Only applies commutativity sorting to simple numeric expressions.
+Complex expressions (assignments, function calls, LaTeX) are left
+as-is to prevent incorrect reordering.
 """
 import re
 
@@ -9,20 +13,19 @@ import re
 class OperationNormaliser:
     """Normalises arithmetic steps for comparison.
 
-    Commutative operators (+, *) get sorted operands.
-    Non-commutative operators (-, /, div, mod) stay ordered.
-    Numeric values are canonicalised (floats to ints where exact).
+    Commutative operators (+, *) get sorted operands, but ONLY
+    for simple numeric expressions (e.g. "3*9=27"). Expressions
+    with variables, function calls, parentheses, or chained
+    equalities are left ordered.
 
     Example:
         >>> n = OperationNormaliser()
         >>> n.normalise("9*3=27")
         '3*9=27'
-        >>> n.normalise("2+1+1=4")
-        '1+1+2=4'
-        >>> n.normalise("125.0")
-        '125'
-        >>> n.normalise("48 \\\\mod 18=12")
-        '48\\\\mod18=12'
+        >>> n.normalise("n = 3*5 = 15")
+        'n=3*5=15'
+        >>> n.normalise("f'(0.667) = 2*B_t = 1.334")
+        "f'(0.667)=2*b_t=1.334"
     """
 
     COMMUTATIVE_OPS = {'+', '*'}
@@ -94,15 +97,17 @@ class OperationNormaliser:
             return None
 
     def _try_expression(self, text: str) -> str | None:
-        """Try to parse as an expression with operator and result.
+        """Try to parse as a simple arithmetic expression and sort operands.
 
-        Sorts operands for commutative operators.
+        Only sorts operands for simple numeric expressions like
+        "3*9=27" or "2+1+1=4". Rejects expressions with variables,
+        function calls, parentheses, LaTeX, or chained equalities.
 
         Args:
             text: Cleaned string.
 
         Returns:
-            Canonical expression string, or None if not parseable.
+            Canonical expression string, or None if not sortable.
         """
         eq_match = re.match(r'^(.+)=([^=]+)$', text)
         if not eq_match:
@@ -111,6 +116,9 @@ class OperationNormaliser:
         lhs = eq_match.group(1)
         result = eq_match.group(2)
 
+        if not self._is_simple_numeric(lhs):
+            return None
+
         for op in ('*', '+'):
             if op in lhs and not self._has_mixed_ops(lhs, op):
                 operands = lhs.split(op)
@@ -118,6 +126,27 @@ class OperationNormaliser:
                 return op.join(sorted_ops) + '=' + result
 
         return None
+
+    @staticmethod
+    def _is_simple_numeric(lhs: str) -> bool:
+        """Check if the LHS contains only digits and arithmetic operators.
+
+        Returns False for variables, function calls, parentheses,
+        LaTeX commands, or anything that isn't pure digit arithmetic.
+        Allows 'r' for remainder notation (e.g. "0r5").
+
+        Args:
+            lhs: Left-hand side of the expression.
+
+        Returns:
+            True if safe to sort operands.
+        """
+        if '(' in lhs or ')' in lhs:
+            return False
+        if '\\' in lhs:
+            return False
+        allowed = set('0123456789+-*/r.')
+        return all(c in allowed for c in lhs)
 
     @staticmethod
     def _has_mixed_ops(lhs: str, target_op: str) -> bool:
