@@ -4,12 +4,38 @@ import pytest
 from engram_generator.evaluation.python_verifier import PythonVerifier, VerifyResult
 
 
+class TestDisabledByDefault:
+    """Tests that verifier is disabled by default."""
+
+    def test_default_disabled(self):
+        """Default construction returns disabled results."""
+        v = PythonVerifier()
+        r = v.verify_step("4+5=9")
+        assert r.valid is None
+        assert r.reason == "disabled"
+
+    def test_default_chain_disabled(self):
+        """Chain verification also disabled by default."""
+        v = PythonVerifier()
+        results = v.verify_chain(["4+5=9", "3*2=6"])
+        assert all(r.reason == "disabled" for r in results)
+
+    def test_enabled_warns(self):
+        """Enabling emits a warning."""
+        import warnings
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            PythonVerifier(enabled=True)
+            assert len(w) == 1
+            assert "eval()" in str(w[0].message)
+
+
 class TestSimpleArithmetic:
     """Tests for basic arithmetic verification."""
 
     def setup_method(self):
         """Create a verifier for each test."""
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_addition_correct(self):
         """Correct addition is valid."""
@@ -67,7 +93,7 @@ class TestModExpression:
     """Tests for modular arithmetic verification."""
 
     def setup_method(self):
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_mod_correct(self):
         """Correct mod expression is valid."""
@@ -95,7 +121,7 @@ class TestDivWithRemainder:
     """Tests for division with remainder verification."""
 
     def setup_method(self):
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_div_correct(self):
         """Correct division with remainder is valid."""
@@ -122,7 +148,7 @@ class TestPowerExpression:
     """Tests for exponentiation verification."""
 
     def setup_method(self):
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_power_correct(self):
         """Correct exponentiation is valid."""
@@ -149,7 +175,7 @@ class TestGCDExpression:
     """Tests for GCD verification."""
 
     def setup_method(self):
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_gcd_correct(self):
         """Correct GCD is valid."""
@@ -177,7 +203,7 @@ class TestUnparseable:
     """Tests for steps that can't be verified computationally."""
 
     def setup_method(self):
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_text_step(self):
         """Non-arithmetic step returns unparseable."""
@@ -205,7 +231,7 @@ class TestSafety:
     """Tests for safe evaluation."""
 
     def setup_method(self):
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_no_builtins(self):
         """Cannot access builtins."""
@@ -222,7 +248,7 @@ class TestVerifyChain:
     """Tests for chain verification."""
 
     def setup_method(self):
-        self.v = PythonVerifier()
+        self.v = PythonVerifier(enabled=True)
 
     def test_full_chain(self):
         """Verify all steps in a chain."""

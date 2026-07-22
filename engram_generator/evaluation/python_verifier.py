@@ -1,31 +1,38 @@
 """Python-based computational verification of reasoning steps.
 
-Fallback evaluator for steps that fail string match and similarity.
-Parses arithmetic expressions from steps and evaluates them in Python
-to check mathematical correctness regardless of formatting.
+WARNING: This module uses Python's eval() on parsed arithmetic
+expressions. While inputs are sanitised through a character whitelist
+and builtins are disabled, this cannot guarantee safety against all
+adversarial inputs. Risks include:
 
-Only runs on steps that failed levels 1 (exact match) and 2
-(similarity), so the overhead is proportional to the number of
-failures, not the total sample count.
+- Crafted expressions that cause excessive computation (denial of service)
+- Potential undiscovered eval() bypasses
+
+This module is DISABLED by default. Enable explicitly with
+PythonVerifier(enabled=True) only when evaluating trusted inputs
+(e.g. outputs from your own models or controlled experiments).
+Do NOT use on untrusted or adversarial inputs.
 """
 import re
 import math
+import warnings
 
 
 class PythonVerifier:
     """Verifies reasoning steps by evaluating arithmetic in Python.
 
+    DISABLED BY DEFAULT. Must be explicitly enabled with
+    PythonVerifier(enabled=True). Emits a warning on construction
+    when enabled.
+
     Parses expressions like "4+5=9", "48 mod 18=12", "3^4=81" and
-    checks if the arithmetic is correct. Does NOT execute arbitrary
-    code -- only evaluates parsed numeric expressions through a
-    whitelist of safe operations.
+    checks if the arithmetic is correct. Only evaluates parsed
+    numeric expressions through a whitelist of safe characters.
 
     Example:
-        >>> v = PythonVerifier()
+        >>> v = PythonVerifier(enabled=True)
         >>> v.verify_step("4+5=9")
         VerifyResult(valid=True, expected=9.0, computed=9.0)
-        >>> v.verify_step("4+5=10")
-        VerifyResult(valid=False, expected=10.0, computed=9.0)
     """
 
     _SAFE_NAMES = {
@@ -36,12 +43,30 @@ class PythonVerifier:
         "ceil": math.ceil,
     }
 
+    def __init__(self, enabled: bool = False):
+        """Initialise the verifier.
+
+        Args:
+            enabled: Must be True to allow verification. Default
+                False (all calls return disabled result). Emits a
+                warning when enabled.
+        """
+        self._enabled = enabled
+        if enabled:
+            warnings.warn(
+                "PythonVerifier enabled. This uses eval() on parsed "
+                "arithmetic expressions. Only use on trusted inputs.",
+                UserWarning,
+                stacklevel=2,
+            )
+
     def verify_step(self, step: str) -> "VerifyResult":
         """Verify a single reasoning step computationally.
 
-        Attempts to parse the step as an arithmetic expression
-        with a result, then evaluates the expression in Python
-        and compares against the stated result.
+        Returns a disabled result if the verifier was not explicitly
+        enabled. Attempts to parse the step as an arithmetic
+        expression, then evaluates it in Python and compares against
+        the stated result.
 
         Args:
             step: Raw step string (e.g. "4+5=9" or "48 mod 18=12").
@@ -49,6 +74,12 @@ class PythonVerifier:
         Returns:
             VerifyResult with verification outcome.
         """
+        if not self._enabled:
+            return VerifyResult(
+                valid=None, expected=None, computed=None,
+                reason="disabled",
+            )
+
         cleaned = step.strip()
 
         for parser in (
