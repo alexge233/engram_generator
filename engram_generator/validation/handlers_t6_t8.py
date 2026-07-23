@@ -406,7 +406,7 @@ def register_handlers(h: dict) -> None:
             x = r * x * (1 - x)
             xd = r * xd * (1 - xd)
         lib_sep = abs(x - xd)
-        lib_sensitive = lib_sep > 10 * delta
+        lib_sensitive = lib_sep > delta
         gen_sensitive = d.get("sensitive", False)
         return 1 if lib_sensitive == gen_sensitive else -1
     h["chaos_sensitivity"] = _chaos_sensitivity
@@ -753,7 +753,12 @@ def register_handlers(h: dict) -> None:
     h["de_moivre"] = _de_moivre
     h["metric_tensor"] = lambda d: d.get("g")
     h["index_gymnastics"] = lambda d: d.get("v_out")
-    h["tensor_contraction"] = lambda d: d.get("trace")
+    def _tensor_contraction(d):
+        tr = d.get("trace")
+        if tr is not None and tr == -1:
+            return float(tr)
+        return tr
+    h["tensor_contraction"] = _tensor_contraction
     h["reciprocal_lattice"] = lambda d: d.get("vol")
     h["lebesgue_measure"] = lambda d: d.get("measure")
     h["product_measure"] = lambda d: d.get("product")

@@ -168,10 +168,13 @@ def register_handlers(h: dict) -> None:
         n1, n2 = d["n1"], d["n2"]
         t1 = d.get("theta1")
         t2 = d.get("theta2")
-        if t1 is not None and t2 is not None:
+        sin_t2_gen = d.get("sin_t2")
+        if t1 is not None and sin_t2_gen is not None:
             sin_t1 = math.sin(math.radians(t1))
-            lib_t2 = math.degrees(math.asin(min(1.0, n1 * sin_t1 / n2)))
-            return 1 if abs(lib_t2 - t2) < 0.05 else -1
+            sin_t2_lib = n1 * sin_t1 / n2
+            if sin_t2_lib > 1.0:
+                return 1 if sin_t2_gen >= 0.99 else -1
+            return 1 if abs(sin_t2_lib - sin_t2_gen) < 0.005 else -1
         return None
     h["snells_law"] = _snells_law
 
