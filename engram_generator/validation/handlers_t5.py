@@ -741,15 +741,15 @@ def register_handlers(h: dict) -> None:
 
     def _fft_butterfly(d):
         import numpy as np
-        x = np.array(d["x"], dtype=complex)
-        half = d.get("half", len(x) // 2)
-        x_even = x[::2]
-        x_odd = x[1::2]
+        x = d["x"]
         N = len(x)
-        twiddle = [np.exp(-2j * np.pi * k / N) for k in range(half)]
-        fft_even = np.fft.fft(x_even)
-        fft_odd = np.fft.fft(x_odd)
-        results = [fft_even[k] + twiddle[k] * fft_odd[k] for k in range(half)]
+        half = d.get("half", N // 2)
+        x_even = [x[i] for i in range(0, N, 2)]
+        x_odd = [x[i] for i in range(1, N, 2)]
+        results = []
+        for k in range(half):
+            W = np.exp(-2j * np.pi * k / N)
+            results.append(x_even[k] + W * x_odd[k])
         gen_re = d.get("results_re", [])
         gen_im = d.get("results_im", [])
         if gen_re:

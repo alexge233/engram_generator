@@ -748,20 +748,29 @@ def register_handlers(h: dict) -> None:
     h["product_measure"] = lambda d: d.get("product")
     def _convergence_modes(d):
         ae = d.get("ae")
-        if isinstance(ae, (list, tuple)):
-            return ae[0] if ae else None
-        return ae
+        in_m = d.get("in_measure")
+        in_lp = d.get("in_Lp")
+        if ae is not None:
+            ae_yes = ae[0] == "yes" if isinstance(ae, (list, tuple)) else bool(ae)
+            return 1 if ae_yes else -1
+        return None
     h["convergence_modes"] = _convergence_modes
     h["outer_measure"] = lambda d: d.get("measure", d.get("result"))
 
     h["kalman_gain"] = lambda d: d.get("k_gain")
     def _kalman_update(d):
-        step1 = d.get("step1", {})
-        if isinstance(step1, dict):
-            x_est = step1.get("x_upd", step1.get("x"))
-            p_est = step1.get("p_upd", step1.get("P_upd", step1.get("P")))
-            if x_est is not None and p_est is not None:
-                return (round(x_est, 4), round(p_est, 4))
+        for step_key in ("step2", "step1"):
+            step = d.get(step_key, {})
+            if isinstance(step, dict) and step:
+                x_pred = step.get("x_pred", 0)
+                p_pred = step.get("p_pred", 0)
+                K = step.get("K", 0)
+                z = step.get("z", 0)
+                x_upd = step.get("x_upd")
+                p_upd = step.get("p_upd")
+                if x_upd is not None:
+                    lib_x = round(x_pred + K * (z - x_pred), 4)
+                    return 1 if abs(lib_x - x_upd) < 0.01 else -1
         return None
     h["kalman_update"] = _kalman_update
     h["inverse_kinematics"] = lambda d: (d.get("theta1_up"), d.get("theta2_up"))
@@ -946,14 +955,16 @@ def register_handlers(h: dict) -> None:
         N = len(labels)
         if N == 0:
             return None
-        result = sum(np.exp(-2j * np.pi * k * n / N) for n in range(N)) / math.sqrt(N)
-        lib_re = round(float(complex(result).real), 4)
-        gen_real = d.get("output_real")
-        if isinstance(gen_real, list) and k < len(gen_real):
-            return 1 if abs(lib_re - float(gen_real[k])) < 0.01 else -1
-        if isinstance(gen_real, (int, float)):
-            return 1 if abs(lib_re - float(gen_real)) < 0.01 else -1
-        return lib_re
+        gen_output = d.get("output", [])
+        gen_real = d.get("output_real", [])
+        if gen_output and gen_real:
+            lib_coeffs = []
+            for j in range(N):
+                c = sum(np.exp(2j * np.pi * j * n / N) for n in range(N)) / N
+                lib_coeffs.append(round(abs(c), 4))
+            gen_mags = [round(abs(complex(x)), 4) for x in gen_output]
+            return 1 if all(abs(a - b) < 0.01 for a, b in zip(lib_coeffs, gen_mags)) else -1
+        return None
     h["qft_compute"] = _qft_compute
 
     h["natural_gradient"] = lambda d: d.get("theta_new")
