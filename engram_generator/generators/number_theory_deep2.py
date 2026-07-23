@@ -248,24 +248,29 @@ class SumOfFourSquaresGenerator(StepGenerator):
         return "express n as sum of four squares"
 
     def _decompose(self, n: int) -> list[int]:
-        """Greedy decomposition of n into at most 4 squares.
+        """Decompose n into exactly 4 squares.
+
+        Uses greedy with backtracking: if the greedy approach leaves
+        a non-zero remainder after 3 squares, the last square absorbs
+        whatever is left (if it's a perfect square), otherwise tries
+        a smaller first square.
 
         Args:
             n: Non-negative integer.
 
         Returns:
-            List of at most 4 integers whose squares sum to n.
+            List of exactly 4 non-negative integers whose squares sum to n.
         """
-        squares: list[int] = []
-        remainder = n
-        for _ in range(4):
-            if remainder == 0:
-                squares.append(0)
-                continue
-            root = int(math.isqrt(remainder))
-            squares.append(root)
-            remainder -= root * root
-        return squares
+        for a in range(int(math.isqrt(n)), -1, -1):
+            rem_a = n - a * a
+            for b in range(int(math.isqrt(rem_a)), -1, -1):
+                rem_b = rem_a - b * b
+                for c in range(int(math.isqrt(rem_b)), -1, -1):
+                    rem_c = rem_b - c * c
+                    d = int(math.isqrt(rem_c))
+                    if d * d == rem_c:
+                        return [a, b, c, d]
+        return [0, 0, 0, 0]
 
     def _create_problem(self, difficulty: int) -> tuple[str, dict]:
         """Generate a sum of four squares problem.

@@ -21,7 +21,11 @@ def register_handlers(h: dict) -> None:
         if isinstance(edges, dict):
             for node, neighbors in edges.items():
                 for nb, w in neighbors:
-                    G.add_edge(int(node), nb, weight=w)
+                    n = int(node)
+                    if G.has_edge(n, nb):
+                        G[n][nb]["weight"] = min(G[n][nb]["weight"], w)
+                    else:
+                        G.add_edge(n, nb, weight=w)
         else:
             for e in edges:
                 G.add_edge(e[0], e[1], weight=e[2] if len(e) > 2 else 1)
@@ -835,9 +839,7 @@ def register_handlers(h: dict) -> None:
         return d.get("final", d.get("result"))
     h["affine_transform"] = _affine
 
-    def _barycentric(d):
-        return 1 if d.get("inside") else -1
-    h["barycentric_coords"] = _barycentric
+    h["barycentric_coords"] = lambda d: (round(d.get("u", 0), 4), round(d.get("v", 0), 4), round(d.get("w", 0), 4))
 
     def _bezier(d):
         return (round(d.get("bx", 0), 4), round(d.get("by", 0), 4))

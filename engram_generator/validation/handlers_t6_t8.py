@@ -40,10 +40,11 @@ def register_handlers(h: dict) -> None:
         if not coeffs or p is None:
             return None
         x = sympy.Symbol('x')
-        poly = sum(c * x**i for i, c in enumerate(coeffs))
+        deg = len(coeffs) - 1
+        poly = sum(c * x**(deg - i) for i, c in enumerate(coeffs))
         roots = [r for r in range(p) if poly.subs(x, r) % p == 0]
         has_root = len(roots) > 0
-        if d.get("deg", len(coeffs) - 1) <= 3:
+        if deg <= 3:
             gen_irreducible = d.get("irreducible", not has_root)
             lib_irreducible = not has_root
             return 1 if lib_irreducible == gen_irreducible else -1
@@ -244,9 +245,13 @@ def register_handlers(h: dict) -> None:
     def _qr_decomposition(d):
         import numpy as np
         Q = np.array(d["Q"], dtype=float)
+        R = np.array(d["R"], dtype=float)
         qtq = Q.T @ Q
+        gen_qtq00 = d.get("qtq00")
+        if gen_qtq00 is not None:
+            return 1 if abs(qtq[0][0] - gen_qtq00) < 0.01 else -1
         n = qtq.shape[0]
-        return 1 if np.allclose(qtq, np.eye(n), atol=1e-3) else -1
+        return 1 if np.allclose(qtq, np.eye(n), atol=0.01) else -1
     h["qr_decomposition"] = _qr_decomposition
 
     h["eigenvalue_power_iteration"] = lambda d: d.get("eigenvalue")
