@@ -501,8 +501,8 @@ def register_handlers(h: dict) -> None:
     def _hamiltonian(d):
         cycle = d.get("ham_cycle")
         if cycle is not None:
-            return cycle
-        return False
+            return 1
+        return "NO"
     h["hamiltonian_check"] = _hamiltonian
     h["vertex_cover"] = lambda d: d.get("cover_size")
     h["independent_set"] = lambda d: d.get("ind_size")
