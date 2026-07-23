@@ -428,10 +428,14 @@ def register_handlers(h: dict) -> None:
         if not signal:
             return None
         result = sum(float(signal[n]) * np.exp(-2j * np.pi * k * n / N) for n in range(N))
+        lib_re = round(float(complex(result).real), 4)
+        lib_im = round(float(complex(result).imag), 4)
         gen_result = d.get("result")
-        if gen_result is not None:
-            return 1 if abs(complex(result).real - float(gen_result)) < 0.01 else -1
-        return round(float(complex(result).real), 4)
+        if isinstance(gen_result, (list, tuple)) and len(gen_result) == 2:
+            return 1 if abs(lib_re - gen_result[0]) < 0.01 and abs(lib_im - gen_result[1]) < 0.01 else -1
+        if isinstance(gen_result, (int, float)):
+            return 1 if abs(lib_re - float(gen_result)) < 0.01 else -1
+        return lib_re
     h["dft_compute"] = _dft_compute
 
     h["windowed_fourier"] = lambda d: d.get("dft_k0")
@@ -494,7 +498,10 @@ def register_handlers(h: dict) -> None:
         return 1 if d.get("iso") else -1
     h["graph_isomorphism"] = _graph_isomorphism
 
-    h["hamiltonian_check"] = lambda d: d.get("ham_cycle") is not None
+    def _hamiltonian_check(d):
+        has = d.get("ham_cycle") is not None
+        return "YES" if has else "NO"
+    h["hamiltonian_check"] = _hamiltonian_check
     h["vertex_cover"] = lambda d: d.get("cover_size")
     h["independent_set"] = lambda d: d.get("ind_size")
 
@@ -877,7 +884,7 @@ def register_handlers(h: dict) -> None:
         entropy = 0.0
         for lam in eigenvalues:
             if lam > 1e-12:
-                entropy -= lam * math.log2(lam)
+                entropy -= lam * math.log(lam)
         gen_entropy = d.get("entropy", None)
         if gen_entropy is not None:
             return 1 if abs(round(entropy, 4) - round(gen_entropy, 4)) < 5e-3 else -1
@@ -892,10 +899,13 @@ def register_handlers(h: dict) -> None:
         if N == 0:
             return None
         result = sum(np.exp(-2j * np.pi * k * n / N) for n in range(N)) / math.sqrt(N)
+        lib_re = round(float(complex(result).real), 4)
         gen_real = d.get("output_real")
-        if gen_real is not None:
-            return 1 if abs(float(complex(result).real) - float(gen_real)) < 0.01 else -1
-        return round(float(complex(result).real), 4)
+        if isinstance(gen_real, list) and k < len(gen_real):
+            return 1 if abs(lib_re - float(gen_real[k])) < 0.01 else -1
+        if isinstance(gen_real, (int, float)):
+            return 1 if abs(lib_re - float(gen_real)) < 0.01 else -1
+        return lib_re
     h["qft_compute"] = _qft_compute
 
     h["natural_gradient"] = lambda d: d.get("theta_new")

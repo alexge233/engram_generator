@@ -152,12 +152,12 @@ def register_handlers(h: dict) -> None:
     h["run_length"] = _run_length
 
     def _scientific_notation(d):
-        mode = d.get("mode", "to_sci")
-        if "result" in d:
-            return d["result"]
         coeff = d.get("coeff", 1)
         exp = d.get("exp", 0)
-        return coeff * 10 ** exp
+        if coeff is not None and exp is not None:
+            valid = 1.0 <= abs(coeff) < 10.0 or coeff == 0
+            return 1 if valid else -1
+        return d.get("result")
     h["scientific_notation"] = _scientific_notation
 
     def _time_arithmetic(d):
@@ -732,7 +732,8 @@ def register_handlers(h: dict) -> None:
         percents = d.get("percents", [])
         if not percents:
             return None
-        return round(sum(p[2] for p in percents), 4)
+        total = round(sum(p[2] for p in percents), 2)
+        return 1 if abs(total - 100.0) < 0.1 else -1
     h["percent_composition"] = _percent_composition
 
     h["periodic_trend"] = lambda d: d.get("higher", "")

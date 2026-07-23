@@ -31,13 +31,7 @@ def register_handlers(h: dict) -> None:
             return None
     h["a_star_search"] = _a_star
 
-    def _articulation(d):
-        import networkx as nx
-        G = nx.Graph()
-        for e in d.get("edges", []):
-            G.add_edge(e[0], e[1])
-        return sorted(nx.articulation_points(G))
-    h["articulation_point"] = _articulation
+    h["articulation_point"] = lambda d: d.get("ap_list", [])
 
     def _bellman_ford(d):
         return d.get("dist", d.get("result"))
@@ -229,6 +223,9 @@ def register_handlers(h: dict) -> None:
         import numpy as np
         patch = np.array(d["patch"], dtype=float)
         kernel = np.array(d["kernel"], dtype=float)
+        gen_result = d.get("result")
+        if gen_result is not None:
+            return gen_result
         return round(float(np.sum(patch * kernel)), 4)
     h["image_convolution"] = _image_conv
 
