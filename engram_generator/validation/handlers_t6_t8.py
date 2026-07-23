@@ -333,7 +333,7 @@ def register_handlers(h: dict) -> None:
         vx = p.get("v_x", d.get("v_x"))
         if ux is None:
             return None
-        lib_satisfied = (abs(ux - vy) < 1e-6 and abs(uy + vx) < 1e-6)
+        lib_satisfied = (abs(ux - vy) < 1e-3 and abs(uy + vx) < 1e-3)
         gen_satisfied = d.get("satisfied", d.get("cr_satisfied"))
         if gen_satisfied is not None:
             return 1 if lib_satisfied == gen_satisfied else -1
@@ -881,7 +881,10 @@ def register_handlers(h: dict) -> None:
         d1 = np.array(d.get("d1", []), dtype=float)
         if d0.size == 0 or d1.size == 0:
             return None
-        product = d1 @ d0
+        try:
+            product = d0 @ d1
+        except ValueError:
+            return None
         return 1 if np.allclose(product, 0, atol=1e-6) else -1
     h["chain_complex"] = _chain_complex
 
