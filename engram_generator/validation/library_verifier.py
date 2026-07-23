@@ -278,6 +278,10 @@ class LibraryVerifier:
             if len(lib_result) != len(gen_result):
                 return False
             return all(self._compare_rounded(a, b) for a, b in zip(lib_result, gen_result))
+        if isinstance(lib_result, str) and isinstance(gen_result, str):
+            return lib_result.strip() == gen_result.strip()
+        if lib_result == gen_result:
+            return True
         return False
 
     def _compare(self, computed: Any, answer: str) -> bool:

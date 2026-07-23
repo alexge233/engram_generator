@@ -89,7 +89,15 @@ def register_handlers(h: dict) -> None:
         return (num, den)
     h["continued_fraction"] = _continued_fraction
 
-    h["continued_fraction_convergent"] = lambda d: d.get("convergents")
+    def _cf_convergent(d):
+        convs = d.get("convergents", [])
+        if not convs:
+            return None
+        last = convs[-1]
+        if isinstance(last, (list, tuple)) and len(last) == 2:
+            return round(last[0] / last[1], 4) if last[1] != 0 else None
+        return last
+    h["continued_fraction_convergent"] = _cf_convergent
     def _euler_criterion(d):
         import sympy
         a, p = d.get("a"), d.get("p")
@@ -486,7 +494,7 @@ def register_handlers(h: dict) -> None:
         return 1 if d.get("iso") else -1
     h["graph_isomorphism"] = _graph_isomorphism
 
-    h["hamiltonian_check"] = lambda d: bool(d.get("ham_cycle"))
+    h["hamiltonian_check"] = lambda d: d.get("ham_cycle") is not None
     h["vertex_cover"] = lambda d: d.get("cover_size")
     h["independent_set"] = lambda d: d.get("ind_size")
 
@@ -637,10 +645,16 @@ def register_handlers(h: dict) -> None:
         b1 = np.array(d.get("b1", []), dtype=float)
         w2 = np.array(d.get("w2", []), dtype=float)
         b2 = np.array(d.get("b2", []), dtype=float)
+        def sigmoid(z):
+            return 1.0 / (1.0 + np.exp(-z))
         z1 = w1 @ x + b1
-        a1 = np.maximum(z1, 0)
-        z2 = w2 @ a1 + b2
-        return [round(float(v), 4) for v in z2]
+        a1 = sigmoid(z1)
+        z2 = float((w2 @ a1 + b2)[0])
+        out = round(sigmoid(z2), 4)
+        gen_out = d.get("output")
+        if gen_out is not None:
+            return 1 if abs(out - gen_out) < 5e-3 else -1
+        return out
     h["neural_forward"] = _neural_forward
 
     h["cross_attention"] = lambda d: d.get("output")

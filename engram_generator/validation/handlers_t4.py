@@ -337,7 +337,7 @@ def register_handlers(h: dict) -> None:
         return len(best)
     h["longest_palindrome"] = _longest_palindrome
 
-    h["topk_quickselect"] = lambda d: sorted(d["arr"], reverse=True)[:d["k"]]
+    h["topk_quickselect"] = lambda d: sorted(d["arr"])[d["k"] - 1]
     h["recursive_binary_search"] = lambda d: d["found_idx"]
     h["interval_scheduling"] = lambda d: d["count"]
 
@@ -543,7 +543,10 @@ def register_handlers(h: dict) -> None:
     def _euler_method_ode(d):
         trace = d["trace"]
         if trace:
-            return trace[-1]
+            last = trace[-1]
+            if isinstance(last, (list, tuple)):
+                return round(last[1], 4)
+            return last
         return None
     h["euler_method_ode"] = _euler_method_ode
 

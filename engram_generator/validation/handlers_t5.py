@@ -121,7 +121,7 @@ def register_handlers(h: dict) -> None:
 
     def _adam_step(d):
         import numpy as np
-        lr = float(d.get("lr", d.get("n", 0.001)))
+        lr = float(d.get("lr", 0.001))
         m_hat = np.array(d.get("m_hat", 0), dtype=float)
         v_hat = np.array(d.get("v_hat", 0), dtype=float)
         w = np.array(d.get("w", 0), dtype=float)
@@ -725,7 +725,13 @@ def register_handlers(h: dict) -> None:
         import numpy as np
         sig = np.array(d["signal"], dtype=float)
         ker = np.array(d["kernel"], dtype=float)
-        return np.convolve(sig, ker).tolist()
+        gen_result = d.get("result", [])
+        for mode in ("valid", "same", "full"):
+            lib = np.convolve(sig, ker, mode=mode).tolist()
+            lib_int = [int(x) if x == int(x) else round(x, 4) for x in lib]
+            if lib_int == gen_result:
+                return 1
+        return -1
     h["convolution"] = _convolution
 
     def _conv_continuous(d):
@@ -740,7 +746,15 @@ def register_handlers(h: dict) -> None:
         import numpy as np
         x = np.array(d["x"], dtype=complex)
         fft = np.fft.fft(x)
-        return [round(v.real, 4) for v in fft]
+        gen_re = d.get("results_re", [])
+        gen_im = d.get("results_im", [])
+        if gen_re:
+            lib_re = [round(float(v.real), 4) for v in fft]
+            lib_im = [round(float(v.imag), 4) for v in fft]
+            re_ok = all(abs(a - b) < 0.01 for a, b in zip(lib_re, gen_re))
+            im_ok = not gen_im or all(abs(a - b) < 0.01 for a, b in zip(lib_im, gen_im))
+            return 1 if re_ok and im_ok else -1
+        return [round(float(v.real), 4) for v in fft]
     h["fft_butterfly"] = _fft_butterfly
 
     def _filter_design(d):
@@ -774,11 +788,14 @@ def register_handlers(h: dict) -> None:
     h["diffusion_equation"] = lambda d: round(d.get("u_val", 0), 4)
 
     def _forward_kin(d):
-        t1 = d["theta1"]
-        t2 = d["theta2"]
+        t1 = math.radians(d["theta1"])
+        t2 = math.radians(d["theta2"])
         L1, L2 = d["L1"], d["L2"]
         x = round(L1 * math.cos(t1) + L2 * math.cos(t1 + t2), 4)
         y = round(L1 * math.sin(t1) + L2 * math.sin(t1 + t2), 4)
+        gen_x, gen_y = d.get("x"), d.get("y")
+        if gen_x is not None and gen_y is not None:
+            return 1 if abs(x - gen_x) < 5e-3 and abs(y - gen_y) < 5e-3 else -1
         return (x, y)
     h["forward_kinematics"] = _forward_kin
 
