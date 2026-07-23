@@ -237,11 +237,15 @@ def register_handlers(h: dict) -> None:
     h["mse_loss"] = lambda d: round(sum(d["sq_errors"]) / d["n"], 4)
 
     def _moving_average(d):
-        import numpy as np
         series = d["series"]
         k = d["k"]
-        ma = [round(sum(series[i:i+k]) / k, 4) for i in range(len(series) - k + 1)]
-        return ma
+        lib_ma = [round(sum(series[i:i+k]) / k, 4) for i in range(len(series) - k + 1)]
+        gen_ma_raw = d.get("ma_values", [])
+        if gen_ma_raw and isinstance(gen_ma_raw[0], dict):
+            gen_ma = [round(v["avg"], 4) for v in gen_ma_raw]
+        else:
+            gen_ma = gen_ma_raw
+        return 1 if lib_ma == gen_ma else -1
     h["moving_average"] = _moving_average
 
     # === Combinatorics ===
@@ -489,7 +493,12 @@ def register_handlers(h: dict) -> None:
 
     def _supply_demand_equilibrium(d):
         a, b, c, d_val = d["a"], d["b"], d["c"], d["d"]
-        p_star = (a - c) / (d_val + b)
+        p_star = (c - a) / (b + d_val)
+        q_star = a + b * p_star
+        gen_p = d.get("p_star")
+        gen_q = d.get("q_star")
+        if gen_p is not None and gen_q is not None:
+            return 1 if abs(p_star - gen_p) < 5e-3 and abs(q_star - gen_q) < 5e-3 else -1
         return round(p_star, 4)
     h["supply_demand_equilibrium"] = _supply_demand_equilibrium
 

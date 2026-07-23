@@ -266,7 +266,24 @@ def register_handlers(h: dict) -> None:
                 val = op if not isinstance(op, str) else op.split()[-1]
                 queue.append(val)
         return dequeued
-    h["queue_operations"] = _queue_operations
+    def _queue_ops_check(d):
+        gen_dequeued = d.get("dequeued", [])
+        gen_queue = d.get("queue", [])
+        ops = d.get("ops", [])
+        queue = []
+        dequeued = []
+        import re
+        for op in ops:
+            if isinstance(op, str) and "deq" in op:
+                if queue:
+                    dequeued.append(queue.pop(0))
+            elif isinstance(op, str):
+                m = re.search(r'\d+', op)
+                if m:
+                    queue.append(int(m.group()))
+        ok = dequeued == gen_dequeued and queue == gen_queue
+        return 1 if ok else -1
+    h["queue_operations"] = _queue_ops_check
 
     def _sequence_sum(d):
         n = d.get("n", 0)
@@ -276,19 +293,24 @@ def register_handlers(h: dict) -> None:
         return d.get("sum", 0)
     h["sequence_sum"] = _sequence_sum
 
-    def _stack_operations(d):
+    def _stack_ops_check(d):
+        import re
+        gen_pops = d.get("pops", [])
+        gen_stack = d.get("stack", [])
         ops = d.get("ops", [])
         stack = []
         pops = []
         for op in ops:
-            if isinstance(op, str) and op.startswith("pop"):
+            if isinstance(op, str) and "pop" in op:
                 if stack:
                     pops.append(stack.pop())
-            else:
-                val = op if not isinstance(op, str) else op.split()[-1]
-                stack.append(val)
-        return pops
-    h["stack_operations"] = _stack_operations
+            elif isinstance(op, str):
+                m = re.search(r'\d+', op)
+                if m:
+                    stack.append(int(m.group()))
+        ok = pops == gen_pops and stack == gen_stack
+        return 1 if ok else -1
+    h["stack_operations"] = _stack_ops_check
 
     def _weighted_sum(d):
         import numpy as np
@@ -392,7 +414,11 @@ def register_handlers(h: dict) -> None:
 
     def _counting_sort(d):
         arr = d.get("arr", [])
-        return sorted(arr)
+        lib_sorted = sorted(arr)
+        gen_output = d.get("output", d.get("prefix", []))
+        if gen_output and isinstance(gen_output, list):
+            return 1 if lib_sorted == gen_output else -1
+        return lib_sorted
     h["counting_sort"] = _counting_sort
 
     def _cycle_detect_handler(d):
