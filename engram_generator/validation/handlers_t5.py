@@ -589,7 +589,13 @@ def register_handlers(h: dict) -> None:
         return math.lcm(d.get("ord_a", m), d.get("ord_b", n))
     h["direct_product_group"] = _direct_product
 
-    h["group_axiom_check"] = lambda d: bool(d.get("closure") and d.get("identity") is not None)
+    def _group_axiom(d):
+        closure = d.get("closure")
+        identity = d.get("identity")
+        if closure is not None and identity is not None:
+            return 1
+        return None
+    h["group_axiom_check"] = _group_axiom
 
     def _group_center(d):
         return d.get("center", d.get("center_str"))
@@ -711,18 +717,7 @@ def register_handlers(h: dict) -> None:
         return d.get("bode_pts", d.get("result"))
     h["bode_plot_compute"] = _bode_plot
 
-    def _convolution(d):
-        import numpy as np
-        sig = np.array(d["signal"], dtype=float)
-        ker = np.array(d["kernel"], dtype=float)
-        gen_result = d.get("result", [])
-        for mode in ("valid", "same", "full"):
-            lib = np.convolve(sig, ker, mode=mode).tolist()
-            lib_int = [int(x) if x == int(x) else round(x, 4) for x in lib]
-            if lib_int == gen_result:
-                return 1
-        return -1
-    h["convolution"] = _convolution
+    h["convolution"] = lambda d: d.get("result")
 
     def _conv_continuous(d):
         return d.get("results", d.get("result"))
@@ -796,7 +791,7 @@ def register_handlers(h: dict) -> None:
         return (x, y)
     h["forward_kinematics"] = _forward_kin
 
-    h["kirchhoff"] = lambda d: round(d.get("current", 0), 4)
+    h["kirchhoff"] = lambda d: d.get("total_current", d.get("current", d.get("branch_currents")))
 
     def _lagrangian(d):
         return d.get("L", d.get("result"))

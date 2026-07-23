@@ -701,7 +701,7 @@ def register_handlers(h: dict) -> None:
     h["simplex_step"] = lambda d: d.get("entering")
     h["dual_lp"] = lambda d: d.get("AT")
     h["dual_problem"] = lambda d: d.get("AT")
-    h["convex_check"] = lambda d: "convex" if d.get("result") else "concave"
+    h["convex_check"] = lambda d: d.get("result", "")
     h["kkt_conditions"] = lambda d: d.get("f_star")
     h["integer_programming"] = lambda d: d.get("optimal")
     h["convex_conjugate"] = lambda d: d.get("conjugate")

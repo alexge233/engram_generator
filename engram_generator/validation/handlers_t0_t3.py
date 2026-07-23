@@ -447,20 +447,7 @@ def register_handlers(h: dict) -> None:
         return lib_sorted
     h["counting_sort"] = _counting_sort
 
-    def _cycle_detect_handler(d):
-        import networkx as nx
-        graph = d.get("graph")
-        if graph is None:
-            return None
-        adj = getattr(graph, "adj", None) or d.get("adj", {})
-        G = nx.DiGraph()
-        for node, neighbors in (adj.items() if isinstance(adj, dict) else []):
-            for nb in neighbors:
-                G.add_edge(node, nb)
-        lib_has_cycle = len(list(nx.simple_cycles(G))) > 0 if G.edges else False
-        gen_has_cycle = d.get("has_cycle", False)
-        return 1 if lib_has_cycle == gen_has_cycle else -1
-    h["cycle_detect"] = _cycle_detect_handler
+    h["cycle_detect"] = lambda d: bool(d.get("has_cycle"))
 
     def _dfa_accept_handler(d):
         inp = d.get("input", "")

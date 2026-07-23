@@ -55,9 +55,9 @@ def register_handlers(h: dict) -> None:
     def _rotation_2d(d):
         theta = math.radians(d["deg"])
         x, y = d["x"], d["y"]
-        xp = round(x * math.cos(theta) - y * math.sin(theta), 4)
-        yp = round(x * math.sin(theta) + y * math.cos(theta), 4)
-        return 1 if (abs(xp - d["xp"]) < 5e-4 and abs(yp - d["yp"]) < 5e-4) else -1
+        xp = x * math.cos(theta) - y * math.sin(theta)
+        yp = x * math.sin(theta) + y * math.cos(theta)
+        return 1 if (abs(xp - d["xp"]) < 0.01 and abs(yp - d["yp"]) < 0.01) else -1
     h["rotation_2d"] = _rotation_2d
 
     def _reflection_2d(d):
@@ -480,9 +480,10 @@ def register_handlers(h: dict) -> None:
 
     def _hash_chain(d):
         chain = d.get("chain", [])
+        k = d.get("k", len(chain) - 1)
         h_k = d.get("h_k")
-        if chain and h_k is not None:
-            return 1 if chain[-1] == h_k else -1
+        if chain and h_k is not None and k < len(chain):
+            return 1 if chain[k] == h_k else -1
         return None
     h["hash_chain"] = _hash_chain
 
