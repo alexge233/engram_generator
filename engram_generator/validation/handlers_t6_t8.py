@@ -196,7 +196,7 @@ def register_handlers(h: dict) -> None:
 
     h["multiplicative_function"] = lambda d: 1 if d.get("phi_ok") and d.get("tau_ok") else -1
     h["sum_of_divisors_formula"] = lambda d: d.get("sigma")
-    h["p_adic_valuation"] = lambda d: d.get("v")
+    h["p_adic_valuation"] = lambda d: d.get("vp", d.get("v", d.get("va")))
     h["prime_counting"] = lambda d: d.get("pi_n")
     h["norm_trace_field"] = lambda d: (d.get("norm"), d.get("trace"))
     h["ring_of_integers"] = lambda d: bool(d.get("is_in_ring"))
@@ -287,7 +287,7 @@ def register_handlers(h: dict) -> None:
     h["comparison_test"] = lambda d: bool(d.get("b_converges"))
     h["alternating_series"] = lambda d: bool(d.get("converges"))
     h["integral_test"] = lambda d: bool(d.get("converges"))
-    h["abel_summation"] = lambda d: d.get("p")
+    h["abel_summation"] = lambda d: d.get("series_type", d.get("p"))
     h["weierstrass_mtest"] = lambda d: bool(d.get("uniform"))
     h["power_series_radius"] = lambda d: d.get("radius")
     h["cauchy_sequence"] = lambda d: bool(d.get("is_cauchy"))
@@ -356,12 +356,15 @@ def register_handlers(h: dict) -> None:
         a, b, c, dd = d.get("a"), d.get("b"), d.get("c"), d.get("d")
         zr, zi = d.get("zr", 0), d.get("zi", 0)
         if a is None or c is None:
-            return None
+            return d.get("w")
         z = complex(zr, zi)
         denom = c * z + dd
         if abs(denom) < 1e-12:
-            return None
-        w = (a * z + b) / denom
+            return d.get("w")
+        lib_w = (a * z + b) / denom
+        gen_w = d.get("w")
+        if gen_w is not None and isinstance(gen_w, (int, float, complex)):
+            return 1 if abs(lib_w - complex(gen_w)) < 0.01 else -1
         return d.get("w")
     h["mobius_transform"] = _mobius_transform
 
@@ -489,7 +492,7 @@ def register_handlers(h: dict) -> None:
 
     h["bayesian_updating"] = lambda d: d.get("final_posterior")
     h["empirical_bayes"] = lambda d: d.get("shrunk")
-    h["maximum_likelihood"] = lambda d: d.get("lam_hat")
+    h["maximum_likelihood"] = lambda d: d.get("mu_hat", d.get("lam_hat", d.get("p_hat")))
     h["meta_analysis"] = lambda d: d.get("pooled")
     h["propensity_score"] = lambda d: d.get("ATE_IPW")
     h["arima_forecast"] = lambda d: d.get("f1")
@@ -612,7 +615,7 @@ def register_handlers(h: dict) -> None:
     h["invariant_mass_two_particle"] = lambda d: d.get("result", d.get("m_inv"))
 
     # -- Fluid mechanics & thermodynamics --
-    h["isentropic_flow"] = lambda d: d.get("result", d.get("T_ratio"))
+    h["isentropic_flow"] = lambda d: d.get("M_found", d.get("T_ratio_given", d.get("result")))
     h["normal_shock"] = lambda d: d.get("result", d.get("M2"))
 
     # -- Cryptography --

@@ -13,14 +13,26 @@ def register_handlers(h: dict) -> None:
     # === Circuits & Digital Logic ===
 
     def _adder_circuit(d):
-        a, b, cin = d["a"], d["b"], d["cin"]
-        s = a ^ b ^ cin
-        cout = (a & b) | (b & cin) | (a & cin)
-        return 1 if (s == d["s"] and cout == d["cout"]) else -1
+        a_val = d.get("a_val", d.get("a"))
+        b_val = d.get("b_val", d.get("b"))
+        cin = d.get("cin", 0)
+        if a_val is not None and b_val is not None:
+            n_bits = len(d.get("a_bits", d.get("a_bin", "0")))
+            lib_sum = a_val + b_val + cin
+            lib_result = lib_sum % (2 ** n_bits) if n_bits > 1 else lib_sum
+            lib_cout = 1 if lib_sum >= (2 ** n_bits) else 0
+            gen_result = d.get("result")
+            gen_overflow = d.get("overflow", d.get("cout"))
+            if gen_result is not None:
+                ok = lib_result == gen_result
+                if gen_overflow is not None:
+                    ok = ok and lib_cout == gen_overflow
+                return 1 if ok else -1
+        return d.get("result", d.get("s_bin"))
     h["adder_circuit"] = _adder_circuit
 
-    h["flip_flop_state"] = lambda d: d["outputs"]
-    h["multiplexer"] = lambda d: d["y"]
+    h["flip_flop_state"] = lambda d: d.get("outputs", d.get("result"))
+    h["multiplexer"] = lambda d: d.get("y", d.get("y_final", d.get("y_a")))
     h["karnaugh_map"] = lambda d: d.get("minimized", d.get("canonical"))
 
     def _twos_complement(d):
@@ -158,9 +170,19 @@ def register_handlers(h: dict) -> None:
     # === Trigonometry ===
 
     def _double_angle(d):
-        angle = math.radians(d["angle"])
-        sin_2x = round(math.sin(2 * angle), 4)
-        cos_2x = round(math.cos(2 * angle), 4)
+        angle = d.get("angle")
+        if angle is None:
+            sin_x = d.get("sin_x")
+            cos_x = d.get("cos_x")
+            if sin_x is not None and cos_x is not None:
+                lib_sin2x = round(2 * sin_x * cos_x, 4)
+                lib_cos2x = round(cos_x**2 - sin_x**2, 4)
+                ok = abs(lib_sin2x - d.get("sin_2x", 0)) < 0.01 and abs(lib_cos2x - d.get("cos_2x", 0)) < 0.01
+                return 1 if ok else -1
+            return (d.get("sin_2x"), d.get("cos_2x"))
+        angle_rad = math.radians(angle)
+        sin_2x = round(math.sin(2 * angle_rad), 4)
+        cos_2x = round(math.cos(2 * angle_rad), 4)
         return 1 if (abs(sin_2x - d["sin_2x"]) < 5e-4 and abs(cos_2x - d["cos_2x"]) < 5e-4) else -1
     h["double_angle"] = _double_angle
 

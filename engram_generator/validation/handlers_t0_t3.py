@@ -432,10 +432,17 @@ def register_handlers(h: dict) -> None:
     def _convergent_series(d):
         a = d.get("a", 1)
         r = d.get("r", 0.5)
-        converges = d.get("converges", abs(r) < 1)
-        if converges and abs(r) < 1:
-            return round(a / (1 - r), 4)
-        return d.get("sum", 0)
+        gen_converges = d.get("converges")
+        lib_converges = abs(r) < 1
+        if gen_converges is not None and lib_converges != gen_converges:
+            return -1
+        if lib_converges:
+            lib_sum = round(a / (1 - r), 4)
+            gen_sum = d.get("sum")
+            if gen_sum is not None:
+                return 1 if abs(lib_sum - gen_sum) < 0.01 else -1
+            return lib_sum
+        return bool(gen_converges) if gen_converges is not None else "diverges"
     h["convergent_series"] = _convergent_series
 
     def _counting_sort(d):
@@ -494,7 +501,7 @@ def register_handlers(h: dict) -> None:
     h["dna_complement"] = lambda d: d["seq"].translate(
         str.maketrans("ATCGatcg", "TAGCtagc"))
 
-    h["dominant_strategy"] = lambda d: d.get("row_dominant", "none")
+    h["dominant_strategy"] = lambda d: d.get("row_dominant") if d.get("row_dominant") is not None else "none"
 
     def _embedding_lookup(d):
         import numpy as np
