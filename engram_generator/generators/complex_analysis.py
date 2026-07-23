@@ -1324,10 +1324,14 @@ class MobiusTransformGenerator(StepGenerator):
         Returns:
             Tuple of (latex_problem, solution_data).
         """
-        a, b, c, d = self._choose_coefficients(difficulty)
-        zr, zi = self._choose_input(difficulty)
+        for _ in range(100):
+            a, b, c, d = self._choose_coefficients(difficulty)
+            zr, zi = self._choose_input(difficulty)
+            den_r = c * zr + d
+            den_i = c * zi
+            if den_r * den_r + den_i * den_i > 1e-12:
+                break
 
-        num_r = a * zr - a * 0 + b  # a*zr + b (zi contribution below)
         num_r = a * zr + b
         num_i = a * zi
         den_r = c * zr + d

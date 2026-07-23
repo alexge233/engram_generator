@@ -615,7 +615,7 @@ def register_handlers(h: dict) -> None:
     h["invariant_mass_two_particle"] = lambda d: d.get("result", d.get("m_inv"))
 
     # -- Fluid mechanics & thermodynamics --
-    h["isentropic_flow"] = lambda d: d.get("M_found", d.get("T_ratio_given", d.get("result")))
+    h["isentropic_flow"] = lambda d: d.get("T_ratio", d.get("M_found", d.get("M", d.get("P_ratio"))))
     h["normal_shock"] = lambda d: d.get("result", d.get("M2"))
 
     # -- Cryptography --

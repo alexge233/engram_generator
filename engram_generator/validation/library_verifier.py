@@ -490,13 +490,16 @@ class LibraryVerifier:
 
             Returns 1 if d(antiderivative)/dx == integrand, -1 if not.
             """
-            import sympy
-            x = sympy.Symbol('x')
             integrand = d.get("integrand")
             antideriv = d.get("antiderivative")
             if integrand is None or antideriv is None:
                 return None
+            if hasattr(antideriv, "differentiate") and hasattr(integrand, "terms"):
+                d_antideriv = antideriv.differentiate()
+                return 1 if d_antideriv.terms == integrand.terms else -1
             try:
+                import sympy
+                x = sympy.Symbol('x')
                 integrand_str = str(integrand).replace('^', '**')
                 antideriv_str = str(antideriv).replace('^', '**')
                 if antideriv_str.endswith('+c'):

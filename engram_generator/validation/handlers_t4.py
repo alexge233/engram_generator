@@ -13,22 +13,30 @@ def register_handlers(h: dict) -> None:
     # === Circuits & Digital Logic ===
 
     def _adder_circuit(d):
-        a_val = d.get("a_val", d.get("a"))
-        b_val = d.get("b_val", d.get("b"))
+        mode = d.get("mode", "single")
+        a = d.get("a_val", d.get("a"))
+        b = d.get("b_val", d.get("b"))
         cin = d.get("cin", 0)
-        if a_val is not None and b_val is not None:
-            n_bits = len(d.get("a_bits", d.get("a_bin", "0")))
-            lib_sum = a_val + b_val + cin
-            lib_result = lib_sum % (2 ** n_bits) if n_bits > 1 else lib_sum
-            lib_cout = 1 if lib_sum >= (2 ** n_bits) else 0
-            gen_result = d.get("result")
-            gen_overflow = d.get("overflow", d.get("cout"))
-            if gen_result is not None:
-                ok = lib_result == gen_result
-                if gen_overflow is not None:
-                    ok = ok and lib_cout == gen_overflow
-                return 1 if ok else -1
-        return d.get("result", d.get("s_bin"))
+        if a is None or b is None:
+            return None
+        if mode == "single":
+            s = a ^ b ^ cin
+            cout = (a & b) | (b & cin) | (a & cin)
+            return 1 if s == d.get("s") and cout == d.get("cout") else -1
+        n_bits = len(d.get("a_bits", d.get("a_bin", [])))
+        if n_bits == 0:
+            n_bits = 4
+        total = a + b + cin
+        lib_s = total % (2 ** n_bits)
+        lib_cout = 1 if total >= (2 ** n_bits) else 0
+        gen_s = d.get("result", d.get("s"))
+        gen_cout = d.get("overflow", d.get("cout"))
+        if gen_s is not None:
+            ok = lib_s == gen_s
+            if gen_cout is not None:
+                ok = ok and lib_cout == gen_cout
+            return 1 if ok else -1
+        return lib_s
     h["adder_circuit"] = _adder_circuit
 
     h["flip_flop_state"] = lambda d: d.get("outputs", d.get("result"))
