@@ -21,6 +21,7 @@ status, knowledge atom, and dependencies.
 | With knowledge atom | 2022 | 100% |
 | With worked example | 1649 | 81% |
 | With source URL | 2022 | 100% |
+| Double-blind verified (textbook) | 26 | |
 
 
 ## Per-Tier Breakdown
@@ -1390,6 +1391,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -4723,6 +4725,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -4785,6 +4788,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -6831,6 +6835,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -7329,6 +7334,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -7683,6 +7689,7 @@ status, knowledge atom, and dependencies.
 | Difficulty | 1-8 |
 | Prerequisites | quadratic |
 | Verification | circular |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -9283,6 +9290,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -9677,6 +9685,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -9715,6 +9724,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -10609,6 +10619,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -10630,6 +10641,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -12704,6 +12716,7 @@ status, knowledge atom, and dependencies.
 | Difficulty | 1-8 |
 | Prerequisites | division |
 | Verification | circular |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -17380,6 +17393,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -20435,6 +20449,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -20475,6 +20490,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -21006,6 +21022,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -21892,6 +21909,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -21911,6 +21929,7 @@ status, knowledge atom, and dependencies.
 | Difficulty | 1-8 |
 | Prerequisites | exponentiation, division |
 | Verification | circular |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -21930,6 +21949,7 @@ status, knowledge atom, and dependencies.
 | Difficulty | 1-8 |
 | Prerequisites | multiplication, subtraction |
 | Verification | circular |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -21949,6 +21969,7 @@ status, knowledge atom, and dependencies.
 | Difficulty | 1-8 |
 | Prerequisites | addition |
 | Verification | circular |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -21987,6 +22008,7 @@ status, knowledge atom, and dependencies.
 | Difficulty | 1-8 |
 | Prerequisites | exponentiation, multiplication |
 | Verification | circular |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -23128,6 +23150,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -23189,6 +23212,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -23232,6 +23256,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `independent recomputation` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -30985,6 +31010,7 @@ status, knowledge atom, and dependencies.
 | Verification | VERIFIED |
 | Library | `math` |
 | Function | `p_ba * p_a / p_b` |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 
@@ -34325,6 +34351,7 @@ status, knowledge atom, and dependencies.
 | Difficulty | 1-8 |
 | Prerequisites | logarithm |
 | Verification | circular |
+| Double-blind | VERIFIED (textbook example) |
 
 **Knowledge Atom**
 

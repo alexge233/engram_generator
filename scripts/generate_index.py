@@ -17,6 +17,7 @@ from collections import defaultdict
 from engram_generator.curriculum.registry import get_all_generators
 from engram_generator.validation.registry import VERIFICATION_REGISTRY
 from engram_generator.validation.library_verifier import LibraryVerifier
+from engram_generator.validation.example_verifier import ExampleVerifier
 
 
 def build_index() -> str:
@@ -28,6 +29,8 @@ def build_index() -> str:
     gens = sorted(get_all_generators(), key=lambda g: (g.tier, g.task_name))
     verifier = LibraryVerifier()
     handler_tasks = set(verifier.supported_tasks())
+    example_verifier = ExampleVerifier()
+    example_tasks = set(example_verifier.supported_tasks())
 
     by_tier = defaultdict(list)
     for g in gens:
@@ -36,11 +39,12 @@ def build_index() -> str:
     stats = _compute_stats(gens, handler_tasks)
     lines = []
     lines.append("# Engram Generator Index\n")
+    stats["example_verified"] = len(example_tasks)
     lines.append(_summary_section(stats, len(gens)))
     lines.append(_stats_table(stats))
 
     for tier in sorted(by_tier.keys()):
-        lines.append(_tier_section(tier, by_tier[tier], handler_tasks))
+        lines.append(_tier_section(tier, by_tier[tier], handler_tasks, example_tasks))
 
     return "\n".join(lines)
 
@@ -115,6 +119,7 @@ status, knowledge atom, and dependencies.
 | With knowledge atom | {stats['with_atom']} | {stats['with_atom']*100//total}% |
 | With worked example | {stats['with_example']} | {stats['with_example']*100//total}% |
 | With source URL | {stats['with_source_url']} | {stats['with_source_url']*100//total}% |
+| Double-blind verified (textbook) | {stats.get('example_verified', 0)} | |
 
 """
 
@@ -154,13 +159,14 @@ def _stats_table(stats):
     return "\n".join(lines)
 
 
-def _tier_section(tier, gens, handler_tasks):
+def _tier_section(tier, gens, handler_tasks, example_tasks):
     """Build a section for one tier.
 
     Args:
         tier: Tier number.
         gens: Generators in this tier.
         handler_tasks: Set of task names with handlers.
+        example_tasks: Set of task names with textbook example verification.
 
     Returns:
         Markdown string for the tier.
@@ -175,17 +181,18 @@ def _tier_section(tier, gens, handler_tasks):
     for mod in sorted(by_module.keys()):
         lines.append(f"\n### {mod}\n")
         for g in sorted(by_module[mod], key=lambda x: x.task_name):
-            lines.append(_generator_entry(g, handler_tasks))
+            lines.append(_generator_entry(g, handler_tasks, example_tasks))
 
     return "\n".join(lines)
 
 
-def _generator_entry(g, handler_tasks):
+def _generator_entry(g, handler_tasks, example_tasks):
     """Build a single generator entry.
 
     Args:
         g: Generator instance.
         handler_tasks: Set of task names with handlers.
+        example_tasks: Set of task names with textbook example verification.
 
     Returns:
         Markdown string for the generator.
@@ -224,6 +231,9 @@ def _generator_entry(g, handler_tasks):
             lines.append(f"| PyPI | `{entry.pypi}` |")
     else:
         lines.append(f"| Verification | UNMAPPED |")
+
+    if g.task_name in example_tasks:
+        lines.append(f"| Double-blind | VERIFIED (textbook example) |")
 
     lines.append("")
 

@@ -87,3 +87,16 @@ Multi-step observation-action-reward chains:
 - [ ] Benchmark suite: generation speed, memory usage, correctness rates
 - [ ] Multi-language task descriptions (same algorithm, different natural languages)
 - [ ] Difficulty auto-scaling based on model accuracy feedback
+
+## Conceptual Context in Problem Text
+
+The model currently sees bare task descriptions like "compute reaction rate from rate law" with no explanation of what the concept means. The knowledge atoms contain rich conceptual content (what Gibbs free energy is, why it matters, when to use it) but this isn't shown to the model.
+
+**Option**: Add a `--context` flag that prepends a concept preamble to the problem text without leaking the formula/solution. E.g.:
+
+- WITHOUT context: "dH=-100, dS=-0.2, T=400. Is the reaction spontaneous?"
+- WITH context: "The Gibbs free energy determines whether a chemical reaction proceeds spontaneously. A negative value means the reaction is spontaneous under the given conditions. Given dH=-100 kJ/mol, dS=-0.2 kJ/(mol*K), T=400 K, determine the spontaneity."
+
+**Constraint**: The preamble must not contain the formula itself (that's the answer the model must derive). It should explain the concept, not the computation.
+
+**Implementation**: Add `context_mode` parameter to `_create_problem()` or `_format_target()`. Source context from `atom.content` but strip formula text. Make it opt-in per training run.
