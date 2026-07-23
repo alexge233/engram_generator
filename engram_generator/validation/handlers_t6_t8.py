@@ -16,20 +16,20 @@ def register_handlers(h: dict) -> None:
 
     # -- Abstract algebra --
     h["automorphism_group"] = lambda d: d.get("phi_n", d.get("units"))
-    h["cyclic_group_gen"] = lambda d: 1 if d.get("is_generator") else -1
-    h["normal_subgroup"] = lambda d: 1 if d.get("is_normal") else -1
+    h["cyclic_group_gen"] = lambda d: bool(d.get("is_generator"))
+    h["normal_subgroup"] = lambda d: bool(d.get("is_normal"))
     h["quotient_group"] = lambda d: d.get("num_cosets")
     h["kernel_compute"] = lambda d: d.get("kernel")
-    h["isomorphism_check"] = lambda d: 1 if d.get("is_iso") else -1
+    h["isomorphism_check"] = lambda d: bool(d.get("is_iso"))
     h["conjugacy_class"] = lambda d: d.get("size")
     h["group_action"] = lambda d: d.get("orbit_size")
     h["chinese_remainder_rings"] = lambda d: d.get("a_mod_m")
     h["euclidean_domain"] = lambda d: d.get("nr")
     h["free_group"] = lambda d: d.get("reduced_len")
-    h["group_homomorphism"] = lambda d: 1 if d.get("valid") else -1
+    h["group_homomorphism"] = lambda d: bool(d.get("valid"))
     h["group_order"] = lambda d: d.get("order")
     h["group_presentation"] = lambda d: d.get("order")
-    h["ring_ideal_check"] = lambda d: 1 if d.get("is_ideal") else -1
+    h["ring_ideal_check"] = lambda d: bool(d.get("is_ideal"))
     h["quotient_ring"] = lambda d: d.get("abc_left")
     h["smith_normal_form"] = lambda d: (d.get("d1"), d.get("d2"))
 
@@ -75,7 +75,7 @@ def register_handlers(h: dict) -> None:
         return int(sympy.ntheory.modular.crt(moduli, remainders)[0])
     h["chinese_remainder_ext"] = _chinese_remainder_ext
 
-    h["carmichael_number"] = lambda d: 1 if d.get("is_carmichael") else -1
+    h["carmichael_number"] = lambda d: bool(d.get("is_carmichael"))
     h["discrete_logarithm"] = lambda d: d.get("x")
     h["diophantine"] = lambda d: (d.get("x"), d.get("y"))
 
@@ -203,7 +203,7 @@ def register_handlers(h: dict) -> None:
     h["p_adic_valuation"] = lambda d: d.get("v")
     h["prime_counting"] = lambda d: d.get("pi_n")
     h["norm_trace_field"] = lambda d: (d.get("norm"), d.get("trace"))
-    h["ring_of_integers"] = lambda d: 1 if d.get("is_in_ring") else -1
+    h["ring_of_integers"] = lambda d: bool(d.get("is_in_ring"))
 
     # -- Linear algebra & matrices --
     def _change_of_basis(d):
@@ -284,15 +284,15 @@ def register_handlers(h: dict) -> None:
         return 1 if d.get("converges") else -1
     h["series_convergence"] = _series_convergence
 
-    h["ratio_test"] = lambda d: 1 if d.get("converges") else -1
-    h["root_test"] = lambda d: 1 if d.get("converges") else -1
-    h["comparison_test"] = lambda d: 1 if d.get("b_converges") else -1
-    h["alternating_series"] = lambda d: 1 if d.get("converges") else -1
+    h["ratio_test"] = lambda d: bool(d.get("converges"))
+    h["root_test"] = lambda d: bool(d.get("converges"))
+    h["comparison_test"] = lambda d: bool(d.get("b_converges"))
+    h["alternating_series"] = lambda d: bool(d.get("converges"))
     h["integral_test"] = lambda d: bool(d.get("converges"))
     h["abel_summation"] = lambda d: d.get("p")
-    h["weierstrass_mtest"] = lambda d: 1 if d.get("uniform") else -1
+    h["weierstrass_mtest"] = lambda d: bool(d.get("uniform"))
     h["power_series_radius"] = lambda d: d.get("radius")
-    h["cauchy_sequence"] = lambda d: 1 if d.get("is_cauchy") else -1
+    h["cauchy_sequence"] = lambda d: bool(d.get("is_cauchy"))
     h["epsilon_delta"] = lambda d: d.get("delta")
     h["uniform_convergence"] = lambda d: bool(d.get("uniform"))
     h["pointwise_vs_uniform"] = lambda d: bool(d.get("is_uniform"))
@@ -340,10 +340,14 @@ def register_handlers(h: dict) -> None:
         vx = p.get("v_x", d.get("v_x"))
         if ux is None:
             return None
-        return 1 if (ux == vy and uy == -vx) else -1
+        lib_satisfied = (abs(ux - vy) < 1e-6 and abs(uy + vx) < 1e-6)
+        gen_satisfied = d.get("satisfied", d.get("cr_satisfied"))
+        if gen_satisfied is not None:
+            return 1 if lib_satisfied == gen_satisfied else -1
+        return "CR satisfied" if lib_satisfied else "CR NOT satisfied"
     h["cauchy_riemann"] = _cauchy_riemann
 
-    h["analytic_check"] = lambda d: 1 if d.get("is_analytic") else -1
+    h["analytic_check"] = lambda d: bool(d.get("is_analytic"))
     h["complex_power_series"] = lambda d: d.get("coeffs")
 
     def _residue_compute(d):
@@ -372,7 +376,7 @@ def register_handlers(h: dict) -> None:
 
     # -- ODEs & dynamical systems --
     h["diff_equation"] = lambda d: d.get("k")
-    h["exact_ode"] = lambda d: 1 if d.get("is_exact") else -1
+    h["exact_ode"] = lambda d: bool(d.get("is_exact"))
     h["stability_ode"] = lambda d: d.get("classification")
     h["system_ode_matrix"] = lambda d: (d.get("lam1"), d.get("lam2"))
 
@@ -456,8 +460,8 @@ def register_handlers(h: dict) -> None:
     h["root_locus"] = lambda d: d.get("breakaway")
     h["gain_margin"] = lambda d: d.get("gm_db")
     h["phase_margin"] = lambda d: d.get("pm")
-    h["controllability"] = lambda d: 1 if d.get("controllable") else -1
-    h["observability"] = lambda d: 1 if d.get("observable") else -1
+    h["controllability"] = lambda d: bool(d.get("controllable"))
+    h["observability"] = lambda d: bool(d.get("observable"))
     h["pole_placement"] = lambda d: (d.get("k1"), d.get("k2"))
     h["nyquist_stability"] = lambda d: bool(d.get("stable"))
 
@@ -494,9 +498,7 @@ def register_handlers(h: dict) -> None:
     h["sde_euler"] = lambda d: d.get("x_next")
 
     # -- Graph theory --
-    def _graph_isomorphism(d):
-        return 1 if d.get("iso") else -1
-    h["graph_isomorphism"] = _graph_isomorphism
+    h["graph_isomorphism"] = lambda d: bool(d.get("iso"))
 
     def _hamiltonian_check(d):
         has = d.get("ham_cycle") is not None
@@ -530,7 +532,7 @@ def register_handlers(h: dict) -> None:
     h["grover_step"] = lambda d: d.get("final")
     h["error_syndrome"] = lambda d: d.get("syndrome")
     h["density_matrix"] = lambda d: d.get("rho")
-    h["density_operator"] = lambda d: 1 if d.get("pure") else -1
+    h["density_operator"] = lambda d: bool(d.get("pure"))
     h["bit_flip_code"] = lambda d: d.get("syndrome")
     h["phase_flip_code"] = lambda d: d.get("syndrome")
     h["quantum_circuit"] = lambda d: d.get("final")
@@ -683,10 +685,10 @@ def register_handlers(h: dict) -> None:
     h["partition_function"] = lambda d: d.get("count")
 
     # -- Coding theory --
-    h["resolution_refutation"] = lambda d: 1 if d.get("unsatisfiable") else -1
+    h["resolution_refutation"] = lambda d: bool(d.get("unsatisfiable"))
     h["clause_resolution"] = lambda d: d.get("final")
-    h["satisfiability_check"] = lambda d: 1 if d.get("is_sat") else -1
-    h["first_order_satisfaction"] = lambda d: 1 if d.get("result") else -1
+    h["satisfiability_check"] = lambda d: bool(d.get("is_sat"))
+    h["first_order_satisfaction"] = lambda d: bool(d.get("result"))
     h["prenex_normal_form"] = lambda d: d.get("output")
     h["predicate_logic_validity"] = lambda d: bool(d.get("valid"))
 
@@ -694,7 +696,7 @@ def register_handlers(h: dict) -> None:
     h["simplex_step"] = lambda d: d.get("entering")
     h["dual_lp"] = lambda d: d.get("AT")
     h["dual_problem"] = lambda d: d.get("AT")
-    h["convex_check"] = lambda d: 1 if d.get("result") else -1
+    h["convex_check"] = lambda d: bool(d.get("result"))
     h["kkt_conditions"] = lambda d: d.get("f_star")
     h["integer_programming"] = lambda d: d.get("optimal")
     h["convex_conjugate"] = lambda d: d.get("conjugate")
@@ -781,7 +783,7 @@ def register_handlers(h: dict) -> None:
     h["ct_backprojection"] = lambda d: d.get("grid")
     h["fourier_coefficient"] = lambda d: d.get("amplitude")
     h["euler_product"] = lambda d: d.get("product")
-    h["legendre_prime"] = lambda d: 1 if d.get("prime") else -1
+    h["legendre_prime"] = lambda d: bool(d.get("prime"))
     h["twin_prime_search"] = lambda d: d.get("p")
     h["variety_points"] = lambda d: d.get("count")
     h["rational_points"] = lambda d: (d.get("x1_num"), d.get("x1_den"))
@@ -852,7 +854,7 @@ def register_handlers(h: dict) -> None:
     h["ornstein_uhlenbeck"] = lambda d: (d.get("e_xt"), d.get("var_xt"))
     h["martingale_transform"] = lambda d: d.get("transform_n")
 
-    h["canonical_transform"] = lambda d: 1 if d.get("canonical") else -1
+    h["canonical_transform"] = lambda d: bool(d.get("canonical"))
     h["noether_theorem"] = lambda d: d.get("expression")
 
     # -- Topology (tier 7) --
@@ -900,13 +902,13 @@ def register_handlers(h: dict) -> None:
 
     # -- Algebra (tier 7) --
     h["galois_group"] = lambda d: d.get("order")
-    h["ideal_membership"] = lambda d: 1 if d.get("in_ideal") else -1
+    h["ideal_membership"] = lambda d: bool(d.get("in_ideal"))
     h["ideal_factorisation"] = lambda d: d.get("behaviour")
     h["class_number"] = lambda d: d.get("h")
     h["hensel_lift"] = lambda d: d.get("x2")
     h["decompose_rep"] = lambda d: d.get("multiplicities")
-    h["irreducible_check"] = lambda d: 1 if d.get("is_irreducible") else -1
-    h["schur_lemma_apply"] = lambda d: 1 if d.get("is_isomorphic") else -1
+    h["irreducible_check"] = lambda d: bool(d.get("is_irreducible"))
+    h["schur_lemma_apply"] = lambda d: bool(d.get("is_isomorphic"))
 
     # -- Functional analysis (tier 7) --
     h["compact_operator"] = lambda d: d.get("max_norm")

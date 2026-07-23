@@ -89,13 +89,8 @@ def register_handlers(h: dict) -> None:
         return d.get("pr_new", d.get("result"))
     h["pagerank_compute"] = _pagerank
 
-    def _planar(d):
-        return 1 if d.get("planar") else -1
-    h["planar_check"] = _planar
-
-    def _small_world(d):
-        return 1 if d.get("is_small_world") else -1
-    h["small_world_check"] = _small_world
+    h["planar_check"] = lambda d: bool(d.get("planar"))
+    h["small_world_check"] = lambda d: bool(d.get("is_small_world"))
 
     def _strongly_connected(d):
         return d.get("n_sccs", 0)
@@ -903,7 +898,7 @@ def register_handlers(h: dict) -> None:
 
     h["limsup_liminf"] = lambda d: (d.get("liminf"), d.get("limsup"))
     h["mean_value_theorem"] = lambda d: round(d.get("c", d.get("mean_slope", 0)), 4)
-    h["sequence_convergence"] = lambda d: 1 if d.get("converges") else -1
+    h["sequence_convergence"] = lambda d: bool(d.get("converges"))
     h["squeeze_theorem"] = lambda d: d.get("limit")
     h["supremum_infimum"] = lambda d: (d.get("inf"), d.get("sup"))
 

@@ -85,12 +85,22 @@ def register_handlers(h: dict) -> None:
         constants = d.get("constants", [])
         lib_x = sum(x_coeffs)
         lib_c = sum(constants)
-        answer_parts = []
+        parts = []
         if lib_x != 0:
-            answer_parts.append(f"{lib_x}x" if lib_x not in (1, -1) else ("x" if lib_x == 1 else "-x"))
-        if lib_c != 0 or not answer_parts:
-            answer_parts.append(str(lib_c))
-        return " ".join(answer_parts)
+            if lib_x == 1:
+                parts.append("x")
+            elif lib_x == -1:
+                parts.append("-x")
+            else:
+                parts.append(f"{lib_x}x")
+        if lib_c != 0 or not parts:
+            if parts and lib_c > 0:
+                parts.append(f"+ {lib_c}")
+            elif parts and lib_c < 0:
+                parts.append(f"- {abs(lib_c)}")
+            else:
+                parts.append(str(lib_c))
+        return " ".join(parts)
     h["expression_simplify"] = _expression_simplify
 
     def _fibonacci(d):
