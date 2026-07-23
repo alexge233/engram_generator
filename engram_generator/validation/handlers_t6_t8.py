@@ -82,15 +82,7 @@ def register_handlers(h: dict) -> None:
     h["discrete_logarithm"] = lambda d: d.get("x")
     h["diophantine"] = lambda d: (d.get("x"), d.get("y"))
 
-    def _continued_fraction(d):
-        coeffs = d.get("coeffs", [])
-        if not coeffs:
-            return None
-        num, den = coeffs[-1], 1
-        for c in reversed(coeffs[:-1]):
-            num, den = c * num + den, num
-        return (num, den)
-    h["continued_fraction"] = _continued_fraction
+    h["continued_fraction"] = lambda d: d.get("coeffs")
 
     def _cf_convergent(d):
         convs = d.get("convergents", [])
@@ -506,10 +498,12 @@ def register_handlers(h: dict) -> None:
     # -- Graph theory --
     h["graph_isomorphism"] = lambda d: bool(d.get("iso"))
 
-    def _hamiltonian_check(d):
-        has = d.get("ham_cycle") is not None
-        return "YES" if has else "NO"
-    h["hamiltonian_check"] = _hamiltonian_check
+    def _hamiltonian(d):
+        cycle = d.get("ham_cycle")
+        if cycle is not None:
+            return cycle
+        return False
+    h["hamiltonian_check"] = _hamiltonian
     h["vertex_cover"] = lambda d: d.get("cover_size")
     h["independent_set"] = lambda d: d.get("ind_size")
 
