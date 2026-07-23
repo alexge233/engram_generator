@@ -388,7 +388,12 @@ def register_handlers(h: dict) -> None:
     h["variation_of_parameters"] = lambda d: d.get("particular")
     h["laplace_solve_ode"] = lambda d: d.get("solution")
     h["boundary_value"] = lambda d: d.get("solution")
-    h["bifurcation_detect"] = lambda d: d.get("r_bif")
+    def _bifurcation_detect(d):
+        r = d.get("r_bif")
+        if r is not None and r == -1:
+            return float(r)
+        return r
+    h["bifurcation_detect"] = _bifurcation_detect
     h["lyapunov_exponent"] = lambda d: d.get("lyapunov")
     def _chaos_sensitivity(d):
         r = d.get("r"); x0 = d.get("x0"); delta = d.get("delta", 0.01)
@@ -696,7 +701,7 @@ def register_handlers(h: dict) -> None:
     h["simplex_step"] = lambda d: d.get("entering")
     h["dual_lp"] = lambda d: d.get("AT")
     h["dual_problem"] = lambda d: d.get("AT")
-    h["convex_check"] = lambda d: bool(d.get("result"))
+    h["convex_check"] = lambda d: "convex" if d.get("result") else "concave"
     h["kkt_conditions"] = lambda d: d.get("f_star")
     h["integer_programming"] = lambda d: d.get("optimal")
     h["convex_conjugate"] = lambda d: d.get("conjugate")
@@ -733,13 +738,16 @@ def register_handlers(h: dict) -> None:
     h["system_ode"] = lambda d: d.get("solution")
     h["matrix_power"] = lambda d: d.get("result")
     def _de_moivre(d):
-        r_n = d.get("r_n")
+        r = d.get("r_sq", 1)
+        n = d.get("n", 1)
         a = d.get("result_a")
         b = d.get("result_b")
-        if a is not None:
-            if b == 0:
-                return int(a) if a == int(a) else a
-            return complex(a, b)
+        if a is None:
+            return None
+        r_n = d.get("r_n")
+        lib_r_n = round(r ** (n / 2), 4) if r is not None else r_n
+        if r_n is not None and lib_r_n is not None:
+            return 1 if abs(lib_r_n - r_n) < 0.01 else -1
         return r_n
     h["de_moivre"] = _de_moivre
     h["metric_tensor"] = lambda d: d.get("g")
@@ -783,7 +791,7 @@ def register_handlers(h: dict) -> None:
     h["ct_backprojection"] = lambda d: d.get("grid")
     h["fourier_coefficient"] = lambda d: d.get("amplitude")
     h["euler_product"] = lambda d: d.get("product")
-    h["legendre_prime"] = lambda d: bool(d.get("prime"))
+    h["legendre_prime"] = lambda d: d.get("p", d.get("prime"))
     h["twin_prime_search"] = lambda d: d.get("p")
     h["variety_points"] = lambda d: d.get("count")
     h["rational_points"] = lambda d: (d.get("x1_num"), d.get("x1_den"))
@@ -837,6 +845,9 @@ def register_handlers(h: dict) -> None:
         d1 = (math.log(s / k) + (r + sigma**2 / 2) * t) / (sigma * math.sqrt(t))
         d2 = d1 - sigma * math.sqrt(t)
         call = s * norm.cdf(d1) - k * math.exp(-r * t) * norm.cdf(d2)
+        gen_call = d.get("call")
+        if gen_call is not None:
+            return 1 if abs(call - gen_call) < 0.05 else -1
         return round(call, 4)
     h["black_scholes"] = _black_scholes
 
@@ -847,7 +858,11 @@ def register_handlers(h: dict) -> None:
         t = d.get("t", 1)
         bt = d.get("b_t", 0)
         exponent = (mu - sigma**2 / 2) * t + sigma * bt
-        return round(s0 * math.exp(exponent), 4)
+        lib_st = s0 * math.exp(exponent)
+        gen_st = d.get("s_t")
+        if gen_st is not None:
+            return 1 if abs(lib_st - gen_st) < 0.1 else -1
+        return round(lib_st, 4)
     h["geometric_brownian"] = _geometric_brownian
 
     h["ito_lemma"] = lambda d: (d.get("drift"), d.get("diffusion"))

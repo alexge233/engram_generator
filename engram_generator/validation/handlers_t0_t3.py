@@ -186,7 +186,13 @@ def register_handlers(h: dict) -> None:
     # =================================================================
 
     h["cartesian_product"] = lambda d: len(d["a"]) * len(d["b"])
-    h["permutation_with_rep"] = lambda d: d["n"] ** d["k"]
+    def _perm_with_rep(d):
+        n, k = d["n"], d["k"]
+        mode = d.get("mode", "with_rep")
+        if mode == "without_rep":
+            return math.perm(n, k)
+        return n ** k
+    h["permutation_with_rep"] = _perm_with_rep
     h["pigeonhole"] = lambda d: math.ceil(d["items"] / d["containers"])
     h["power_set"] = lambda d: 2 ** len(d["elements"])
     h["recursive_sum"] = lambda d: sum(d.get("arr", []))
@@ -354,7 +360,15 @@ def register_handlers(h: dict) -> None:
     h["solubility_rules"] = lambda d: d.get("soluble", False)
     h["syllable_count"] = lambda d: d.get("syllables", 0)
     h["circle_arc_length"] = lambda d: round(d["r"] * d["rad"], 4)
-    h["sector_area"] = lambda d: round(0.5 * d["r"] ** 2 * d["rad"], 4)
+    def _sector_area(d):
+        r = d["r"]
+        rad = d.get("rad", d.get("angle_rad", 0))
+        lib = 0.5 * r ** 2 * rad
+        gen = d.get("area", d.get("result"))
+        if gen is not None:
+            return 1 if abs(lib - gen) < 0.01 else -1
+        return round(lib, 4)
+    h["sector_area"] = _sector_area
     h["triangle_centroid"] = lambda d: (
         round((d["pts"][0][0] + d["pts"][1][0] + d["pts"][2][0]) / 3, 4),
         round((d["pts"][0][1] + d["pts"][1][1] + d["pts"][2][1]) / 3, 4),
@@ -367,12 +381,14 @@ def register_handlers(h: dict) -> None:
         while lo <= hi:
             mid = (lo + hi) // 2
             if arr[mid] == target:
-                return mid
+                gen_idx = d.get("found_idx")
+                return 1 if gen_idx == mid else -1
             if arr[mid] < target:
                 lo = mid + 1
             else:
                 hi = mid - 1
-        return -1
+        gen_idx = d.get("found_idx")
+        return 1 if gen_idx is None or gen_idx == -1 else -1
     h["binary_search_trace"] = _binary_search_trace
 
     def _binary_tree_traversal(d):

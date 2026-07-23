@@ -610,9 +610,7 @@ def register_handlers(h: dict) -> None:
         return {"add": (a + b) % n, "mul": (a * b) % n}
     h["ring_arithmetic"] = lambda d: (d["a"] + d["b"]) % d["n"]
 
-    def _subgroup(d):
-        return 1 if d.get("is_subgroup") else -1
-    h["subgroup_test"] = _subgroup
+    h["subgroup_test"] = lambda d: bool(d.get("is_subgroup"))
 
     def _symmetric_group(d):
         return d.get("result_str", d.get("composed"))
