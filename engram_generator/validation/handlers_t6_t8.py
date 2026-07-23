@@ -58,8 +58,11 @@ def register_handlers(h: dict) -> None:
         u = d.get("u", [])
         v = d.get("v", [])
         if len(u) == 3 and len(v) == 3:
-            return np.cross(u, v).tolist()
-        return d.get("result")
+            lib = np.cross(u, v).tolist()
+            gen = d.get("result", d.get("wedge"))
+            if isinstance(gen, list) and len(gen) == 3:
+                return 1 if all(abs(a - b) < 0.01 for a, b in zip(lib, gen)) else -1
+        return d.get("result", d.get("wedge"))
     h["exterior_algebra"] = _exterior_algebra
 
     h["tensor_product_modules"] = lambda d: d.get("gcd")
@@ -280,9 +283,7 @@ def register_handlers(h: dict) -> None:
     h["integration_by_parts"] = lambda d: d.get("ans_core")
     h["partial_fractions"] = lambda d: (d.get("A"), d.get("B"))
 
-    def _series_convergence(d):
-        return 1 if d.get("converges") else -1
-    h["series_convergence"] = _series_convergence
+    h["series_convergence"] = lambda d: bool(d.get("converges"))
 
     h["ratio_test"] = lambda d: bool(d.get("converges"))
     h["root_test"] = lambda d: bool(d.get("converges"))
@@ -769,17 +770,16 @@ def register_handlers(h: dict) -> None:
 
     h["kalman_gain"] = lambda d: d.get("k_gain")
     def _kalman_update(d):
+        H = d.get("H", 1)
         for step_key in ("step2", "step1"):
             step = d.get(step_key, {})
             if isinstance(step, dict) and step:
                 x_pred = step.get("x_pred", 0)
-                p_pred = step.get("p_pred", 0)
                 K = step.get("K", 0)
                 z = step.get("z", 0)
                 x_upd = step.get("x_upd")
-                p_upd = step.get("p_upd")
                 if x_upd is not None:
-                    lib_x = round(x_pred + K * (z - x_pred), 4)
+                    lib_x = x_pred + K * (z - H * x_pred)
                     return 1 if abs(lib_x - x_upd) < 0.01 else -1
         return None
     h["kalman_update"] = _kalman_update
@@ -972,15 +972,18 @@ def register_handlers(h: dict) -> None:
         N = len(labels)
         if N == 0:
             return None
-        gen_output = d.get("output", [])
         gen_real = d.get("output_real", [])
-        if gen_output and gen_real:
-            lib_coeffs = []
-            for j in range(N):
-                c = sum(np.exp(2j * np.pi * j * n / N) for n in range(N)) / N
-                lib_coeffs.append(round(abs(c), 4))
-            gen_mags = [round(abs(complex(x)), 4) for x in gen_output]
-            return 1 if all(abs(a - b) < 0.01 for a, b in zip(lib_coeffs, gen_mags)) else -1
+        gen_imag = d.get("output_imag", [])
+        if gen_real:
+            for j in range(min(N, len(gen_real))):
+                lib_c = np.exp(2j * np.pi * j * k / N) / np.sqrt(N)
+                lib_re = round(float(lib_c.real), 4)
+                lib_im = round(float(lib_c.imag), 4)
+                if abs(lib_re - gen_real[j]) > 0.01:
+                    return -1
+                if gen_imag and abs(lib_im - gen_imag[j]) > 0.01:
+                    return -1
+            return 1
         return None
     h["qft_compute"] = _qft_compute
 
