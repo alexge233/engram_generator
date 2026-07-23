@@ -105,3 +105,7 @@ from engram_generator.atoms import timeseries_numlinalg_digelec_atoms  # noqa: F
 from engram_generator.atoms import struct_heat_emext_cellbio_atoms  # noqa: F401
 from engram_generator.atoms import seq_geo_meas_ling_info_net_nuc_fluid_atoms  # noqa: F401
 from engram_generator.atoms import recursion_automata_numext_atoms  # noqa: F401
+from engram_generator.atoms import batch3_physics_engineering  # noqa: F401
+from engram_generator.atoms import batch3_cs_math  # noqa: F401
+from engram_generator.atoms import batch3_applied_science  # noqa: F401
+from engram_generator.atoms import batch3_specialized  # noqa: F401
