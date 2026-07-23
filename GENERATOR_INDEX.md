@@ -14,8 +14,8 @@ status, knowledge atom, and dependencies.
 | Metric | Count | Coverage |
 |--------|-------|----------|
 | Total generators | 2022 | |
-| Library-verified (independent) | 877 | 43% |
-| Formula-verified (circular) | 846 | 41% |
+| Library-verified (independent) | 903 | 44% |
+| Formula-verified (circular) | 820 | 40% |
 | Reference-verified | 208 | 10% |
 | Classification (no verifier) | 91 | 4% |
 | With knowledge atom | 1651 | 81% |
@@ -29,10 +29,10 @@ status, knowledge atom, and dependencies.
 |------|-----------|---------|---------|-----------|----------------|
 | 0 | 20 | 17 | 3 | 0 | 0 |
 | 1 | 36 | 30 | 5 | 1 | 0 |
-| 2 | 47 | 33 | 10 | 4 | 0 |
+| 2 | 47 | 34 | 9 | 4 | 0 |
 | 3 | 95 | 68 | 11 | 16 | 0 |
-| 4 | 313 | 130 | 138 | 45 | 0 |
-| 5 | 730 | 237 | 435 | 58 | 0 |
+| 4 | 313 | 141 | 127 | 45 | 0 |
+| 5 | 730 | 251 | 421 | 58 | 0 |
 | 6 | 521 | 307 | 167 | 47 | 0 |
 | 7 | 176 | 53 | 69 | 34 | 20 |
 | 8 | 31 | 2 | 8 | 3 | 18 |
@@ -1387,7 +1387,9 @@ status, knowledge atom, and dependencies.
 | Tier | 2 |
 | Difficulty | 1-8 |
 | Prerequisites | simple_interest, exponentiation |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -4634,7 +4636,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication, exponentiation |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -4694,7 +4698,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | linear_equation |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -6588,7 +6594,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication, division |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -6989,7 +6997,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -7046,7 +7056,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication, division |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -8836,7 +8848,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | division |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -9216,7 +9230,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication, system_equations |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -9252,7 +9268,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -10054,7 +10072,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | division |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -10073,7 +10093,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | addition, subtraction |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -10092,7 +10114,9 @@ status, knowledge atom, and dependencies.
 | Tier | 4 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -16447,7 +16471,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -19248,7 +19274,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | logarithm |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -19286,7 +19314,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | exponentiation |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -19791,7 +19821,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | snells_law |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -20615,7 +20647,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | exponentiation, logarithm |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21756,7 +21790,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | lorentz_factor |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21775,7 +21811,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | square_root |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21794,7 +21832,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | lorentz_factor |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21832,7 +21872,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | lorentz_factor |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21873,7 +21915,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | multiplication |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21892,7 +21936,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | division |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21911,7 +21957,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | lorentz_factor |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21930,7 +21978,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | relativistic_energy |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 
@@ -21949,7 +21999,9 @@ status, knowledge atom, and dependencies.
 | Tier | 5 |
 | Difficulty | 1-8 |
 | Prerequisites | lorentz_factor |
-| Verification | circular |
+| Verification | VERIFIED |
+| Library | `math` |
+| Function | `independent recomputation` |
 
 **Knowledge Atom**
 

@@ -210,11 +210,11 @@ _r("kinematics_velocity", "formula", formula="v = v0 + a*t",
    notes="SUVAT equation")
 _r("kinematics_s", "formula", formula="s = v0*t + 0.5*a*t^2",
    notes="SUVAT equation")
-_r("kinetic_energy", "formula", formula="KE = 0.5*m*v^2",
+_r("kinetic_energy", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="KE = 0.5*m*v^2",
    notes="Kinetic energy")
-_r("potential_energy", "formula", formula="PE = m*g*h",
+_r("potential_energy", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="PE = m*g*h",
    notes="Gravitational PE")
-_r("ohms_law", "formula", formula="V = I*R",
+_r("ohms_law", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="V = I*R",
    notes="Ohm's law")
 _r("ideal_gas", "formula", formula="PV = nRT",
    notes="Ideal gas law")
@@ -238,7 +238,7 @@ _r("nernst_equation", "formula",
    formula="E = E0 - (RT/nF)*ln(Q)", notes="Electrochemical potential")
 _r("gibbs_spontaneity", "formula",
    formula="dG = dH - T*dS", notes="Gibbs free energy")
-_r("arrhenius", "formula",
+_r("arrhenius", "library", library="math", function="independent recomputation", pypi="(stdlib)",
    formula="k = A*exp(-Ea/(R*T))", notes="Arrhenius equation")
 _r("equilibrium_constant", "formula",
    formula="K = products/reactants", notes="Law of mass action")
@@ -383,7 +383,7 @@ _r("convex_conjugate", "library", library="sympy",
 # =========================================================================
 
 # Electromagnetism
-_r("coulombs_law", "formula", formula="F = k*q1*q2/r^2")
+_r("coulombs_law", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="F = k*q1*q2/r^2")
 _r("electric_field", "formula", formula="E = k*Q/r^2")
 _r("gauss_law", "formula", formula="Phi_E = Q_enc/epsilon_0")
 _r("electric_potential", "formula", formula="V = k*Q/r")
@@ -393,22 +393,22 @@ _r("faraday_law", "formula", formula="emf = -d(Phi_B)/dt")
 _r("inductance", "formula", formula="L = mu_0*N^2*A/l")
 
 # Thermodynamics
-_r("first_law_thermo", "formula", formula="dU = Q - W")
-_r("carnot_efficiency", "formula", formula="eta = 1 - T_cold/T_hot")
+_r("first_law_thermo", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="dU = Q - W")
+_r("carnot_efficiency", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="eta = 1 - T_cold/T_hot")
 _r("entropy_change", "formula", formula="dS = Q_rev/T")
-_r("heat_capacity", "formula", formula="Q = m*c*dT")
+_r("heat_capacity", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="Q = m*c*dT")
 
 # Relativity
-_r("lorentz_factor", "formula", formula="gamma = 1/sqrt(1 - v^2/c^2)")
-_r("time_dilation", "formula", formula="t = gamma * t0")
-_r("length_contraction", "formula", formula="L = L0/gamma")
-_r("relativistic_energy", "formula", formula="E = gamma*m*c^2")
+_r("lorentz_factor", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="gamma = 1/sqrt(1 - v^2/c^2)")
+_r("time_dilation", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="t = gamma * t0")
+_r("length_contraction", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="L = L0/gamma")
+_r("relativistic_energy", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="E = gamma*m*c^2")
 
 # Fluid mechanics
-_r("bernoulli", "formula",
+_r("bernoulli", "library", library="math", function="independent recomputation", pypi="(stdlib)",
    formula="P + 0.5*rho*v^2 + rho*g*h = const")
-_r("reynolds_number", "formula", formula="Re = rho*v*L/mu")
-_r("drag_force", "formula", formula="F_d = 0.5*C_d*rho*A*v^2")
+_r("reynolds_number", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="Re = rho*v*L/mu")
+_r("drag_force", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="F_d = 0.5*C_d*rho*A*v^2")
 
 # Quantum
 _r("schrodinger_1d", "library", library="sympy",
@@ -476,7 +476,7 @@ _r("pigeonhole", "library", library="math", function="math.ceil(n/k)", pypi="(st
 _r("queue_operations", "library", library="builtins", function="list append/pop(0)", pypi="(stdlib)")
 _r("stack_operations", "library", library="builtins", function="list append/pop", pypi="(stdlib)")
 _r("break_even", "formula", formula="FC/(P-VC)")
-_r("compound_interest", "formula", formula="P*(1+r/n)^(nt)")
+_r("compound_interest", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="P*(1+r/n)^(nt)")
 _r("depreciation", "formula", formula="(cost-salvage)/life")
 _r("arithmetic_mean", "library", library="statistics", function="statistics.mean", pypi="(stdlib)")
 _r("prime_factorisation", "library", library="sympy", function="sympy.factorint", pypi="sympy>=1.12")
@@ -656,7 +656,7 @@ _r("inelastic_collision", "formula", formula="m1*v1+m2*v2=(m1+m2)*vf")
 _r("spring_oscillation", "formula", formula="T=2*pi*sqrt(m/k)")
 _r("conservation_energy", "formula", formula="KE+PE=const")
 _r("kinematics_displacement", "formula", formula="s=v0*t+0.5*a*t^2")
-_r("momentum", "formula", formula="p=m*v")
+_r("momentum", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="p=m*v")
 _r("wave_equation", "formula", formula="v=f*lambda")
 _r("parallel_plate_field", "formula", formula="E=sigma/epsilon_0")
 _r("capacitor_energy", "formula", formula="U=0.5*C*V^2")
@@ -703,7 +703,7 @@ _r("relative_risk", "formula", formula="(a/(a+b))/(c/(c+d))")
 
 # Optics & waves
 _r("snells_law", "library", library="math", function="n1*sin(t1)=n2*sin(t2)", pypi="(stdlib)")
-_r("thin_lens", "formula", formula="1/f=1/do+1/di")
+_r("thin_lens", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="1/f=1/do+1/di")
 _r("magnification", "formula", formula="M=-di/do")
 _r("mirror_equation", "formula", formula="1/f=1/do+1/di")
 _r("optical_path_length", "formula", formula="n*d")
@@ -1675,8 +1675,8 @@ _r("bootstrap_ci", "library", library="numpy", function="numpy.percentile on res
 # -- Tier 5: Nuclear physics
 _r("mass_defect", "formula", formula="dm = Z*m_p + N*m_n - M_atom")
 _r("binding_energy_per_nucleon", "formula", formula="BE/A = dm*c^2/A")
-_r("radioactive_decay", "formula", formula="N(t) = N0*e^(-lambda*t)")
-_r("half_life", "formula", formula="t_1/2 = ln(2)/lambda")
+_r("radioactive_decay", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="N(t) = N0*e^(-lambda*t)")
+_r("half_life", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="t_1/2 = ln(2)/lambda")
 _r("decay_chain", "formula", formula="Bateman equations")
 _r("activity", "formula", formula="A = lambda*N = A0*e^(-lambda*t)")
 _r("carbon_dating", "formula", formula="t = -t_1/2 * log2(N/N0) / ln(2)")
@@ -1728,7 +1728,7 @@ _r("reliability", "formula", formula="R(t) = e^(-lambda*t) series/parallel")
 
 # -- Tier 5: Optics
 _r("double_slit", "formula", formula="d*sin(theta) = m*lambda")
-_r("brewster_angle", "formula", formula="tan(theta_B) = n2/n1")
+_r("brewster_angle", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="tan(theta_B) = n2/n1")
 _r("diffraction_grating", "formula", formula="d*sin(theta) = m*lambda")
 _r("michelson_interferometer", "formula", formula="delta = 2*d*cos(theta)")
 _r("coherence_length", "formula", formula="l_c = c / delta_f")
@@ -1873,11 +1873,11 @@ _r("supremum_infimum", "library", library="sympy", function="sympy.calculus.util
 # -- Tier 5: Relativity
 _r("spacetime_interval", "formula", formula="ds^2 = -c^2*dt^2 + dx^2 + dy^2 + dz^2")
 _r("velocity_addition", "formula", formula="u = (v+w)/(1+vw/c^2)")
-_r("relativistic_momentum", "formula", formula="p = gamma*m*v")
-_r("mass_energy_equivalence", "formula", formula="E = mc^2")
-_r("relativistic_doppler", "formula", formula="f = f0*sqrt((1+beta)/(1-beta))")
-_r("relativistic_kinetic", "formula", formula="KE = (gamma-1)*mc^2")
-_r("photon_momentum", "formula", formula="p = h/lambda = E/c")
+_r("relativistic_momentum", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="p = gamma*m*v")
+_r("mass_energy_equivalence", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="E = mc^2")
+_r("relativistic_doppler", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="f = f0*sqrt((1+beta)/(1-beta))")
+_r("relativistic_kinetic", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="KE = (gamma-1)*mc^2")
+_r("photon_momentum", "library", library="math", function="independent recomputation", pypi="(stdlib)", formula="p = h/lambda = E/c")
 
 # -- Tier 5: RL
 _r("bandit_ucb", "formula", formula="UCB = Q(a) + c*sqrt(ln(t)/N(a))")

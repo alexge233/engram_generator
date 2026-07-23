@@ -699,6 +699,11 @@ class LibraryVerifier:
         )
         _reg_t6_t8(h)
 
+        from engram_generator.validation.handlers_niche import (
+            register_handlers as _reg_niche,
+        )
+        _reg_niche(h)
+
         return h
 
     def supported_tasks(self) -> list[str]:
