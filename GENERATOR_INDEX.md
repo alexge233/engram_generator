@@ -18,9 +18,9 @@ status, knowledge atom, and dependencies.
 | Formula-verified (circular) | 820 | 40% |
 | Reference-verified | 208 | 10% |
 | Classification (no verifier) | 91 | 4% |
-| With knowledge atom | 1651 | 81% |
-| With worked example | 1278 | 63% |
-| With source URL | 1651 | 81% |
+| With knowledge atom | 2022 | 100% |
+| With worked example | 1649 | 81% |
+| With source URL | 2022 | 100% |
 
 
 ## Per-Tier Breakdown
@@ -1879,7 +1879,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `sum(range(n+1))` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Recursive sum: sum(arr, n) = arr[n-1] + sum(arr, n-1), base case sum(arr, 0) = 0. Demonstrates basic recursion with accumulation. Tail-recursive version uses an accumulator parameter.
+
+- Source: https://en.wikipedia.org/wiki/Recursion_(computer_science)
+- Citation: Wikipedia contributors, 'Recursion (computer science)', Wikipedia.
+- Example: sum([3,1,4,1,5], 5) = 5 + sum([3,1,4,1], 4) = ... = 3+1+4+1+5 = 14.
 
 
 ### sequences
@@ -2554,7 +2560,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `flip accept states` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The complement of a DFA is obtained by swapping accepting and non-accepting states. If L(M) = L, then L(M') = Sigma* - L. The DFA must be complete (transitions defined for all state-input pairs). Add ...
+
+- Source: https://en.wikipedia.org/wiki/Complement_(complexity)#Closure_properties
+- Citation: Wikipedia contributors, 'Complement (set theory)', Wikipedia.
+- Example: DFA accepting strings ending in 0: states {q0(non-accept), q1(accept)}. Complement: q0 becomes accept, q1 becomes non-accept. Accepts strings NOT ending in 0.
 
 
 ### biochemistry
@@ -2739,7 +2751,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> General solubility rules: all Na+, K+, NH4+ salts are soluble. All NO3- and CH3COO- salts are soluble. Most Cl-, Br-, I- salts are soluble (except Ag+, Pb2+, Hg22+). Most SO42- soluble (except Ba2+, P...
+
+- Source: https://en.wikipedia.org/wiki/Solubility_chart
+- Citation: Wikipedia contributors, 'Solubility chart', Wikipedia.
+- Example: AgCl: Ag+ with Cl- -> insoluble (exception). NaCl: Na+ with Cl- -> soluble.
 
 
 ### combinatorics
@@ -3330,7 +3348,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Mohs hardness scale ranks minerals by scratch resistance from 1 (talc) to 10 (diamond). Each mineral can scratch those below it. 1-Talc, 2-Gypsum, 3-Calcite, 4-Fluorite, 5-Apatite, 6-Orthoclase, 7...
+
+- Source: https://en.wikipedia.org/wiki/Mohs_scale_of_mineral_hardness
+- Citation: Wikipedia contributors, 'Mohs scale of mineral hardness', Wikipedia.
+- Example: A mineral scratches fluorite (4) but not apatite (5). Mohs hardness is between 4 and 5.
 
 
 ### geology_ext
@@ -3346,7 +3370,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Minerals are identified by physical properties: hardness (Mohs scale), lustre (metallic, vitreous), cleavage/fracture, colour, streak, crystal system, specific gravity. Diagnostic tests: HCl fizz (cal...
+
+- Source: https://en.wikipedia.org/wiki/Mineral_identification
+- Citation: Wikipedia contributors, 'Mineral identification', Wikipedia.
+- Example: Calcite: hardness 3, vitreous lustre, rhombohedral cleavage, fizzes with HCl, white streak.
 
 #### `rock_cycle`
 
@@ -3359,7 +3389,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The rock cycle describes transformations between igneous, sedimentary, and metamorphic rocks. Igneous (magma cooling) -> weathering/erosion -> sedimentary (compaction/cementation) -> metamorphic (heat...
+
+- Source: https://en.wikipedia.org/wiki/Rock_cycle
+- Citation: Wikipedia contributors, 'Rock cycle', Wikipedia.
+- Example: Granite (igneous) -> weathers to sand -> sandstone (sedimentary) -> heat/pressure -> quartzite (metamorphic) -> melts -> new igneous.
 
 
 ### geometry
@@ -3584,7 +3620,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | counting |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Morphological analysis decomposes words into morphemes: the smallest meaningful units. Free morphemes stand alone (cat, run). Bound morphemes attach to others (un-, -ing, -s). Inflectional: grammatica...
+
+- Source: https://en.wikipedia.org/wiki/Morpheme
+- Citation: Wikipedia contributors, 'Morpheme', Wikipedia.
+- Example: 'unhappiness': un- (prefix, bound) + happy (root, free) + -ness (suffix, bound). 3 morphemes.
 
 
 ### linguistics_ext
@@ -3602,7 +3644,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `vowel counting heuristic` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Syllable counting heuristic for English: count vowel groups (a,e,i,o,u,y). Subtract silent e at end. Subtract for diphthongs (ea, ou, etc.). Minimum 1 syllable. More accurate: use CMU Pronouncing Dict...
+
+- Source: https://en.wikipedia.org/wiki/Syllable
+- Citation: Wikipedia contributors, 'Syllable', Wikipedia.
+- Example: 'computer': vowel groups co-pu-er = 3 syllables. 'smile': s-mi-le, 2 groups, subtract silent e = 1 syllable.
 
 
 ### logic
@@ -3661,7 +3709,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `rounding` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Significant figures rules: (1) All non-zero digits are significant. (2) Zeros between non-zero digits are significant. (3) Leading zeros are not significant. (4) Trailing zeros after decimal point are...
+
+- Source: https://en.wikipedia.org/wiki/Significant_figures
+- Citation: Wikipedia contributors, 'Significant figures', Wikipedia.
+- Example: 3.14159 has 6 sig figs. 0.0045 has 2. 3.14 * 2.1 = 6.6 (2 sig figs). 3.14 + 2.1 = 5.2 (1 decimal place).
 
 
 ### ml_deep
@@ -3702,7 +3756,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | modular |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A musical interval is the distance between two pitches measured in semitones. Unison=0, minor 2nd=1, major 2nd=2, minor 3rd=3, major 3rd=4, perfect 4th=5, tritone=6, perfect 5th=7, minor 6th=8, major ...
+
+- Source: https://en.wikipedia.org/wiki/Interval_(music)
+- Citation: Wikipedia contributors, 'Interval (music)', Wikipedia.
+- Example: C to E: 4 semitones = major 3rd. C to Ab: 8 semitones = minor 6th.
 
 #### `rhythm_subdivision`
 
@@ -3715,7 +3775,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | addition |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Rhythm subdivision divides beats into smaller units. A whole note = 4 beats, half = 2, quarter = 1, eighth = 1/2, sixteenth = 1/4. Dotted notes add half their value. Triplets divide a beat into 3 equa...
+
+- Source: https://en.wikipedia.org/wiki/Note_value
+- Citation: Wikipedia contributors, 'Note value', Wikipedia.
+- Example: 4/4 time: one bar = 4 quarter notes = 8 eighth notes = 16 sixteenths. Dotted quarter = 1.5 beats.
 
 
 ### number_theory_deep2
@@ -3889,7 +3955,13 @@ status, knowledge atom, and dependencies.
 | Library | `math` |
 | Function | `math.gcd` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Euclidean algorithm: gcd(a,b) = gcd(b, a mod b), base case gcd(a,0) = a. Each step reduces the problem size by at least half. Complexity: O(log(min(a,b))).
+
+- Source: https://en.wikipedia.org/wiki/Euclidean_algorithm
+- Citation: Wikipedia contributors, 'Euclidean algorithm', Wikipedia.
+- Example: gcd(48,18): gcd(48,18) = gcd(18,12) = gcd(12,6) = gcd(6,0) = 6.
 
 #### `recursive_power`
 
@@ -3904,7 +3976,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `pow()` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Fast exponentiation by squaring: pow(b,n) = pow(b,n/2)^2 if n even, b*pow(b,n-1) if odd. Reduces O(n) multiplications to O(log n). Base case: pow(b,0) = 1.
+
+- Source: https://en.wikipedia.org/wiki/Exponentiation_by_squaring
+- Citation: Wikipedia contributors, 'Exponentiation by squaring', Wikipedia.
+- Example: 3^5: 3^5 = 3*3^4 = 3*(3^2)^2 = 3*(9)^2 = 3*81 = 243. 4 multiplications instead of 5.
 
 #### `tower_of_hanoi`
 
@@ -3919,7 +3997,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `2^n - 1 moves` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Tower of Hanoi: move n disks from source to target using auxiliary peg. Recursive: move n-1 to aux, move largest to target, move n-1 from aux to target. Minimum moves = 2^n - 1.
+
+- Source: https://en.wikipedia.org/wiki/Tower_of_Hanoi
+- Citation: Wikipedia contributors, 'Tower of Hanoi', Wikipedia.
+- Example: n=3: 2^3-1 = 7 moves. Sequence: A->C, A->B, C->B, A->C, B->A, B->C, A->C.
 
 
 ### sequences
@@ -4990,7 +5074,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `state pair construction` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The product construction builds a DFA for the intersection (or union) of two DFAs. States are pairs (q1, q2). Transitions: delta((q1,q2), a) = (delta1(q1,a), delta2(q2,a)). Accept states: both accepti...
+
+- Source: https://en.wikipedia.org/wiki/Product_construction_(automata_theory)
+- Citation: Wikipedia contributors, 'Product automaton', Wikipedia.
+- Example: M1 accepts multiples of 2, M2 accepts multiples of 3. Product (intersection) accepts multiples of 6.
 
 #### `language_operations`
 
@@ -5005,7 +5095,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `set operations` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Regular languages are closed under union, intersection, complement, concatenation, and Kleene star. If L1 and L2 are regular, so are L1 union L2, L1 intersect L2, complement(L1), L1.L2, and L1*. Conte...
+
+- Source: https://en.wikipedia.org/wiki/Regular_language#Closure_properties
+- Citation: Wikipedia contributors, 'Regular language', Wikipedia.
+- Example: L1 = {a^n b^n}, L2 = {b^n c^n}. Both CFL. L1 intersect L2 = {a^n b^n c^n}, which is NOT CFL.
 
 #### `regex_to_dfa_direct`
 
@@ -5020,7 +5116,13 @@ status, knowledge atom, and dependencies.
 | Library | `re` |
 | Function | `re.compile` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Direct regex-to-DFA construction: compute firstpos, lastpos, and followpos for each node in the syntax tree. States are sets of positions. Start state = firstpos(root). Transitions follow the followpo...
+
+- Source: https://en.wikipedia.org/wiki/Thompson%27s_construction
+- Citation: Wikipedia contributors, 'Thompson's construction', Wikipedia.
+- Example: Regex (a|b)*abb. Augmented: (a|b)*abb#. Positions 1-6. Start state = {1,2,3}. Build transitions by followpos.
 
 #### `state_equivalence`
 
@@ -5035,7 +5137,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `partition refinement` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Two DFA states p and q are equivalent (indistinguishable) if for every string w, delta(p,w) is accepting iff delta(q,w) is accepting. Table-filling algorithm: mark pairs where one is accepting and one...
+
+- Source: https://en.wikipedia.org/wiki/Myhill%E2%80%93Nerode_theorem
+- Citation: Wikipedia contributors, 'Myhill-Nerode theorem', Wikipedia.
+- Example: States {A,B,C}. A accepts, B,C don't. (A,B) and (A,C) are marked. If delta(B,0)=delta(C,0) and delta(B,1)=delta(C,1), B and C are equivalent.
 
 
 ### automata_ext
@@ -5053,7 +5161,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `transition+output` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Mealy machine is a finite state machine where outputs depend on both the current state and input: output = lambda(state, input). Transition function: delta(state, input) -> next_state. Output is ass...
+
+- Source: https://en.wikipedia.org/wiki/Mealy_machine
+- Citation: Wikipedia contributors, 'Mealy machine', Wikipedia.
+- Example: States {S0,S1}, input {0,1}. delta(S0,0)=S0 output 0, delta(S0,1)=S1 output 1, delta(S1,0)=S0 output 1, delta(S1,1)=S1 output 0. Input 101: output 110.
 
 #### `moore_machine`
 
@@ -5068,7 +5182,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `transition+output` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Moore machine is a finite state machine where output depends only on the current state: output = lambda(state). Transition function: delta(state, input) -> next_state. Equivalent to Mealy machines b...
+
+- Source: https://en.wikipedia.org/wiki/Moore_machine
+- Citation: Wikipedia contributors, 'Moore machine', Wikipedia.
+- Example: States {S0(out=0), S1(out=1)}. delta(S0,1)=S1, delta(S1,0)=S0. Input 110: states S0->S1->S1->S0, outputs 0,1,1,0.
 
 
 ### biochemistry
@@ -5490,7 +5610,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Apoptosis (programmed cell death) occurs via intrinsic (mitochondrial) or extrinsic (death receptor) pathways. Intrinsic: stress -> Bax/Bak -> cytochrome c release -> apoptosome -> caspase-9 -> caspas...
+
+- Source: https://en.wikipedia.org/wiki/Apoptosis
+- Citation: Wikipedia contributors, 'Apoptosis', Wikipedia.
+- Example: UV damage -> p53 -> Bax expression -> mitochondrial membrane permeabilisation -> cytochrome c -> caspase cascade -> cell death.
 
 #### `cell_cycle_checkpoint`
 
@@ -5503,7 +5629,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Cell cycle checkpoints ensure proper division: G1/S (DNA damage check, p53/Rb), intra-S (replication fork monitoring), G2/M (DNA replication complete, CDC2/cyclin B), spindle assembly (all chromosomes...
+
+- Source: https://en.wikipedia.org/wiki/Cell_cycle_checkpoint
+- Citation: Wikipedia contributors, 'Cell cycle checkpoint', Wikipedia.
+- Example: G1 checkpoint: DNA damage detected -> p53 activated -> p21 produced -> CDK4/cyclin D inhibited -> cell cycle arrested.
 
 #### `pcr_amplification`
 
@@ -5516,7 +5648,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> PCR amplifies DNA exponentially: N = N_0 * 2^n (ideal), where N_0 is initial copies and n is number of cycles. Real efficiency E: N = N_0 * (1+E)^n, where E is typically 0.8-1.0. Ct (cycle threshold) ...
+
+- Source: https://en.wikipedia.org/wiki/Polymerase_chain_reaction
+- Citation: Wikipedia contributors, 'Polymerase chain reaction', Wikipedia.
+- Example: N_0=100 copies, n=30 cycles, E=0.9. N = 100*(1.9)^30 = 100*2.37e8 = 2.37e10 copies.
 
 
 ### chemistry_deep
@@ -5554,7 +5692,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Calorimetry measures heat: q = m*c*dT (specific heat), q = C*dT (heat capacity). In a coffee-cup calorimeter: q_rxn = -q_solution = -(m*c*dT). Bomb calorimetry: q_rxn = -(C_cal*dT).
+
+- Source: https://en.wikipedia.org/wiki/Calorimetry
+- Citation: Wikipedia contributors, 'Calorimetry', Wikipedia.
+- Example: 50 g water, dT = 5 C, c = 4.184 J/(g*C). q = 50*4.184*5 = 1046 J = 1.046 kJ.
 
 #### `enthalpy_reaction`
 
@@ -5567,7 +5711,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | molar_mass |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Reaction enthalpy dH_rxn = sum(dH_f(products)) - sum(dH_f(reactants)), where dH_f are standard enthalpies of formation. Exothermic: dH < 0 (releases heat). Endothermic: dH > 0.
+
+- Source: https://en.wikipedia.org/wiki/Standard_enthalpy_of_reaction
+- Citation: Wikipedia contributors, 'Standard enthalpy of reaction', Wikipedia.
+- Example: 2H2(g) + O2(g) -> 2H2O(l). dH = 2*(-285.8) - (2*0 + 0) = -571.6 kJ/mol.
 
 #### `gas_effusion`
 
@@ -5580,7 +5730,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Graham's law of effusion: rate1/rate2 = sqrt(M2/M1), where M is molar mass. Lighter gases effuse faster. Also applies to diffusion rates. Derived from kinetic molecular theory: v_rms = sqrt(3RT/M).
+
+- Source: https://en.wikipedia.org/wiki/Graham%27s_law
+- Citation: Wikipedia contributors, 'Graham's law', Wikipedia.
+- Example: H2 (M=2) vs O2 (M=32): rate_H2/rate_O2 = sqrt(32/2) = sqrt(16) = 4. H2 effuses 4x faster.
 
 #### `ideal_gas_mixture`
 
@@ -5593,7 +5749,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Dalton's law: total pressure P = sum(P_i) where P_i = x_i * P (partial pressures). Amagat's law: total volume V = sum(V_i). For ideal mixtures, properties are mole-fraction weighted averages.
+
+- Source: https://en.wikipedia.org/wiki/Dalton%27s_law
+- Citation: Wikipedia contributors, 'Dalton's law', Wikipedia.
+- Example: Gas mixture: 0.79 N2, 0.21 O2 at 1 atm. P_N2 = 0.79 atm, P_O2 = 0.21 atm.
 
 #### `oxidation_number_change`
 
@@ -5606,7 +5768,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | balancing_equation |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Oxidation number change method for balancing redox reactions: (1) assign oxidation numbers to all atoms, (2) identify which atoms are oxidised and reduced, (3) balance electron transfer, (4) balance a...
+
+- Source: https://en.wikipedia.org/wiki/Oxidation_state
+- Citation: Wikipedia contributors, 'Oxidation state', Wikipedia.
+- Example: Fe + CuSO4 -> FeSO4 + Cu. Fe: 0->+2 (oxidised, loses 2e-). Cu: +2->0 (reduced, gains 2e-). Already balanced.
 
 
 ### classical_mechanics_ext
@@ -5941,7 +6109,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Amplitude modulation: s(t) = [1 + m*cos(2*pi*f_m*t)] * A_c*cos(2*pi*f_c*t), where m is modulation index (0 to 1), f_m is message frequency, f_c is carrier frequency. Bandwidth = 2*f_m. Efficiency = m^...
+
+- Source: https://en.wikipedia.org/wiki/Amplitude_modulation
+- Citation: Wikipedia contributors, 'Amplitude modulation', Wikipedia.
+- Example: m=0.5, f_c=1 MHz, f_m=5 kHz. BW = 10 kHz. Efficiency = 0.25/2.25 = 11.1%.
 
 #### `quantization`
 
@@ -5954,7 +6128,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Uniform quantization maps continuous values to L = 2^n discrete levels. Step size delta = (V_max - V_min) / L. Quantization noise power = delta^2 / 12. Signal-to-quantization-noise ratio SQNR = 6.02*n...
+
+- Source: https://en.wikipedia.org/wiki/Quantization_(signal_processing)
+- Citation: Wikipedia contributors, 'Quantization (signal processing)', Wikipedia.
+- Example: 8-bit quantizer, range [-1V, 1V]. L=256, delta=2/256=7.8125 mV. SQNR = 6.02*8+1.76 = 49.92 dB.
 
 
 ### compilers
@@ -6060,7 +6240,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Amdahl's law gives the maximum speedup when parallelising a fraction p of a program with n processors: S = 1 / ((1-p) + p/n). Even with infinite processors, S <= 1/(1-p). Gustafson's law considers sca...
+
+- Source: https://en.wikipedia.org/wiki/Amdahl%27s_law
+- Citation: Wikipedia contributors, 'Amdahl's law', Wikipedia.
+- Example: 90% parallel (p=0.9), 8 processors. S = 1/(0.1 + 0.9/8) = 1/(0.1 + 0.1125) = 1/0.2125 = 4.71x.
 
 #### `cache_hit_ratio`
 
@@ -6073,7 +6259,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Cache hit ratio h = hits / (hits + misses). Average memory access time AMAT = h*t_cache + (1-h)*t_memory. For multi-level caches: AMAT = t_L1 + (1-h_L1)*(t_L2 + (1-h_L2)*t_mem).
+
+- Source: https://en.wikipedia.org/wiki/CPU_cache#Cache_performance
+- Citation: Wikipedia contributors, 'CPU cache', Wikipedia.
+- Example: h = 0.95, t_cache = 1 ns, t_memory = 100 ns. AMAT = 0.95*1 + 0.05*100 = 0.95 + 5 = 5.95 ns.
 
 #### `memory_hierarchy`
 
@@ -6086,7 +6278,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The memory hierarchy trades off speed, size, and cost: registers (< 1 ns, bytes) > L1 cache (1 ns, KB) > L2 (5 ns, MB) > L3 (20 ns, MB) > DRAM (100 ns, GB) > SSD (100 us, TB) > HDD (10 ms, TB). Tempor...
+
+- Source: https://en.wikipedia.org/wiki/Memory_hierarchy
+- Citation: Wikipedia contributors, 'Memory hierarchy', Wikipedia.
+- Example: L1 hit rate 95%, L2 hit rate 80% of L1 misses. Miss rate to DRAM = 5% * 20% = 1%.
 
 #### `pipeline_throughput`
 
@@ -6099,7 +6297,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An n-stage pipeline processes one instruction per clock cycle (steady state). Speedup = n (ideal). Throughput = f (clock frequency). Hazards reduce performance: data hazards (forwarding/stalling), con...
+
+- Source: https://en.wikipedia.org/wiki/Instruction_pipelining
+- Citation: Wikipedia contributors, 'Instruction pipelining', Wikipedia.
+- Example: 5-stage pipeline, 1 GHz clock, 20% branch misprediction with 2-cycle penalty. CPI = 1 + 0.2*2 = 1.4. Throughput = 1e9/1.4 = 714 MIPS.
 
 
 ### cryptanalysis
@@ -6117,7 +6321,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `Counter(text)` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Frequency analysis exploits the non-uniform distribution of letters in natural language to break substitution ciphers. In English, 'E' is most common (~12.7%), followed by T (~9.1%), A (~8.2%). Compar...
+
+- Source: https://en.wikipedia.org/wiki/Frequency_analysis
+- Citation: Wikipedia contributors, 'Frequency analysis', Wikipedia.
+- Example: Ciphertext most common letter: 'X' (13%). Likely maps to 'E'. If Caesar cipher: shift = ord('X') - ord('E') = 88-69 = 19.
 
 
 ### crypto_deep
@@ -6270,7 +6480,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `binary addition` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A binary adder computes the sum of two binary numbers. Half adder: S = A XOR B, C = A AND B. Full adder adds carry-in: S = A XOR B XOR Cin, Cout = (A AND B) OR (Cin AND (A XOR B)). Ripple-carry adder ...
+
+- Source: https://en.wikipedia.org/wiki/Adder_(electronics)
+- Citation: Wikipedia contributors, 'Adder (electronics)', Wikipedia.
+- Example: Full adder: A=1, B=1, Cin=0. S = 1^1^0 = 0. Cout = (1&1) | (0&(1^1)) = 1|0 = 1. Result: 10 (binary 2).
 
 #### `flip_flop_state`
 
@@ -6285,7 +6501,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `state transition` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A flip-flop is a bistable circuit that stores one bit. Types: SR (set-reset), D (data, Q follows D at clock edge), JK (toggle when J=K=1), T (toggle, complement Q). Characteristic equations: D: Q+ = D...
+
+- Source: https://en.wikipedia.org/wiki/Flip-flop_(electronics)
+- Citation: Wikipedia contributors, 'Flip-flop (electronics)', Wikipedia.
+- Example: D flip-flop: D=1 at rising clock edge -> Q=1. D=0 at next edge -> Q=0.
 
 #### `karnaugh_map`
 
@@ -6300,7 +6522,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `minterm grouping` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Karnaugh map is a visual method for simplifying Boolean expressions. Adjacent cells differing by one variable are grouped in powers of 2 (1, 2, 4, 8). Each group yields a product term with the varyi...
+
+- Source: https://en.wikipedia.org/wiki/Karnaugh_map
+- Citation: Wikipedia contributors, 'Karnaugh map', Wikipedia.
+- Example: f(A,B) with minterms {1,3}: K-map groups B column. Simplified: f = B.
 
 #### `multiplexer`
 
@@ -6315,7 +6543,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `select line indexing` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A multiplexer (MUX) selects one of N input lines and routes it to a single output, controlled by select lines. A 2^n-to-1 MUX uses n select lines. Any Boolean function of n+1 variables can be implemen...
+
+- Source: https://en.wikipedia.org/wiki/Multiplexer
+- Citation: Wikipedia contributors, 'Multiplexer', Wikipedia.
+- Example: 4-to-1 MUX: inputs I0-I3, select S1,S0. S1=1, S0=0 -> output = I2.
 
 
 ### distributed_deep
@@ -6620,7 +6854,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | capacitance |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The energy stored in a capacitor is U = 0.5 * C * V^2, equivalently U = Q^2 / (2*C) or U = 0.5 * Q * V, where C is capacitance, V is voltage, and Q = C*V is the stored charge.
+
+- Source: https://en.wikipedia.org/wiki/Capacitor#Energy_stored_in_a_capacitor
+- Citation: Wikipedia contributors, 'Capacitor', Wikipedia.
+- Example: C = 100e-6 F, V = 12 V. U = 0.5 * 100e-6 * 144 = 7.2e-3 J = 7.2 mJ.
 
 
 ### em_deep
@@ -6680,7 +6920,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Air Quality Index (AQI) converts pollutant concentrations to a 0-500 scale. AQI = ((I_hi - I_lo)/(C_hi - C_lo)) * (C - C_lo) + I_lo, where C is concentration, C_lo/C_hi are breakpoint concentratio...
+
+- Source: https://en.wikipedia.org/wiki/Air_quality_index
+- Citation: Wikipedia contributors, 'Air quality index', Wikipedia.
+- Example: PM2.5 = 35.5 ug/m^3. Breakpoints: C_lo=12.1, C_hi=35.4, I_lo=51, I_hi=100. AQI = ((100-51)/(35.4-12.1))*(35.5-12.1)+51 = (49/23.3)*23.4+51 = 100.2.
 
 #### `carbon_footprint`
 
@@ -6693,7 +6939,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A carbon footprint is the total greenhouse gas emissions caused by an entity, expressed in CO2 equivalents (CO2e). Calculated as: CF = sum(activity_data * emission_factor). Common factors: electricity...
+
+- Source: https://en.wikipedia.org/wiki/Carbon_footprint
+- Citation: Wikipedia contributors, 'Carbon footprint', Wikipedia.
+- Example: Monthly: 500 kWh electricity (0.5 kg/kWh) + 100 L gasoline (2.31 kg/L). CF = 500*0.5 + 100*2.31 = 250 + 231 = 481 kg CO2e.
 
 #### `dilution_factor`
 
@@ -6706,7 +6958,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The dilution factor is DF = V_final / V_sample. Concentration after dilution: C_2 = C_1 * V_1 / V_2 (from C_1*V_1 = C_2*V_2). Serial dilution: total DF = DF_1 * DF_2 * ... * DF_n.
+
+- Source: https://en.wikipedia.org/wiki/Dilution_(equation)
+- Citation: Wikipedia contributors, 'Dilution (equation)', Wikipedia.
+- Example: C_1 = 500 mg/L, V_1 = 10 mL, V_2 = 250 mL. C_2 = 500 * 10/250 = 20 mg/L. DF = 250/10 = 25.
 
 
 ### epidemiology
@@ -6970,7 +7228,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The hydraulic power required by a pump: P_h = rho*g*Q*H, where Q is volume flow rate and H is total head. Shaft power: P_s = P_h / eta, where eta is pump efficiency. Total head H = (P2-P1)/(rho*g) + (...
+
+- Source: https://en.wikipedia.org/wiki/Pump#Pump_power
+- Citation: Wikipedia contributors, 'Pump', Wikipedia.
+- Example: Q = 0.01 m^3/s, H = 20 m, rho = 1000 kg/m^3, eta = 0.75. P_h = 1000*9.81*0.01*20 = 1962 W. P_s = 1962/0.75 = 2616 W = 2.6 kW.
 
 #### `stokes_drag`
 
@@ -6983,7 +7247,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Stokes' law gives the drag force on a sphere in creeping flow (Re << 1): F_d = 6*pi*mu*r*v, where mu is dynamic viscosity, r is sphere radius, and v is velocity. Terminal velocity: v_t = 2*r^2*(rho_s-...
+
+- Source: https://en.wikipedia.org/wiki/Stokes%27_law
+- Citation: Wikipedia contributors, 'Stokes' law', Wikipedia.
+- Example: r = 0.001 m, mu = 0.001 Pa*s, v = 0.01 m/s. F_d = 6*pi*0.001*0.001*0.01 = 1.885e-7 N.
 
 
 ### fluid_mechanics
@@ -7084,7 +7354,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `min/max for AND/OR` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Fuzzy set operations: AND (min): mu_A_AND_B(x) = min(mu_A(x), mu_B(x)). OR (max): mu_A_OR_B(x) = max(mu_A(x), mu_B(x)). NOT: mu_NOT_A(x) = 1 - mu_A(x). T-norms and S-norms generalise AND/OR.
+
+- Source: https://en.wikipedia.org/wiki/Fuzzy_set#Fuzzy_set_operations
+- Citation: Wikipedia contributors, 'Fuzzy set operations', Wikipedia.
+- Example: mu_A(x) = 0.7, mu_B(x) = 0.4. A AND B = min(0.7, 0.4) = 0.4. A OR B = max(0.7, 0.4) = 0.7. NOT A = 0.3.
 
 #### `membership_function`
 
@@ -7097,7 +7373,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A fuzzy membership function mu(x) maps a crisp value x to a degree of membership in [0,1]. Common shapes: triangular (a,m,b), trapezoidal (a,b,c,d), Gaussian (mean, sigma). mu(x) = 0 means 'not a memb...
+
+- Source: https://en.wikipedia.org/wiki/Membership_function_(mathematics)
+- Citation: Wikipedia contributors, 'Membership function (mathematics)', Wikipedia.
+- Example: 'Warm' temperature: triangular(15,25,35). At T=20: mu = (20-15)/(25-15) = 0.5. At T=25: mu = 1.0.
 
 
 ### game_theory
@@ -7443,7 +7725,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> P-wave velocity in rocks: V_p = sqrt((K + 4G/3) / rho), where K is bulk modulus, G is shear modulus, and rho is density. S-wave velocity: V_s = sqrt(G / rho). S-waves cannot travel through liquids (G ...
+
+- Source: https://en.wikipedia.org/wiki/Seismic_wave
+- Citation: Wikipedia contributors, 'Seismic wave', Wikipedia.
+- Example: K = 50 GPa, G = 30 GPa, rho = 2700 kg/m^3. V_p = sqrt((50e9 + 40e9)/2700) = sqrt(3.33e7) = 5774 m/s. V_s = sqrt(30e9/2700) = sqrt(1.11e7) = 3333 m/s.
 
 
 ### geology_ext
@@ -7459,7 +7747,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | subtraction |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Geologic time scale: Eon > Era > Period > Epoch. Phanerozoic eon (541 Ma-present): Paleozoic (Cambrian-Permian), Mesozoic (Triassic-Cretaceous), Cenozoic (Paleogene-Quaternary). Major events: Cambrian...
+
+- Source: https://en.wikipedia.org/wiki/Geologic_time_scale
+- Citation: Wikipedia contributors, 'Geologic time scale', Wikipedia.
+- Example: Dinosaurs lived in the Mesozoic Era (252-66 Ma): Triassic (first dinosaurs), Jurassic (Stegosaurus), Cretaceous (T. rex, ending with K-Pg impact).
 
 #### `porosity_permeability`
 
@@ -7472,7 +7766,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Porosity phi = V_pore/V_total (fraction of void space). Permeability k (Darcy) measures fluid flow ability: Q = k*A*dP/(mu*L) (Darcy's law). Well-sorted sand: phi~30-40%, k~10-100 Darcy. Clay: phi~40-...
+
+- Source: https://en.wikipedia.org/wiki/Porosity
+- Citation: Wikipedia contributors, 'Porosity', Wikipedia.
+- Example: Sandstone: phi=0.25, k=1 Darcy, A=1m^2, dP=100 kPa, mu=1 cP, L=10 m. Q = 1e-12*1*1e5/(1e-3*10) = 1e-5 m^3/s.
 
 #### `stratigraphy`
 
@@ -7485,7 +7785,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Stratigraphy studies rock layers (strata). Principles: superposition (older layers below), original horizontality, lateral continuity, cross-cutting relationships (faults/intrusions are younger than w...
+
+- Source: https://en.wikipedia.org/wiki/Stratigraphy
+- Citation: Wikipedia contributors, 'Stratigraphy', Wikipedia.
+- Example: Layer A is cut by fault B, which is covered by layer C. Age order: A (oldest), B (fault), C (youngest).
 
 
 ### geometry
@@ -7846,7 +8152,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Fourier's law of heat conduction: q = -k * dT/dx, where q is heat flux (W/m^2), k is thermal conductivity (W/(m*K)), and dT/dx is the temperature gradient. For a slab: Q = k * A * (T1 - T2) / L, where...
+
+- Source: https://en.wikipedia.org/wiki/Thermal_conduction
+- Citation: Wikipedia contributors, 'Thermal conduction', Wikipedia.
+- Example: k = 50 W/(m*K), A = 2 m^2, T1 = 100 C, T2 = 20 C, L = 0.1 m. Q = 50 * 2 * 80 / 0.1 = 80000 W = 80 kW.
 
 #### `newton_cooling`
 
@@ -7859,7 +8171,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Newton's law of cooling: Q = h * A * (T_s - T_inf), where h is the convective heat transfer coefficient (W/(m^2*K)), A is surface area, T_s is surface temperature, and T_inf is fluid temperature. Tran...
+
+- Source: https://en.wikipedia.org/wiki/Newton%27s_law_of_cooling
+- Citation: Wikipedia contributors, 'Newton's law of cooling', Wikipedia.
+- Example: h = 25 W/(m^2*K), A = 0.5 m^2, T_s = 80 C, T_inf = 20 C. Q = 25 * 0.5 * 60 = 750 W.
 
 #### `thermal_resistance`
 
@@ -7872,7 +8190,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Thermal resistance R_th = L / (k*A) for conduction through a slab, or R_th = 1 / (h*A) for convection. For resistances in series: R_total = R1 + R2 + ... In parallel: 1/R_total = 1/R1 + 1/R2 + ... Hea...
+
+- Source: https://en.wikipedia.org/wiki/Thermal_resistance
+- Citation: Wikipedia contributors, 'Thermal resistance', Wikipedia.
+- Example: Wall: L = 0.2 m, k = 1 W/(m*K), A = 10 m^2. R_cond = 0.2 / (1*10) = 0.02 K/W. Convection inside h = 10: R_conv = 1/(10*10) = 0.01 K/W. R_total = 0.03 K/W. If dT = 30 K: Q = 30/0.03 = 1000 W.
 
 
 ### inorganic_chemistry
@@ -7976,7 +8300,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | set_membership |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Phonetic features classify speech sounds: voicing (+/- voice), place of articulation (bilabial, alveolar, velar, ...), manner (stop, fricative, nasal, ...). IPA encodes sounds systematically. Example ...
+
+- Source: https://en.wikipedia.org/wiki/Distinctive_feature
+- Citation: Wikipedia contributors, 'Distinctive feature', Wikipedia.
+- Example: [t]: voiceless alveolar stop. [d]: voiced alveolar stop. [n]: voiced alveolar nasal. [s]: voiceless alveolar fricative.
 
 #### `syntax_tree`
 
@@ -7989,7 +8319,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | counting |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A syntax tree (parse tree) represents the hierarchical structure of a sentence according to a grammar. Each internal node is a non-terminal (NP, VP, S). Leaves are terminals (words). Constituency tree...
+
+- Source: https://en.wikipedia.org/wiki/Parse_tree
+- Citation: Wikipedia contributors, 'Parse tree', Wikipedia.
+- Example: 'The cat sat on the mat': S -> NP VP. NP -> Det N. VP -> V PP. PP -> P NP. The -> Det, cat -> N, sat -> V, on -> P, the -> Det, mat -> N.
 
 
 ### linguistics_ext
@@ -8007,7 +8343,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `DP Levenshtein` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Edit distance (Levenshtein distance) between two strings is the minimum number of single-character edits (insert, delete, substitute) to transform one into the other. DP algorithm: d[i][j] = min(d[i-1...
+
+- Source: https://en.wikipedia.org/wiki/Levenshtein_distance
+- Citation: Wikipedia contributors, 'Levenshtein distance', Wikipedia.
+- Example: 'kitten' to 'sitting': k->s (sub), e->i (sub), +g (insert). Distance = 3.
 
 #### `ipa_transcription`
 
@@ -8020,7 +8362,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The International Phonetic Alphabet (IPA) provides a unique symbol for each speech sound. Vowels positioned by height (open/close) and backness (front/back). Consonants by place and manner of articula...
+
+- Source: https://en.wikipedia.org/wiki/International_Phonetic_Alphabet
+- Citation: Wikipedia contributors, 'International Phonetic Alphabet', Wikipedia.
+- Example: English 'cat': /kaet/ (IPA). 'sheep': /shi:p/. Primary stress marked with apostrophe before stressed syllable.
 
 #### `morphological_analysis`
 
@@ -8033,7 +8381,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | counting |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Morphological analysis identifies a word's internal structure: root, prefixes, suffixes, inflections. Finite-state transducers model morphological rules: surface form <-> lexical form. Turkish, Finnis...
+
+- Source: https://en.wikipedia.org/wiki/Morphological_parsing
+- Citation: Wikipedia contributors, 'Morphological parsing', Wikipedia.
+- Example: 'unbelievable': un- (negative prefix) + believe (root verb) + -able (adjective suffix). Lexical: UN + BELIEVE + ABLE.
 
 #### `word_frequency`
 
@@ -8048,7 +8402,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `Counter` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Zipf's law: the frequency of the n-th most common word is proportional to 1/n. Rank * frequency ~ constant. In English, 'the' is ~7% of text, 'of' ~3.5%, 'and' ~2.8%. Top 100 words cover ~50% of text....
+
+- Source: https://en.wikipedia.org/wiki/Zipf%27s_law
+- Citation: Wikipedia contributors, 'Zipf's law', Wikipedia.
+- Example: Corpus of 1M words: rank 1 word ('the') appears ~70000 times. Rank 10 appears ~7000. Rank 100 appears ~700.
 
 
 ### logic
@@ -8246,7 +8606,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Accuracy is closeness to the true value (low systematic error). Precision is closeness of repeated measurements to each other (low random error). High precision + low accuracy = systematic bias. Truen...
+
+- Source: https://en.wikipedia.org/wiki/Accuracy_and_precision
+- Citation: Wikipedia contributors, 'Accuracy and precision', Wikipedia.
+- Example: True value = 10.0. Measurements: [10.2, 10.1, 10.3] = accurate and precise. [9.0, 9.1, 8.9] = precise but not accurate (bias of -1).
 
 #### `dimensional_analysis_compute`
 
@@ -8261,7 +8627,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `unit conversion chain` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Dimensional analysis checks equations by verifying dimensions match. Base dimensions: [M], [L], [T], [I], [Theta], [N], [J]. Buckingham pi theorem: n variables with k fundamental dimensions give n-k d...
+
+- Source: https://en.wikipedia.org/wiki/Dimensional_analysis
+- Citation: Wikipedia contributors, 'Dimensional analysis', Wikipedia.
+- Example: F = m*a. [F] = [M*L*T^{-2}]. [m*a] = [M]*[L*T^{-2}] = [M*L*T^{-2}]. Dimensionally consistent.
 
 
 ### medical_imaging
@@ -8277,7 +8649,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Hounsfield units (HU) in CT: HU = 1000 * (mu - mu_water) / (mu_water - mu_air), where mu is the linear attenuation coefficient. Water = 0 HU, air = -1000 HU, bone = +1000 HU. Windowing adjusts display...
+
+- Source: https://en.wikipedia.org/wiki/Hounsfield_scale
+- Citation: Wikipedia contributors, 'Hounsfield scale', Wikipedia.
+- Example: mu = 0.025 cm^{-1}, mu_water = 0.019, mu_air ~ 0. HU = 1000*(0.025-0.019)/(0.019-0) = 316 (soft tissue).
 
 #### `snr_calculation`
 
@@ -8290,7 +8668,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Signal-to-noise ratio in imaging: SNR = signal / noise_std. For MRI: SNR proportional to voxel_volume * sqrt(N_averages) / sqrt(bandwidth). Doubling resolution (halving voxel size in each dimension) r...
+
+- Source: https://en.wikipedia.org/wiki/Signal-to-noise_ratio_(imaging)
+- Citation: Wikipedia contributors, 'Signal-to-noise ratio', Wikipedia.
+- Example: Signal = 500, noise std = 25. SNR = 500/25 = 20. Doubling averages: SNR = 20*sqrt(2) = 28.3.
 
 
 ### ml_deep
@@ -8437,7 +8821,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | interval_identify |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Chords are built by stacking intervals. Major triad: root + major 3rd (4 semitones) + perfect 5th (7). Minor: root + minor 3rd (3) + P5 (7). Diminished: 3 + 6. Augmented: 4 + 8. Seventh chords add ano...
+
+- Source: https://en.wikipedia.org/wiki/Chord_(music)
+- Citation: Wikipedia contributors, 'Chord (music)', Wikipedia.
+- Example: C major: C-E-G (0,4,7 semitones). A minor: A-C-E (0,3,7). G7: G-B-D-F (0,4,7,10).
 
 #### `frequency_ratio`
 
@@ -8450,7 +8840,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> In equal temperament, the frequency ratio between adjacent semitones is 2^(1/12) ~ 1.0595. The frequency n semitones above A4 (440 Hz) is f = 440 * 2^(n/12). Cents: 100 cents = 1 semitone, c = 1200 * ...
+
+- Source: https://en.wikipedia.org/wiki/Equal_temperament
+- Citation: Wikipedia contributors, 'Equal temperament', Wikipedia.
+- Example: Middle C (C4) is 9 semitones below A4. f = 440 * 2^(-9/12) = 440 * 0.5946 = 261.6 Hz.
 
 
 ### networking
@@ -8466,7 +8862,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Total packet delay = propagation + transmission + queuing + processing. Propagation delay = distance / speed (~2e8 m/s in fibre). Transmission delay = packet_size / bandwidth. Queuing delay depends on...
+
+- Source: https://en.wikipedia.org/wiki/Network_delay
+- Citation: Wikipedia contributors, 'Network delay', Wikipedia.
+- Example: 1500 bytes over 100 Mbps, 1000 km fibre. Transmission = 12000 bits / 1e8 = 0.12 ms. Propagation = 1e6 / 2e8 = 5 ms. Total ~ 5.12 ms.
 
 #### `routing_table`
 
@@ -8479,7 +8881,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | binary_arithmetic |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A routing table maps destination networks to next-hop addresses and interfaces. Longest prefix match: the most specific route (longest subnet mask) is selected. Default route (0.0.0.0/0) is used when ...
+
+- Source: https://en.wikipedia.org/wiki/Routing_table
+- Citation: Wikipedia contributors, 'Routing table', Wikipedia.
+- Example: Routes: 10.0.0.0/8 -> gw1, 10.1.0.0/16 -> gw2, 0.0.0.0/0 -> gw3. Packet to 10.1.2.3: matches /16 (longest prefix) -> gw2.
 
 
 ### networking_ext
@@ -8495,7 +8903,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> ARP (Address Resolution Protocol) maps IP addresses to MAC addresses on a local network. A host broadcasts an ARP request ('who has IP X?'). The owner responds with its MAC. Results are cached in the ...
+
+- Source: https://en.wikipedia.org/wiki/Address_Resolution_Protocol
+- Citation: Wikipedia contributors, 'Address Resolution Protocol', Wikipedia.
+- Example: Host A (IP 10.0.0.1) wants to reach 10.0.0.2. Broadcasts ARP request. Host B (10.0.0.2, MAC aa:bb:cc:dd:ee:ff) replies. A caches: 10.0.0.2 -> aa:bb:cc:dd:ee:ff.
 
 #### `checksum_compute`
 
@@ -8510,7 +8924,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `ones complement sum` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Internet checksum (RFC 1071): split data into 16-bit words, sum with ones-complement arithmetic (carry wraps around), take ones-complement of sum. Used in IP, TCP, UDP headers. Verification: sum all w...
+
+- Source: https://en.wikipedia.org/wiki/IPv4_header_checksum
+- Citation: Wikipedia contributors, 'IPv4 header checksum', Wikipedia.
+- Example: Words: 0x4500, 0x0073, 0x0000. Sum = 0x4573. Ones-complement: 0xBA8C. To verify: 0x4500+0x0073+0x0000+0xBA8C = 0xFFFF.
 
 #### `dns_resolution`
 
@@ -8523,7 +8943,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> DNS resolves domain names to IP addresses through a hierarchical system. Resolution steps: local cache -> recursive resolver -> root server -> TLD server -> authoritative server. Record types: A (IPv4...
+
+- Source: https://en.wikipedia.org/wiki/Domain_Name_System
+- Citation: Wikipedia contributors, 'Domain Name System', Wikipedia.
+- Example: Query: example.com. Root server -> .com TLD -> example.com authoritative. Returns A record: 93.184.216.34. Cached with TTL.
 
 #### `ip_subnetting`
 
@@ -8538,7 +8964,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `bitwise AND` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> IP subnetting divides a network into smaller subnets using a subnet mask. Network address = IP AND mask. Broadcast = IP OR (NOT mask). Host range: network+1 to broadcast-1. A /24 gives 254 hosts, /25 ...
+
+- Source: https://en.wikipedia.org/wiki/Subnetwork
+- Citation: Wikipedia contributors, 'Subnetwork', Wikipedia.
+- Example: IP: 192.168.1.130/26. Mask: 255.255.255.192. Network: 192.168.1.128. Broadcast: 192.168.1.191. Hosts: 192.168.1.129 - 192.168.1.190 (62 hosts).
 
 
 ### networks_deep
@@ -9167,7 +9599,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The energy of a photon is E = h*f = h*c/lambda, where h = 6.626e-34 J*s is Planck's constant, f is frequency, c = 3e8 m/s, and lambda is wavelength. In electron volts: E(eV) = 1240 / lambda(nm).
+
+- Source: https://en.wikipedia.org/wiki/Photon_energy
+- Citation: Wikipedia contributors, 'Photon energy', Wikipedia.
+- Example: lambda = 500 nm (green). E = 1240/500 = 2.48 eV = 2.48 * 1.602e-19 = 3.973e-19 J.
 
 #### `total_internal_reflection`
 
@@ -9180,7 +9618,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | snells_law |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Total internal reflection occurs when light passes from a denser to less dense medium at an angle exceeding the critical angle: theta_c = arcsin(n_2 / n_1), where n_1 > n_2. Above theta_c, all light i...
+
+- Source: https://en.wikipedia.org/wiki/Total_internal_reflection
+- Citation: Wikipedia contributors, 'Total internal reflection', Wikipedia.
+- Example: Glass to air: n_1 = 1.5, n_2 = 1.0. theta_c = arcsin(1.0/1.5) = arcsin(0.667) = 41.8 degrees.
 
 
 ### physics
@@ -9311,7 +9755,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The degree of polymerisation DP = M_n / M_0, where M_n is the number-average molecular weight and M_0 is the molecular weight of the repeat unit. For condensation polymerisation: DP = 1/(1-p), where p...
+
+- Source: https://en.wikipedia.org/wiki/Degree_of_polymerization
+- Citation: Wikipedia contributors, 'Degree of polymerization', Wikipedia.
+- Example: M_n = 50000 g/mol, M_0 = 100 g/mol. DP = 50000/100 = 500. Alternatively, p = 0.998: DP = 1/(1-0.998) = 500.
 
 #### `glass_transition`
 
@@ -9324,7 +9774,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The glass transition temperature T_g is where a polymer transitions from glassy to rubbery state. The Fox equation for copolymers: 1/T_g = w_1/T_g1 + w_2/T_g2, where w_i are weight fractions. T_g incr...
+
+- Source: https://en.wikipedia.org/wiki/Glass_transition
+- Citation: Wikipedia contributors, 'Glass transition', Wikipedia.
+- Example: Copolymer: w_1 = 0.6 (T_g1 = 373 K), w_2 = 0.4 (T_g2 = 233 K). 1/T_g = 0.6/373 + 0.4/233 = 0.001609 + 0.001717 = 0.003326. T_g = 300.7 K = 27.7 C.
 
 
 ### power_systems
@@ -9513,7 +9969,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Little's law: L = lambda * W, where L is average number in system, lambda is arrival rate, W is average time in system. Also: L_q = lambda * W_q (queue only). Universal law: holds for any queueing dis...
+
+- Source: https://en.wikipedia.org/wiki/Little%27s_law
+- Citation: Wikipedia contributors, 'Little's law', Wikipedia.
+- Example: lambda=10 customers/hr, W=0.5 hr. L=10*0.5=5 customers in system on average.
 
 
 ### recursion_ext
@@ -9531,7 +9993,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `bisect` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Binary search recursively halves the search space: compare target with middle element. If less, search left half; if greater, search right half. Complexity: O(log n). Requires sorted input.
+
+- Source: https://en.wikipedia.org/wiki/Binary_search_algorithm
+- Citation: Wikipedia contributors, 'Binary search algorithm', Wikipedia.
+- Example: Search for 7 in [1,3,5,7,9]: mid=5 (less), search right [7,9]: mid=7 (found). 2 comparisons.
 
 #### `recursive_permutations`
 
@@ -9546,7 +10014,13 @@ status, knowledge atom, and dependencies.
 | Library | `itertools` |
 | Function | `itertools.permutations` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Generate all permutations recursively: for each element, place it first and permute the rest. n! total permutations. Heap's algorithm generates all permutations with O(1) swaps between consecutive out...
+
+- Source: https://en.wikipedia.org/wiki/Heap%27s_algorithm
+- Citation: Wikipedia contributors, 'Heap's algorithm', Wikipedia.
+- Example: Permutations of [1,2,3]: [1,2,3], [1,3,2], [2,1,3], [2,3,1], [3,1,2], [3,2,1]. 3! = 6 total.
 
 
 ### robotics_ext
@@ -9584,7 +10058,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An LED emits photons when electrons recombine across the bandgap. The emitted wavelength lambda = h*c / E_g, where E_g is the bandgap energy. GaAs: E_g = 1.42 eV (infrared, 874 nm). GaN: E_g = 3.4 eV ...
+
+- Source: https://en.wikipedia.org/wiki/Light-emitting_diode
+- Citation: Wikipedia contributors, 'Light-emitting diode', Wikipedia.
+- Example: E_g = 2.0 eV (red LED). lambda = 6.626e-34 * 3e8 / (2.0 * 1.602e-19) = 1.988e-25 / 3.204e-19 = 620.5 nm.
 
 
 ### sequences_ext
@@ -9602,7 +10082,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `iterative fib` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Fibonacci properties: F(n) ~ phi^n/sqrt(5) (Binet). Cassini's identity: F(n-1)*F(n+1) - F(n)^2 = (-1)^n. Addition formula: F(m+n) = F(m)*F(n+1) + F(m-1)*F(n). GCD property: gcd(F(m),F(n)) = F(gcd(m,n)...
+
+- Source: https://en.wikipedia.org/wiki/Fibonacci_number#Identities
+- Citation: Wikipedia contributors, 'Fibonacci number', Wikipedia.
+- Example: F(10)=55. Binet: phi^10/sqrt(5) = 122.99/2.236 = 55.0. Cassini: F(9)*F(11)-F(10)^2 = 34*89-3025 = 3026-3025 = 1 = (-1)^10.
 
 #### `harmonic_series`
 
@@ -9617,7 +10103,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `sum(1/k for k in range(1,n+1))` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The harmonic series sum(1/n) from n=1 to infinity diverges. Partial sums H_n = 1 + 1/2 + 1/3 + ... + 1/n ~ ln(n) + gamma, where gamma = 0.5772... is the Euler-Mascheroni constant. The alternating harm...
+
+- Source: https://en.wikipedia.org/wiki/Harmonic_series_(mathematics)
+- Citation: Wikipedia contributors, 'Harmonic series (mathematics)', Wikipedia.
+- Example: H_10 = 1+0.5+0.333+0.25+0.2+0.167+0.143+0.125+0.111+0.1 = 2.929. ln(10)+0.577 = 2.880.
 
 #### `sequence_limit`
 
@@ -9633,7 +10125,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.limit` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A sequence {a_n} converges to L if for every epsilon>0, there exists N such that |a_n - L| < epsilon for all n > N. Common limits: lim (1+1/n)^n = e, lim n^{1/n} = 1, lim x^n = 0 for |x|<1.
+
+- Source: https://en.wikipedia.org/wiki/Limit_of_a_sequence
+- Citation: Wikipedia contributors, 'Limit of a sequence', Wikipedia.
+- Example: a_n = (3n+1)/(2n+5). lim = 3/2 (ratio of leading coefficients). For epsilon=0.01, need |a_n-1.5|<0.01 -> n > 345.
 
 #### `telescoping_series`
 
@@ -9649,7 +10147,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.Sum` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A telescoping series has partial sums that simplify by cancellation: sum(a_n - a_{n+1}) = a_1 - lim a_n. Example: sum(1/(n(n+1))) = sum(1/n - 1/(n+1)) = 1 - lim 1/(n+1) = 1.
+
+- Source: https://en.wikipedia.org/wiki/Telescoping_series
+- Citation: Wikipedia contributors, 'Telescoping series', Wikipedia.
+- Example: sum_{n=1}^{N} 1/(n(n+1)) = 1 - 1/(N+1). As N->inf: sum = 1.
 
 
 ### signal_ext
@@ -9760,7 +10264,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `cross product test` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Two line segments P1P2 and P3P4 intersect iff P1 and P2 are on opposite sides of line P3P4, AND P3 and P4 are on opposite sides of line P1P2. Computed using cross products: d1 = (P3P4) x (P3P1), d2 = ...
+
+- Source: https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection
+- Citation: Wikipedia contributors, 'Line-line intersection', Wikipedia.
+- Example: Segments (0,0)-(2,2) and (0,2)-(2,0): d1 = 4, d2 = -4. d1*d2 < 0 -> intersect at (1,1).
 
 #### `point_in_triangle`
 
@@ -9775,7 +10285,13 @@ status, knowledge atom, and dependencies.
 | Library | `builtins` |
 | Function | `barycentric coords` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Point P is inside triangle ABC if all barycentric coordinates (u,v,w) are non-negative and sum to 1. u = area(PBC)/area(ABC), v = area(APC)/area(ABC), w = 1-u-v. Equivalently, P is on the same side of...
+
+- Source: https://en.wikipedia.org/wiki/Barycentric_coordinate_system
+- Citation: Wikipedia contributors, 'Barycentric coordinate system', Wikipedia.
+- Example: A=(0,0), B=(4,0), C=(0,3), P=(1,1). area(ABC)=6, area(PBC)=3.5, u=3.5/6=0.583. v=2/6=0.333. w=0.083. All positive -> inside.
 
 #### `polygon_centroid`
 
@@ -9788,7 +10304,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The centroid of a polygon with vertices (x_i, y_i): C_x = (1/(6A)) * sum((x_i+x_{i+1})*(x_i*y_{i+1}-x_{i+1}*y_i)), C_y similarly, where A is the signed area from the shoelace formula.
+
+- Source: https://en.wikipedia.org/wiki/Centroid#Of_a_polygon
+- Citation: Wikipedia contributors, 'Centroid', Wikipedia.
+- Example: Triangle (0,0),(4,0),(0,3). A=6. C_x = (0+4+0)/3 = 1.333. C_y = (0+0+3)/3 = 1. Centroid (1.333, 1).
 
 
 ### spectroscopy_deep
@@ -9917,7 +10439,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.integrate(r^2*dm)` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The second moment of area (moment of inertia) about an axis: I = integral(y^2 dA). For a rectangle b*h about the centroidal axis: I = b*h^3/12. For a circle of radius r: I = pi*r^4/4. Parallel axis th...
+
+- Source: https://en.wikipedia.org/wiki/Second_moment_of_area
+- Citation: Wikipedia contributors, 'Second moment of area', Wikipedia.
+- Example: Rectangle: b = 0.1 m, h = 0.2 m. I = 0.1 * 0.2^3 / 12 = 0.1 * 0.008 / 12 = 6.667e-5 m^4.
 
 #### `section_modulus`
 
@@ -9930,7 +10458,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The section modulus S = I / c relates bending moment to maximum stress: sigma_max = M / S. For a rectangular section: S = b*h^2/6. For a circular section: S = pi*d^3/32. The plastic section modulus Z ...
+
+- Source: https://en.wikipedia.org/wiki/Section_modulus
+- Citation: Wikipedia contributors, 'Section modulus', Wikipedia.
+- Example: Rectangle b = 0.1 m, h = 0.3 m. S = 0.1 * 0.09 / 6 = 1.5e-3 m^3. If M = 100 kN*m: sigma = 100e3 / 1.5e-3 = 66.7 MPa.
 
 
 ### systems
@@ -10162,7 +10696,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Simple exponential smoothing: S_t = alpha*X_t + (1-alpha)*S_{t-1}, where alpha in (0,1) is the smoothing factor. Higher alpha gives more weight to recent observations. Holt's method adds trend: b_t = ...
+
+- Source: https://en.wikipedia.org/wiki/Exponential_smoothing
+- Citation: Wikipedia contributors, 'Exponential smoothing', Wikipedia.
+- Example: alpha=0.3, X=[10,12,11,13]. S_0=10. S_1=0.3*12+0.7*10=10.6. S_2=0.3*11+0.7*10.6=10.72. S_3=0.3*13+0.7*10.72=11.404.
 
 #### `moving_average`
 
@@ -10178,7 +10718,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.convolve` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Simple moving average: MA_t = (1/k)*sum(X_{t-k+1}..X_t). Smooths short-term fluctuations. Weighted moving average assigns different weights. Exponential moving average is a special case. MA is a low-p...
+
+- Source: https://en.wikipedia.org/wiki/Moving_average
+- Citation: Wikipedia contributors, 'Moving average', Wikipedia.
+- Example: k=3, data [2,4,6,8,10]. MA_3=4, MA_4=6, MA_5=8.
 
 
 ### tribology
@@ -10194,7 +10740,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Coulomb's law of friction: the friction force F_f = mu * N, where mu is the coefficient of friction and N is the normal force. Static friction: F_f <= mu_s * N. Kinetic friction: F_f = mu_k * N. Gener...
+
+- Source: https://en.wikipedia.org/wiki/Friction
+- Citation: Wikipedia contributors, 'Friction', Wikipedia.
+- Example: mu_k = 0.3, N = 100 N. F_f = 0.3 * 100 = 30 N.
 
 
 ### trigonometry_ext
@@ -10212,7 +10764,13 @@ status, knowledge atom, and dependencies.
 | Library | `math` |
 | Function | `sin(2x)=2sin(x)cos(x)` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Double angle formulas: sin(2x) = 2*sin(x)*cos(x). cos(2x) = cos^2(x) - sin^2(x) = 2*cos^2(x)-1 = 1-2*sin^2(x). tan(2x) = 2*tan(x)/(1-tan^2(x)). Half-angle: sin(x/2) = sqrt((1-cos(x))/2).
+
+- Source: https://en.wikipedia.org/wiki/List_of_trigonometric_identities#Double-angle_formulae
+- Citation: Wikipedia contributors, 'List of trigonometric identities', Wikipedia.
+- Example: x = 30 deg. sin(60) = 2*sin(30)*cos(30) = 2*0.5*0.866 = 0.866. cos(60) = 2*cos^2(30)-1 = 2*0.75-1 = 0.5.
 
 #### `inverse_trig`
 
@@ -10227,7 +10785,13 @@ status, knowledge atom, and dependencies.
 | Library | `math` |
 | Function | `math.asin/acos/atan` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Inverse trig functions: arcsin(x) returns angle in [-pi/2, pi/2], arccos(x) in [0, pi], arctan(x) in (-pi/2, pi/2). Derivatives: d/dx arcsin(x) = 1/sqrt(1-x^2), d/dx arctan(x) = 1/(1+x^2).
+
+- Source: https://en.wikipedia.org/wiki/Inverse_trigonometric_functions
+- Citation: Wikipedia contributors, 'Inverse trigonometric functions', Wikipedia.
+- Example: arcsin(0.5) = pi/6 = 30 deg. arccos(0.5) = pi/3 = 60 deg. arctan(1) = pi/4 = 45 deg.
 
 #### `trig_equation`
 
@@ -10243,7 +10807,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.solve` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Solving trigonometric equations: use identities to simplify, then solve for the angle. sin(x)=a: x = arcsin(a) + 2n*pi or pi-arcsin(a) + 2n*pi. cos(x)=a: x = +/-arccos(a) + 2n*pi. tan(x)=a: x = arctan...
+
+- Source: https://en.wikipedia.org/wiki/Trigonometric_equation
+- Citation: Wikipedia contributors, 'Trigonometric equation', Wikipedia.
+- Example: 2*sin(x)-1=0 -> sin(x)=0.5 -> x=pi/6 + 2n*pi or 5*pi/6 + 2n*pi.
 
 
 ---
@@ -10446,7 +11016,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Present value of annuity: PV = PMT * (1-(1+r)^{-n})/r, where PMT is periodic payment, r is interest rate per period, n is number of periods. Annuity due: PV_due = PV * (1+r). Perpetuity (n->inf): PV =...
+
+- Source: https://en.wikipedia.org/wiki/Annuity#Present_value
+- Citation: Wikipedia contributors, 'Annuity', Wikipedia.
+- Example: PMT=1000/yr, r=5%, n=20. PV = 1000*(1-1.05^{-20})/0.05 = 1000*12.462 = 12462.
 
 #### `insurance_premium`
 
@@ -10459,7 +11035,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | summation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Net single premium = sum of expected present values of benefits. For a whole life insurance on (x): A_x = sum v^{k+1}*k|q_x, where v=1/(1+i) is discount factor, k|q_x = probability of dying at age x+k...
+
+- Source: https://en.wikipedia.org/wiki/Actuarial_present_value
+- Citation: Wikipedia contributors, 'Actuarial present value', Wikipedia.
+- Example: i=5%, q_60=0.02, q_61=0.03. A_60 ~ 0.02*v + 0.98*0.03*v^2 + ... = 0.019 + 0.027 + ...
 
 #### `life_table_actuarial`
 
@@ -10472,7 +11054,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A life table gives survival probabilities. q_x = probability of dying between age x and x+1. l_x = number surviving to age x. d_x = l_x - l_{x+1} = deaths at age x. q_x = d_x/l_x. Life expectancy: e_x...
+
+- Source: https://en.wikipedia.org/wiki/Life_table
+- Citation: Wikipedia contributors, 'Life table', Wikipedia.
+- Example: l_60=8000, l_61=7800, l_62=7550. q_60=200/8000=0.025. d_60=200.
 
 #### `loss_distribution`
 
@@ -10488,7 +11076,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats distributions` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Aggregate loss S = X_1 + ... + X_N where N is claim frequency (Poisson/negative binomial) and X_i is claim severity (lognormal/Pareto). E[S] = E[N]*E[X]. Var[S] = E[N]*Var[X] + Var[N]*(E[X])^2 (compou...
+
+- Source: https://en.wikipedia.org/wiki/Compound_Poisson_process
+- Citation: Wikipedia contributors, 'Compound Poisson process', Wikipedia.
+- Example: N~Poisson(100), X~Exp(mean=5000). E[S]=500000. Var[S]=100*25e6+100*25e6=5e9. SD=70711.
 
 #### `reserve_calculation`
 
@@ -10501,7 +11095,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | annuity_pv |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Insurance reserve V_t is the expected present value of future benefits minus future premiums at time t. Prospective: V_t = A_{x+t} - P*a_{x+t}. Retrospective: V_t = (P*a_{x:t} - A_{x:t}^1) * (1+i)^t /...
+
+- Source: https://en.wikipedia.org/wiki/Actuarial_reserves
+- Citation: Wikipedia contributors, 'Actuarial reserves', Wikipedia.
+- Example: A_{65}=0.6, annual premium P=0.03, annuity a_{65}=10. V_0 = 0.6 - 0.03*10 = 0.3.
 
 
 ### advanced_analysis
@@ -11579,7 +12179,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Antenna directivity D = 4*pi*U_max / P_rad, where U_max is the maximum radiation intensity (W/sr) and P_rad is total radiated power. For a short dipole D = 1.5 (1.76 dBi). For a half-wave dipole D = 1...
+
+- Source: https://en.wikipedia.org/wiki/Directivity
+- Citation: Wikipedia contributors, 'Directivity', Wikipedia.
+- Example: U_max = 10 W/sr, P_rad = 50 W. D = 4*pi*10/50 = 125.66/50 = 2.513 (4.0 dBi).
 
 #### `antenna_gain_efficiency`
 
@@ -11592,7 +12198,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Antenna gain G = eta * D, where eta is radiation efficiency (0 to 1) and D is directivity. In dBi: G(dBi) = 10*log10(G). The effective area A_e = G * lambda^2 / (4*pi) relates gain to capture area.
+
+- Source: https://en.wikipedia.org/wiki/Antenna_gain
+- Citation: Wikipedia contributors, 'Antenna gain', Wikipedia.
+- Example: D = 6 (7.78 dBi), eta = 0.9. G = 0.9*6 = 5.4 (7.33 dBi). At f = 1 GHz (lambda = 0.3 m): A_e = 5.4 * 0.09 / (4*pi) = 0.0387 m^2.
 
 #### `dipole_radiation`
 
@@ -11605,7 +12217,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | sin_cos_eval |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Hertzian (short) dipole of length dl << lambda radiates with pattern E(theta) proportional to sin(theta). Total radiated power P = eta_0 * (pi/3) * (I*dl/lambda)^2, where eta_0 = 120*pi Ohm is free-...
+
+- Source: https://en.wikipedia.org/wiki/Dipole_antenna
+- Citation: Wikipedia contributors, 'Dipole antenna', Wikipedia.
+- Example: dl = 0.01 m, lambda = 1 m, I = 1 A. R_r = 80*pi^2*0.0001 = 0.0789 Ohm. P = 0.5*1^2*0.0789 = 0.0395 W.
 
 #### `effective_aperture`
 
@@ -11618,7 +12236,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The effective aperture of an antenna is A_e = G * lambda^2 / (4*pi), relating the antenna gain to the area that captures incoming power. For a parabolic dish of physical area A: G = eta_a * 4*pi*A/lam...
+
+- Source: https://en.wikipedia.org/wiki/Antenna_aperture
+- Citation: Wikipedia contributors, 'Antenna aperture', Wikipedia.
+- Example: Dish diameter 1 m, f = 10 GHz (lambda = 0.03 m), eta_a = 0.6. A = pi*0.25 = 0.785 m^2. G = 0.6*4*pi*0.785/0.0009 = 6597 (38.2 dBi).
 
 #### `friis_transmission`
 
@@ -11631,7 +12255,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Friis transmission equation relates received to transmitted power: P_r/P_t = G_t * G_r * (lambda / (4*pi*d))^2, where G_t, G_r are antenna gains and d is distance. In dB: P_r = P_t + G_t + G_r - F...
+
+- Source: https://en.wikipedia.org/wiki/Friis_transmission_equation
+- Citation: Wikipedia contributors, 'Friis transmission equation', Wikipedia.
+- Example: P_t = 1 W, G_t = G_r = 10 dBi, f = 2.4 GHz, d = 100 m. lambda = 0.125 m. FSPL = 20*log10(4*pi*100/0.125) = 20*log10(10053) = 80.0 dB. P_r = 0 + 10 + 10 - 80 = -60 dBW = 1 uW.
 
 
 ### applied_science
@@ -11930,7 +12560,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | dfa_accept |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Myhill-Nerode theorem characterises regular languages: L is regular iff the number of equivalence classes of the right-invariant relation ~_L is finite. x ~_L y iff for all z: xz in L iff yz in L....
+
+- Source: https://en.wikipedia.org/wiki/Myhill%E2%80%93Nerode_theorem
+- Citation: Wikipedia contributors, 'Myhill-Nerode theorem', Wikipedia.
+- Example: L = {strings with even number of a's}. Two classes: [even] and [odd] (based on number of a's seen). Finite classes -> regular. Minimal DFA has 2 states.
 
 
 ### automata_ext
@@ -11946,7 +12582,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | dfa_accept |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> DFA minimisation finds the smallest DFA accepting the same language. Hopcroft's algorithm partitions states by distinguishability: two states are equivalent if no string separates them. Start with {ac...
+
+- Source: https://en.wikipedia.org/wiki/DFA_minimization
+- Citation: Wikipedia contributors, 'DFA minimization', Wikipedia.
+- Example: DFA with states {A,B,C,D}. A,C are accepting. If delta(A,0) = delta(C,0) and delta(A,1) = delta(C,1), then A and C are equivalent; merge into one state.
 
 #### `transducer`
 
@@ -11959,7 +12601,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mealy_machine |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A finite-state transducer (FST) is a finite automaton with both input and output tapes. It defines a relation between input and output strings. Mealy and Moore machines are special cases. FSTs are use...
+
+- Source: https://en.wikipedia.org/wiki/Finite-state_transducer
+- Citation: Wikipedia contributors, 'Finite-state transducer', Wikipedia.
+- Example: Binary-to-Gray code transducer: input 0110, output 0101. Rule: first output = first input; subsequent outputs = input XOR previous input.
 
 #### `two_stack_pda`
 
@@ -11972,7 +12620,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | turing_machine_step |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A PDA with two stacks is equivalent to a Turing machine. One stack simulates the tape left of the head, the other the right. This shows that adding a second stack to a PDA increases computational powe...
+
+- Source: https://en.wikipedia.org/wiki/Pushdown_automaton#Equivalence_with_Turing_machines
+- Citation: Wikipedia contributors, 'Pushdown automaton', Wikipedia.
+- Example: To recognise {a^n b^n c^n}: push a's on stack 1. For each b, pop stack 1 and push stack 2. For each c, pop stack 2. Accept if both stacks empty.
 
 
 ### bayesian_statistics
@@ -11991,7 +12645,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.optimize.minimize` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Maximum A Posteriori estimate maximises the posterior: theta_MAP = argmax P(theta|data) = argmax P(data|theta)*P(theta). With a uniform prior, MAP = MLE. With Gaussian prior, MAP = ridge regressio...
+
+- Source: https://en.wikipedia.org/wiki/Maximum_a_posteriori_estimation
+- Citation: Wikipedia contributors, 'Maximum a posteriori estimation', Wikipedia.
+- Example: Bernoulli data: 7/10 successes. Uniform prior Beta(1,1). MAP = argmax Beta(8,4) = (8-1)/(8+4-2) = 7/10 = 0.7.
 
 
 ### biochemistry
@@ -12812,7 +13472,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | expected_value |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Average Treatment Effect ATE = E[Y(1)] - E[Y(0)] = E[Y|T=1] - E[Y|T=0] under unconfoundedness. With confounders X: ATE = E_X[E[Y|T=1,X] - E[Y|T=0,X]]. Estimated via regression, matching, or invers...
+
+- Source: https://en.wikipedia.org/wiki/Average_treatment_effect
+- Citation: Wikipedia contributors, 'Average treatment effect', Wikipedia.
+- Example: Treated group mean outcome = 75. Control group mean = 60. Naive ATE = 15. After adjusting for confounder: ATE = 10.
 
 #### `diff_in_diff`
 
@@ -12825,7 +13491,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | subtraction |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Difference-in-differences estimates causal effects by comparing pre/post changes between treated and control groups. DiD = (Y_treat_post - Y_treat_pre) - (Y_control_post - Y_control_pre). Assumes para...
+
+- Source: https://en.wikipedia.org/wiki/Difference_in_differences
+- Citation: Wikipedia contributors, 'Difference in differences', Wikipedia.
+- Example: Pre: treated=50, control=40. Post: treated=70, control=55. DiD = (70-50)-(55-40) = 20-15 = 5.
 
 
 ### cell_biology_ext
@@ -12841,7 +13513,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Cell signalling pathways transmit information from receptors to effectors. Steps: ligand binding -> receptor activation -> signal transduction (kinase cascades, second messengers like cAMP, Ca2+) -> g...
+
+- Source: https://en.wikipedia.org/wiki/Cell_signaling
+- Citation: Wikipedia contributors, 'Cell signaling', Wikipedia.
+- Example: Insulin signalling: insulin binds receptor -> IRS phosphorylation -> PI3K -> Akt -> GLUT4 translocation -> glucose uptake.
 
 #### `gene_expression_regulation`
 
@@ -12854,7 +13532,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Gene expression is regulated at multiple levels: transcriptional (promoters, enhancers, transcription factors), post-transcriptional (mRNA stability, miRNA), translational (ribosome binding), post-tra...
+
+- Source: https://en.wikipedia.org/wiki/Regulation_of_gene_expression
+- Citation: Wikipedia contributors, 'Regulation of gene expression', Wikipedia.
+- Example: Lac operon: repressor blocks transcription without lactose. Lactose (allolactose) binds repressor, releases it, allows transcription of lacZ, lacY, lacA.
 
 #### `receptor_binding`
 
@@ -12867,7 +13551,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Receptor-ligand binding follows the law of mass action: [RL]/[R_total] = [L]/(K_d + [L]), where K_d is the dissociation constant. At [L]=K_d, 50% of receptors are occupied. Scatchard plot: [RL]/[L] = ...
+
+- Source: https://en.wikipedia.org/wiki/Ligand_(biochemistry)#Binding_affinity
+- Citation: Wikipedia contributors, 'Ligand (biochemistry)', Wikipedia.
+- Example: K_d = 10 nM, [L] = 30 nM. Fractional occupancy = 30/(10+30) = 0.75. 75% of receptors bound.
 
 
 ### chemistry
@@ -13219,7 +13909,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | matrix_multiply |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Key parameters of an error-correcting code: rate R = k/n (efficiency), minimum distance d (error correction capability), Singleton bound: d <= n - k + 1 (MDS codes achieve equality). Hamming bound: su...
+
+- Source: https://en.wikipedia.org/wiki/Hamming_bound
+- Citation: Wikipedia contributors, 'Hamming bound', Wikipedia.
+- Example: Hamming(7,4): R = 4/7 = 0.571, d = 3, t = 1. Hamming bound: C(7,0)+C(7,1) = 1+7 = 8 = 2^3 = 2^(7-4). Perfect code.
 
 #### `linear_code`
 
@@ -13235,7 +13931,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.matmul for generator matrix` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A linear code C(n,k) encodes k information bits into n-bit codewords using generator matrix G: c = m*G. Parity check matrix H satisfies H*c^T = 0 for valid codewords. Minimum distance d determines err...
+
+- Source: https://en.wikipedia.org/wiki/Linear_code
+- Citation: Wikipedia contributors, 'Linear code', Wikipedia.
+- Example: Hamming(7,4): n=7, k=4, d=3. Corrects 1 error. G = [I_4 | P], H = [-P^T | I_3]. Rate = 4/7 = 0.571.
 
 #### `syndrome_decode`
 
@@ -13251,7 +13953,13 @@ status, knowledge atom, and dependencies.
 | Function | `syndrome = H * r^T` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Syndrome decoding computes s = H*r^T for received word r. If s = 0, no error. Otherwise, s matches a column of H, identifying the error position. For single-error correction: flip the bit at that posi...
+
+- Source: https://en.wikipedia.org/wiki/Decoding_methods#Syndrome_decoding
+- Citation: Wikipedia contributors, 'Decoding methods', Wikipedia.
+- Example: Hamming(7,4): received r = [1,0,1,1,0,1,1]. s = H*r^T = [1,0,1]. Column 5 of H matches. Error at bit 5. Corrected: [1,0,1,1,1,1,1].
 
 #### `turbo_code_interleave`
 
@@ -13264,7 +13972,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | binary_arithmetic |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Turbo codes use two parallel convolutional encoders separated by an interleaver. The interleaver permutes the input bits before the second encoder, creating independent parity. Iterative decoding (BCJ...
+
+- Source: https://en.wikipedia.org/wiki/Turbo_code
+- Citation: Wikipedia contributors, 'Turbo code', Wikipedia.
+- Example: Rate 1/3 turbo code: systematic bits + parity from encoder 1 + parity from encoder 2 (after interleaving). 6 iterations of decoding typically suffice.
 
 
 ### cognitive_science
@@ -13608,7 +14322,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Companding (compressing-expanding) reduces the dynamic range before quantization, improving SNR for low-level signals. mu-law: F(x) = sgn(x)*ln(1+mu*|x|)/ln(1+mu). A-law used in Europe (ITU G.711). Ty...
+
+- Source: https://en.wikipedia.org/wiki/%CE%9C-law_algorithm
+- Citation: Wikipedia contributors, 'Companding', Wikipedia.
+- Example: mu-law, mu=255, x=0.1: F(0.1) = ln(1+25.5)/ln(256) = ln(26.5)/5.545 = 3.277/5.545 = 0.591. Expansion at low levels.
 
 #### `constellation_diagram`
 
@@ -13621,7 +14341,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A constellation diagram plots the in-phase (I) and quadrature (Q) components of a digital modulation scheme. BPSK: 2 points on real axis. QPSK: 4 points at 45/135/225/315 degrees. 16-QAM: 16 points in...
+
+- Source: https://en.wikipedia.org/wiki/Constellation_diagram
+- Citation: Wikipedia contributors, 'Constellation diagram', Wikipedia.
+- Example: QPSK: symbols at (1,1),(-1,1),(-1,-1),(1,-1). Min distance = 2. BER ~ Q(sqrt(2*Eb/N0)).
 
 
 ### compilers
@@ -13798,7 +14524,13 @@ status, knowledge atom, and dependencies.
 | Function | `max abs column inner product` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The coherence of a matrix A is mu(A) = max_{i!=j} |<a_i, a_j>| / (||a_i||*||a_j||), the maximum absolute normalised inner product between columns. Lower coherence -> better sparse recovery. Random mat...
+
+- Source: https://en.wikipedia.org/wiki/Mutual_coherence_(linear_algebra)
+- Citation: Wikipedia contributors, 'Mutual coherence (linear algebra)', Wikipedia.
+- Example: A with columns in R^50. mu = 0.1. Recovery guaranteed for s < (1+10)/2 = 5.5, so s <= 5.
 
 #### `sparse_recovery`
 
@@ -13814,7 +14546,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.optimize.linprog` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Sparse recovery reconstructs a sparse signal x from underdetermined measurements y = Ax. L1 minimisation (basis pursuit): min ||x||_1 subject to Ax = y. Greedy algorithms: OMP (orthogonal matching pur...
+
+- Source: https://en.wikipedia.org/wiki/Compressed_sensing
+- Citation: Wikipedia contributors, 'Compressed sensing', Wikipedia.
+- Example: A is 50x100, y = Ax where x has 5 nonzero entries. OMP: 5 iterations, each selecting the column of A most correlated with current residual.
 
 
 ### computer_architecture
@@ -13830,7 +14568,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Branch prediction guesses the outcome of conditional branches before they execute. Static: predict not-taken or backward-taken. Dynamic: 1-bit (last outcome), 2-bit saturating counter (needs 2 mispred...
+
+- Source: https://en.wikipedia.org/wiki/Branch_predictor
+- Citation: Wikipedia contributors, 'Branch predictor', Wikipedia.
+- Example: 2-bit predictor, initial state 'strongly taken' (11). Branch not taken: state -> 10 (weakly taken), still predicts taken. Not taken again: state -> 01, now predicts not-taken.
 
 #### `instruction_scheduling`
 
@@ -13843,7 +14587,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | addition |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Instruction scheduling reorders instructions to avoid pipeline stalls while maintaining correctness (data dependencies). List scheduling assigns priorities based on critical path length. Out-of-order ...
+
+- Source: https://en.wikipedia.org/wiki/Instruction_scheduling
+- Citation: Wikipedia contributors, 'Instruction scheduling', Wikipedia.
+- Example: Instructions: ADD R1,R2,R3; MUL R4,R1,R5 (RAW hazard on R1). Insert independent instruction between them to fill the stall cycle.
 
 
 ### computer_graphics
@@ -14007,7 +14757,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Elastic moduli relate stress to strain in isotropic materials. Young's modulus E = sigma / epsilon (uniaxial). Shear modulus G = tau / gamma. Bulk modulus K = -V * dP/dV. They are related: E = 2*G*(1+...
+
+- Source: https://en.wikipedia.org/wiki/Elastic_modulus
+- Citation: Wikipedia contributors, 'Elastic modulus', Wikipedia.
+- Example: E = 200 GPa, nu = 0.3. G = 200 / (2*1.3) = 76.9 GPa. K = 200 / (3*0.4) = 166.7 GPa.
 
 #### `mohr_circle`
 
@@ -14020,7 +14776,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Mohr's circle is a graphical method to find principal stresses and maximum shear stress from a 2D stress state. Centre C = (sigma_x + sigma_y)/2, radius R = sqrt(((sigma_x - sigma_y)/2)^2 + tau_xy^2)....
+
+- Source: https://en.wikipedia.org/wiki/Mohr%27s_circle
+- Citation: Wikipedia contributors, 'Mohr's circle', Wikipedia.
+- Example: sigma_x = 80 MPa, sigma_y = -40 MPa, tau_xy = 30 MPa. C = (80 + (-40))/2 = 20 MPa. R = sqrt(60^2 + 30^2) = sqrt(4500) = 67.1 MPa. sigma_1 = 87.1 MPa, sigma_2 = -47.1 MPa.
 
 
 ### control_ext
@@ -14168,7 +14930,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The birthday attack exploits the birthday paradox to find hash collisions. For a hash of n bits, a collision is expected after ~2^(n/2) random inputs (not 2^n). This sets the minimum hash size: 128-bi...
+
+- Source: https://en.wikipedia.org/wiki/Birthday_attack
+- Citation: Wikipedia contributors, 'Birthday attack', Wikipedia.
+- Example: 16-bit hash: collision expected after ~2^8 = 256 trials. 128-bit hash: collision after ~2^64 ~ 1.8e19 trials.
 
 #### `known_plaintext`
 
@@ -14181,7 +14949,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | caesar |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A known-plaintext attack uses pairs of known plaintext and corresponding ciphertext to deduce the key. For XOR-based ciphers: K = P XOR C. For linear ciphers: if C = A*P + B, two pairs yield A and B. ...
+
+- Source: https://en.wikipedia.org/wiki/Known-plaintext_attack
+- Citation: Wikipedia contributors, 'Known-plaintext attack', Wikipedia.
+- Example: XOR cipher: known P='HELLO' (0x48,0x45,0x4C,0x4C,0x4F), C=(0x7A,0x77,0x7E,0x7E,0x7D). K = P XOR C = (0x32,0x32,0x32,0x32,0x32) = '22222'.
 
 
 ### crypto_deep
@@ -14238,7 +15012,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | binary_arithmetic |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Block cipher modes of operation define how to repeatedly apply a block cipher to multiple blocks. ECB: each block encrypted independently (insecure, patterns visible). CBC: each block XORed with previ...
+
+- Source: https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation
+- Citation: Wikipedia contributors, 'Block cipher mode of operation', Wikipedia.
+- Example: AES-CBC: C_0 = E_K(P_0 XOR IV), C_1 = E_K(P_1 XOR C_0), ... Decryption: P_0 = D_K(C_0) XOR IV.
 
 #### `commitment_scheme`
 
@@ -14251,7 +15031,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mod_pow |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A cryptographic commitment scheme lets a party commit to a value without revealing it, then later reveal it verifiably. Pedersen commitment: C = g^m * h^r mod p, where m is the message, r is random. P...
+
+- Source: https://en.wikipedia.org/wiki/Commitment_scheme
+- Citation: Wikipedia contributors, 'Commitment scheme', Wikipedia.
+- Example: g=4, h=9, p=23, m=7, r=3. C = 4^7 * 9^3 mod 23 = 16384*729 mod 23 = 11943936 mod 23 = 2.
 
 #### `merkle_tree`
 
@@ -14264,7 +15050,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | hash_table_ops |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Merkle tree is a binary hash tree where each leaf is a hash of a data block and each internal node is the hash of its children. The root hash authenticates all data. Proof of inclusion for a leaf re...
+
+- Source: https://en.wikipedia.org/wiki/Merkle_tree
+- Citation: Wikipedia contributors, 'Merkle tree', Wikipedia.
+- Example: 4 blocks: H0=H(B0), H1=H(B1), H2=H(B2), H3=H(B3). H01=H(H0||H1), H23=H(H2||H3). Root=H(H01||H23). Proof for B1: provide H0 and H23.
 
 #### `shamir_secret_share`
 
@@ -14280,7 +15072,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.interpolate (Lagrange)` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Shamir's Secret Sharing splits a secret S into n shares such that any k shares can reconstruct S, but k-1 cannot. A random polynomial f(x) of degree k-1 is created with f(0) = S. Shares are (i, f(i)) ...
+
+- Source: https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing
+- Citation: Wikipedia contributors, 'Shamir's Secret Sharing', Wikipedia.
+- Example: Secret S=42, k=2 (threshold), polynomial f(x)=42+3x (mod 97). Shares: (1,45), (2,48), (3,51). Any 2 shares reconstruct S=42.
 
 #### `stream_cipher`
 
@@ -14293,7 +15091,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | binary_arithmetic |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A stream cipher encrypts plaintext one bit/byte at a time by XORing with a pseudorandom keystream. C_i = P_i XOR K_i. The keystream is generated from a seed key using a PRNG (e.g. LFSR, RC4, ChaCha20)...
+
+- Source: https://en.wikipedia.org/wiki/Stream_cipher
+- Citation: Wikipedia contributors, 'Stream cipher', Wikipedia.
+- Example: Keystream: [0x3A, 0x7F, 0x12]. Plaintext: [0x48, 0x65, 0x6C] ('Hel'). Ciphertext: [0x48^0x3A, 0x65^0x7F, 0x6C^0x12] = [0x72, 0x1A, 0x7E].
 
 
 ### cryptography
@@ -14618,7 +15422,13 @@ status, knowledge atom, and dependencies.
 | Function | `cross product of partials` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The surface normal at a point on a parametric surface r(u,v) is n = (r_u x r_v) / |r_u x r_v|, where r_u and r_v are partial derivatives. For an implicit surface F(x,y,z) = 0: n = grad(F) / |grad(F)|.
+
+- Source: https://en.wikipedia.org/wiki/Normal_(geometry)
+- Citation: Wikipedia contributors, 'Normal (geometry)', Wikipedia.
+- Example: Sphere: F = x^2+y^2+z^2-1. grad F = (2x,2y,2z). At (1,0,0): n = (2,0,0)/2 = (1,0,0).
 
 
 ### digital_electronics
@@ -14634,7 +15444,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | binary_arithmetic |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A digital counter increments (or decrements) on each clock pulse. An n-bit binary counter counts from 0 to 2^n - 1. Synchronous counters: all flip-flops clock together (faster). Asynchronous (ripple):...
+
+- Source: https://en.wikipedia.org/wiki/Counter_(digital)
+- Citation: Wikipedia contributors, 'Counter (digital)', Wikipedia.
+- Example: 3-bit binary counter: counts 000->001->010->011->100->101->110->111->000. Modulus = 2^3 = 8.
 
 #### `timing_analysis`
 
@@ -14647,7 +15463,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | addition |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Static timing analysis checks if signals arrive within clock period. Setup time: data must be stable t_setup before clock edge. Hold time: data must be stable t_hold after clock edge. Max clock freque...
+
+- Source: https://en.wikipedia.org/wiki/Static_timing_analysis
+- Citation: Wikipedia contributors, 'Static timing analysis', Wikipedia.
+- Example: t_cq = 2 ns, t_logic = 5 ns, t_setup = 1 ns. T_min = 2+5+1 = 8 ns. f_max = 1/8e-9 = 125 MHz.
 
 
 ### dimensionality_reduction
@@ -14666,7 +15488,13 @@ status, knowledge atom, and dependencies.
 | Function | `eigenvalue ratios` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Explained variance ratio for PCA component k: EVR_k = lambda_k / sum(lambda_i). Cumulative EVR determines how many components to keep. Typical threshold: 95% cumulative variance. Scree plot visualises...
+
+- Source: https://en.wikipedia.org/wiki/Principal_component_analysis#Compute_the_cumulative_energy_content
+- Citation: Wikipedia contributors, 'Principal component analysis', Wikipedia.
+- Example: Eigenvalues: [10, 5, 2, 1, 0.5]. Total = 18.5. EVR = [54.1%, 27%, 10.8%, 5.4%, 2.7%]. Cumulative: 54.1%, 81.1%, 91.9%, 97.3%. Need 4 components for 95%.
 
 #### `feature_selection`
 
@@ -14679,7 +15507,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Feature selection reduces dimensionality by choosing the most informative features. Filter methods: mutual information, chi-squared, variance threshold. Wrapper methods: forward/backward selection usi...
+
+- Source: https://en.wikipedia.org/wiki/Feature_selection
+- Citation: Wikipedia contributors, 'Feature selection', Wikipedia.
+- Example: 10 features. Mutual information scores: [0.8, 0.6, 0.01, 0.5, ...]. Select top 3 by MI score.
 
 #### `pca_compute`
 
@@ -14695,7 +15529,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.eigh on covariance` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> PCA: centre data, compute covariance matrix, find eigenvalues/eigenvectors. Project onto top k eigenvectors. Variance explained = lambda_k / sum(lambda_i). First PC captures maximum variance direction...
+
+- Source: https://en.wikipedia.org/wiki/Principal_component_analysis
+- Citation: Wikipedia contributors, 'Principal component analysis', Wikipedia.
+- Example: 2D data, eigenvalues [4.5, 0.5]. PC1 explains 4.5/5.0 = 90%. Projecting onto PC1 reduces to 1D with 90% variance retained.
 
 
 ### discrete_ext
@@ -15434,7 +16274,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | wave_equation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Electromagnetic waves travel at the speed of light c = 3e8 m/s in vacuum. The wavelength lambda, frequency f, and speed are related by c = lambda * f. The energy of a photon is E = h * f, where h = 6....
+
+- Source: https://en.wikipedia.org/wiki/Electromagnetic_radiation
+- Citation: Wikipedia contributors, 'Electromagnetic radiation', Wikipedia.
+- Example: f = 5e14 Hz (green light). lambda = 3e8 / 5e14 = 6e-7 m = 600 nm. E = 6.626e-34 * 5e14 = 3.313e-19 J = 2.07 eV.
 
 #### `gauss_law`
 
@@ -15485,7 +16331,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | ohms_law, capacitance |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An RC circuit consists of a resistor R and capacitor C in series. The voltage across the capacitor during charging is V(t) = V0 * (1 - exp(-t / (R*C))), where tau = R*C is the time constant. During di...
+
+- Source: https://en.wikipedia.org/wiki/RC_circuit
+- Citation: Wikipedia contributors, 'RC circuit', Wikipedia.
+- Example: R = 1000 Ohm, C = 1e-6 F, V0 = 5 V. tau = 1000 * 1e-6 = 1e-3 s. At t = 1e-3 s: V = 5 * (1 - exp(-1)) = 5 * 0.6321 = 3.1606 V.
 
 
 ### electromagnetism_ext
@@ -15501,7 +16353,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Ampere's circuital law states that the line integral of B around a closed loop equals mu_0 times the enclosed current: integral(B . dl) = mu_0 * I_enc. For a solenoid with n turns per unit length, B =...
+
+- Source: https://en.wikipedia.org/wiki/Amp%C3%A8re%27s_circuital_law
+- Citation: Wikipedia contributors, 'Ampere's circuital law', Wikipedia.
+- Example: Solenoid: n = 1000 turns/m, I = 2 A. B = 4*pi*1e-7 * 1000 * 2 = 2.513e-3 T = 2.513 mT.
 
 #### `electric_dipole`
 
@@ -15514,7 +16372,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | electric_field |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An electric dipole consists of two equal and opposite charges +q and -q separated by distance d. The dipole moment is p = q * d. The electric field on the axis at distance r >> d is E = 2*k*p / r^3, a...
+
+- Source: https://en.wikipedia.org/wiki/Electric_dipole_moment
+- Citation: Wikipedia contributors, 'Electric dipole moment', Wikipedia.
+- Example: q = 1e-9 C, d = 0.01 m. p = 1e-9 * 0.01 = 1e-11 C*m. At r = 0.1 m on axis: E = 2 * 8.99e9 * 1e-11 / 0.001 = 0.1798 V/m.
 
 #### `lc_oscillation`
 
@@ -15527,7 +16391,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | capacitance |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An LC circuit oscillates at angular frequency omega = 1 / sqrt(L*C), or frequency f = 1 / (2*pi*sqrt(L*C)). The energy oscillates between the inductor (0.5*L*I^2) and capacitor (0.5*C*V^2), with total...
+
+- Source: https://en.wikipedia.org/wiki/LC_circuit
+- Citation: Wikipedia contributors, 'LC circuit', Wikipedia.
+- Example: L = 0.1 H, C = 100e-6 F. omega = 1 / sqrt(0.1*1e-4) = 1 / sqrt(1e-5) = 316.2 rad/s. f = 316.2 / (2*pi) = 50.3 Hz.
 
 #### `lenz_law`
 
@@ -15559,7 +16429,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The magnetic field at distance r from a long straight wire carrying current I is B = mu_0 * I / (2 * pi * r), where mu_0 = 4*pi*1e-7 T*m/A is the permeability of free space. The field forms concentric...
+
+- Source: https://en.wikipedia.org/wiki/Biot%E2%80%93Savart_law
+- Citation: Wikipedia contributors, 'Biot-Savart law', Wikipedia.
+- Example: I = 10 A, r = 0.05 m. B = 4*pi*1e-7 * 10 / (2*pi*0.05) = 4e-6 / 0.1 = 4e-5 T = 40 uT.
 
 
 ### em_deep
@@ -15837,7 +16713,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Biochemical oxygen demand (BOD) follows first-order decay: BOD_t = BOD_u * (1 - exp(-k*t)), where BOD_u is ultimate BOD, k is deoxygenation rate constant (~0.1-0.5 day^-1), and t is time. BOD_5 is the...
+
+- Source: https://en.wikipedia.org/wiki/Biochemical_oxygen_demand
+- Citation: Wikipedia contributors, 'Biochemical oxygen demand', Wikipedia.
+- Example: BOD_u = 300 mg/L, k = 0.23 day^-1. BOD_5 = 300 * (1 - exp(-0.23*5)) = 300 * (1 - 0.316) = 300 * 0.684 = 205.2 mg/L.
 
 
 ### epidemiology
@@ -16418,7 +17300,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | square_root |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A hydraulic jump is a transition from supercritical to subcritical flow in open channels. The conjugate depth ratio: y_2/y_1 = 0.5*(-1 + sqrt(1 + 8*Fr_1^2)), where Fr_1 = v_1/sqrt(g*y_1) is the upstre...
+
+- Source: https://en.wikipedia.org/wiki/Hydraulic_jump
+- Citation: Wikipedia contributors, 'Hydraulic jump', Wikipedia.
+- Example: y_1 = 0.1 m, v_1 = 5 m/s. Fr_1 = 5/sqrt(9.81*0.1) = 5/0.99 = 5.05. y_2/y_1 = 0.5*(-1+sqrt(1+8*25.5)) = 0.5*(-1+sqrt(205)) = 0.5*(-1+14.32) = 6.66. y_2 = 0.666 m.
 
 #### `open_channel`
 
@@ -16431,7 +17319,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Manning's equation for open channel flow: v = (1/n)*R_h^(2/3)*S^(1/2), where n is Manning's roughness coefficient, R_h = A/P is hydraulic radius (area/wetted perimeter), and S is channel slope. Flow r...
+
+- Source: https://en.wikipedia.org/wiki/Manning_formula
+- Citation: Wikipedia contributors, 'Manning formula', Wikipedia.
+- Example: Rectangular channel: width b = 2 m, depth y = 0.5 m, n = 0.013, S = 0.001. A = 1 m^2, P = 3 m, R_h = 0.333 m. v = (1/0.013)*0.333^(2/3)*0.001^(1/2) = 76.92*0.481*0.0316 = 1.17 m/s.
 
 #### `pipe_flow`
 
@@ -16444,7 +17338,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | bernoulli |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> For fully developed laminar flow in a pipe (Re < 2300), the Hagen-Poiseuille equation gives Q = pi*d^4*dP/(128*mu*L), where d is diameter, dP is pressure drop, mu is dynamic viscosity, and L is pipe l...
+
+- Source: https://en.wikipedia.org/wiki/Hagen%E2%80%93Poiseuille_equation
+- Citation: Wikipedia contributors, 'Hagen-Poiseuille equation', Wikipedia.
+- Example: d = 0.02 m, L = 10 m, dP = 5000 Pa, mu = 0.001 Pa*s. Q = pi*0.02^4*5000/(128*0.001*10) = pi*8e-7*5000/1.28 = 9.82e-3 m^3/s.
 
 #### `venturi_meter`
 
@@ -16457,7 +17357,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | bernoulli |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Venturi meter measures flow rate using Bernoulli's equation: Q = A_2 * sqrt(2*dP / (rho*(1-(A_2/A_1)^2))), where A_1 and A_2 are cross-sectional areas at the inlet and throat, and dP is the pressure...
+
+- Source: https://en.wikipedia.org/wiki/Venturi_effect
+- Citation: Wikipedia contributors, 'Venturi effect', Wikipedia.
+- Example: A_1 = 0.01 m^2, A_2 = 0.005 m^2, dP = 2000 Pa, rho = 1000 kg/m^3. Q = 0.005 * sqrt(2*2000/(1000*(1-0.25))) = 0.005 * sqrt(5.333) = 0.01155 m^3/s.
 
 
 ### fluid_mechanics
@@ -16667,7 +17573,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | arithmetic_mean |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Defuzzification converts a fuzzy output to a crisp value. Centre of gravity (COG): x* = integral(x*mu(x)dx) / integral(mu(x)dx). Centre of area (COA): bisects the area. Mean of maximum (MOM): average ...
+
+- Source: https://en.wikipedia.org/wiki/Defuzzification
+- Citation: Wikipedia contributors, 'Defuzzification', Wikipedia.
+- Example: Triangular output clipped at 0.6 over [0,10]. COG ~ weighted centroid. If uniform clip: x* = 5 (centre).
 
 #### `fuzzy_inference`
 
@@ -16680,7 +17592,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | fuzzy_operations |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Mamdani fuzzy inference: (1) fuzzify inputs, (2) evaluate rules (IF x IS A AND y IS B THEN z IS C), (3) aggregate rule outputs, (4) defuzzify. Rule strength = min of antecedent membership values. Outp...
+
+- Source: https://en.wikipedia.org/wiki/Fuzzy_control_system
+- Citation: Wikipedia contributors, 'Fuzzy control system', Wikipedia.
+- Example: Rule: IF temp IS hot AND humidity IS high THEN fan IS fast. mu_hot(30) = 0.8, mu_high(85) = 0.6. Rule strength = min(0.8, 0.6) = 0.6. Fan 'fast' clipped at 0.6.
 
 
 ### game_theory_deep
@@ -16759,7 +17677,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | minimax |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Extensive form games are represented as game trees with nodes (decision points), branches (actions), and leaves (payoffs). Perfect information: all players know prior moves. Imperfect: information set...
+
+- Source: https://en.wikipedia.org/wiki/Extensive-form_game
+- Citation: Wikipedia contributors, 'Extensive-form game', Wikipedia.
+- Example: Sequential game: Player 1 chooses L or R. If L, Player 2 chooses U or D. Payoffs at leaves. Backward induction from leaves.
 
 #### `repeated_game`
 
@@ -16772,7 +17696,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | nash_equilibrium |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> In a repeated game, players play the same stage game multiple times. Folk theorem: any feasible, individually rational payoff can be sustained as a Nash equilibrium of the infinitely repeated game (wi...
+
+- Source: https://en.wikipedia.org/wiki/Repeated_game
+- Citation: Wikipedia contributors, 'Repeated game', Wikipedia.
+- Example: Repeated Prisoner's Dilemma: cooperate if partner cooperated; defect forever if partner defects (grim trigger). Sustains cooperation when delta > (T-R)/(T-P).
 
 #### `shapley_value`
 
@@ -16785,7 +17715,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Shapley value distributes a cooperative game's worth fairly. Player i's value: phi_i = sum over coalitions S not containing i: (|S|!*(n-|S|-1)!/n!) * (v(S union {i}) - v(S)). Properties: efficienc...
+
+- Source: https://en.wikipedia.org/wiki/Shapley_value
+- Citation: Wikipedia contributors, 'Shapley value', Wikipedia.
+- Example: 3 players, v({1})=0, v({2})=0, v({1,2})=6, v({1,2,3})=12. phi_1 considers all coalitions player 1 can join.
 
 
 ### general_chemistry
@@ -17006,7 +17942,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Radiometric dating uses radioactive decay to determine age: t = (1/lambda) * ln(1 + D/P), where lambda is decay constant, D is number of daughter atoms, P is number of parent atoms. For carbon-14: t_1...
+
+- Source: https://en.wikipedia.org/wiki/Radiometric_dating
+- Citation: Wikipedia contributors, 'Radiometric dating', Wikipedia.
+- Example: C-14: remaining fraction = 0.25 (25%). t = -5730/ln(2) * ln(0.25) = -8267 * (-1.386) = 11460 years (2 half-lives).
 
 #### `richter_magnitude`
 
@@ -17019,7 +17961,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Richter magnitude scale (local magnitude M_L) is logarithmic: M_L = log10(A) - log10(A_0), where A is maximum trace amplitude and A_0 is a reference amplitude. Each whole number increase correspon...
+
+- Source: https://en.wikipedia.org/wiki/Richter_magnitude_scale
+- Citation: Wikipedia contributors, 'Richter magnitude scale', Wikipedia.
+- Example: A = 10 mm at 100 km distance. log10(A_0) = -3 at this distance. M_L = log10(10) - (-3) = 1 + 3 = 4.0.
 
 
 ### geology_ext
@@ -17035,7 +17983,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Earthquake energy from magnitude: log10(E) = 1.5*M + 4.8 (Gutenberg-Richter, E in joules). Each magnitude unit = 31.6x energy. M7 ~ 2e15 J (= 0.5 kilotons TNT). Moment magnitude M_w = (2/3)*log10(M_0)...
+
+- Source: https://en.wikipedia.org/wiki/Richter_magnitude_scale#Energy_release
+- Citation: Wikipedia contributors, 'Richter magnitude scale', Wikipedia.
+- Example: M=5: E = 10^(7.5+4.8) = 10^12.3 = 2e12 J. M=6: E = 10^13.8 = 6.3e13 J (31.6x more).
 
 
 ### geometry_ext
@@ -17356,7 +18310,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A fin extends a surface to increase heat transfer. Fin efficiency eta_f = tanh(m*L) / (m*L), where m = sqrt(h*P / (k*A_c)), h is convection coefficient, P is fin perimeter, k is thermal conductivity, ...
+
+- Source: https://en.wikipedia.org/wiki/Fin_(extended_surface)
+- Citation: Wikipedia contributors, 'Fin (extended surface)', Wikipedia.
+- Example: h = 50 W/(m^2*K), P = 0.04 m, k = 200 W/(m*K), A_c = 1e-4 m^2, L = 0.05 m. m = sqrt(50*0.04 / (200*1e-4)) = sqrt(100) = 10. m*L = 0.5. eta_f = tanh(0.5)/0.5 = 0.4621/0.5 = 0.924.
 
 #### `heat_exchanger`
 
@@ -17369,7 +18329,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The log mean temperature difference (LMTD) method for heat exchangers: Q = U * A * LMTD, where U is overall heat transfer coefficient, LMTD = (dT1 - dT2) / ln(dT1/dT2), and dT1, dT2 are temperature di...
+
+- Source: https://en.wikipedia.org/wiki/Heat_exchanger
+- Citation: Wikipedia contributors, 'Heat exchanger', Wikipedia.
+- Example: dT1 = 80 C, dT2 = 20 C. LMTD = (80 - 20) / ln(80/20) = 60 / ln(4) = 60 / 1.386 = 43.3 C. With U = 500 W/(m^2*K), A = 10 m^2: Q = 500*10*43.3 = 216.5 kW.
 
 #### `stefan_boltzmann`
 
@@ -17382,7 +18348,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Stefan-Boltzmann law gives the total power radiated by a black body: P = sigma * A * T^4, where sigma = 5.670e-8 W/(m^2*K^4). For a grey body with emissivity epsilon: P = epsilon * sigma * A * T^4...
+
+- Source: https://en.wikipedia.org/wiki/Stefan%E2%80%93Boltzmann_law
+- Citation: Wikipedia contributors, 'Stefan-Boltzmann law', Wikipedia.
+- Example: A = 1 m^2, T = 500 K, epsilon = 0.8. P = 0.8 * 5.67e-8 * 1 * 500^4 = 0.8 * 5.67e-8 * 6.25e10 = 2835 W.
 
 
 ### info_theory_deep
@@ -17398,7 +18370,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | info_entropy |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Asymptotic Equipartition Property (AEP): for iid X_1,...,X_n from P(x), -1/n * log P(X_1,...,X_n) -> H(X) in probability. Consequence: most sequences are 'typical' with probability ~ 2^{-nH}. Foun...
+
+- Source: https://en.wikipedia.org/wiki/Asymptotic_equipartition_property
+- Citation: Wikipedia contributors, 'Asymptotic equipartition property', Wikipedia.
+- Example: Fair coin (H=1): long sequences have ~n/2 heads. P(sequence) ~ 2^{-n}. Need n bits to encode n coin flips (obvious but proven by AEP).
 
 #### `entropy_rate`
 
@@ -17411,7 +18389,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | info_entropy |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The entropy rate of a stochastic process {X_i}: h = lim H(X_n|X_{n-1},...,X_1) = lim H(X_1,...,X_n)/n. For a stationary Markov chain with transition matrix P and stationary distribution pi: h = -sum p...
+
+- Source: https://en.wikipedia.org/wiki/Entropy_rate
+- Citation: Wikipedia contributors, 'Entropy rate', Wikipedia.
+- Example: Binary Markov: P(0|0)=0.9, P(1|1)=0.8. pi=[2/3, 1/3]. h = 2/3*H(0.9,0.1) + 1/3*H(0.8,0.2) = 2/3*0.469 + 1/3*0.722 = 0.554 bits.
 
 
 ### info_theory_ext
@@ -17430,7 +18414,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.entropy` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Conditional entropy H(Y|X) = -sum P(x,y)*log P(y|x) = H(X,Y) - H(X). Measures uncertainty in Y given knowledge of X. Chain rule: H(X,Y) = H(X) + H(Y|X). Mutual information I(X;Y) = H(Y) - H(Y|X).
+
+- Source: https://en.wikipedia.org/wiki/Conditional_entropy
+- Citation: Wikipedia contributors, 'Conditional entropy', Wikipedia.
+- Example: X,Y binary: P(0,0)=0.4, P(0,1)=0.1, P(1,0)=0.1, P(1,1)=0.4. H(Y|X) = 0.5*H(0.8,0.2) + 0.5*H(0.2,0.8) = 0.722 bits.
 
 #### `joint_entropy`
 
@@ -17446,7 +18436,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.entropy` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Joint entropy H(X,Y) = -sum P(x,y)*log P(x,y). H(X,Y) <= H(X)+H(Y) with equality iff X and Y are independent. H(X,Y) = H(X) + H(Y|X) = H(Y) + H(X|Y) (chain rule).
+
+- Source: https://en.wikipedia.org/wiki/Joint_entropy
+- Citation: Wikipedia contributors, 'Joint entropy', Wikipedia.
+- Example: Independent fair coins: H(X)=1, H(Y)=1. H(X,Y)=2 bits. If X=Y: H(X,Y)=H(X)=1 bit.
 
 #### `kraft_mcmillan`
 
@@ -17459,7 +18455,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | basic_prob |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Kraft's inequality: a uniquely decodable code exists with word lengths l_1,...,l_n iff sum 2^{-l_i} <= 1. McMillan's theorem: every uniquely decodable code satisfies Kraft's inequality (same as prefix...
+
+- Source: https://en.wikipedia.org/wiki/Kraft%27s_inequality
+- Citation: Wikipedia contributors, 'Kraft's inequality', Wikipedia.
+- Example: 3 symbols, p=[0.5,0.25,0.25]. Optimal lengths: [1,2,2]. Kraft sum: 0.5+0.25+0.25 = 1. Valid prefix-free code: 0, 10, 11.
 
 
 ### information_theory
@@ -17951,7 +18953,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | cfg_derivation |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Chomsky hierarchy classifies formal grammars: Type 0 (unrestricted, Turing machine), Type 1 (context-sensitive, LBA), Type 2 (context-free, PDA), Type 3 (regular, FSA). Each level is a strict subs...
+
+- Source: https://en.wikipedia.org/wiki/Chomsky_hierarchy
+- Citation: Wikipedia contributors, 'Chomsky hierarchy', Wikipedia.
+- Example: a^n b^n: CFL (Type 2). a^n b^n c^n: CSL (Type 1). {ww : w in {a,b}*}: CSL.
 
 
 ### linguistics_ext
@@ -17970,7 +18978,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.entropy` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The entropy of a language H measures its information density. For English text: H ~ 1.0-1.5 bits/character (Shannon's experiments with human predictors). Redundancy R = 1 - H/H_max, where H_max = log2...
+
+- Source: https://en.wikipedia.org/wiki/Entropy_(information_theory)#Entropy_of_natural_languages
+- Citation: Wikipedia contributors, 'Entropy (information theory)', Wikipedia.
+- Example: If H = 1.3 bits/char and H_max = 4.75: R = 1-1.3/4.75 = 0.726 = 72.6% redundancy.
 
 
 ### logic_deep
@@ -18254,7 +19268,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | basic_prob |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A probability measure P on (Omega, F) satisfies: P(Omega)=1, P(A)>=0, countable additivity: P(union A_i) = sum P(A_i) for disjoint A_i. Properties: P(A^c) = 1-P(A), P(A union B) = P(A)+P(B)-P(A inters...
+
+- Source: https://en.wikipedia.org/wiki/Probability_measure
+- Citation: Wikipedia contributors, 'Probability measure', Wikipedia.
+- Example: Fair die: Omega={1,...,6}, P({k})=1/6. P(even)=P({2,4,6})=1/2.
 
 
 ### measurement_ext
@@ -18273,7 +19293,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.polyfit` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A calibration curve relates instrument response to known concentrations. Fit y = mx + b (linear regression) to standards. Unknown concentration: x = (y_measured - b)/m. R^2 > 0.99 for good linearity. ...
+
+- Source: https://en.wikipedia.org/wiki/Calibration_curve
+- Citation: Wikipedia contributors, 'Calibration curve', Wikipedia.
+- Example: Standards: (0,0.01), (10,0.52), (20,1.03), (30,1.54). Slope m=0.051, intercept b=0.01. Unknown y=0.78: x=(0.78-0.01)/0.051=15.1.
 
 #### `error_propagation`
 
@@ -18286,7 +19312,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | square_root |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> For f(x,y,...) with independent uncertainties: delta_f = sqrt((df/dx*delta_x)^2 + (df/dy*delta_y)^2 + ...). Addition: delta_{x+y} = sqrt(delta_x^2+delta_y^2). Multiplication: delta_{xy}/|xy| = sqrt((d...
+
+- Source: https://en.wikipedia.org/wiki/Propagation_of_uncertainty
+- Citation: Wikipedia contributors, 'Propagation of uncertainty', Wikipedia.
+- Example: f=x*y, x=5.0+/-0.1, y=3.0+/-0.2. delta_f/15 = sqrt((0.1/5)^2+(0.2/3)^2) = sqrt(0.0004+0.0044) = 0.069. f=15.0+/-1.04.
 
 #### `logarithmic_scales`
 
@@ -18299,7 +19331,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Logarithmic scales compress wide ranges: decibel dB = 10*log10(P/P_ref) for power, 20*log10(V/V_ref) for amplitude. pH = -log10([H+]). Richter magnitude ~ log10(amplitude). Each unit represents a fact...
+
+- Source: https://en.wikipedia.org/wiki/Logarithmic_scale
+- Citation: Wikipedia contributors, 'Logarithmic scale', Wikipedia.
+- Example: Sound power 100x reference: 10*log10(100) = 20 dB. 1000x: 30 dB. Each 10 dB = 10x power.
 
 
 ### medical_imaging
@@ -18318,7 +19356,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.signal.convolve2d` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> 2D image convolution: output(x,y) = sum_{i,j} image(x-i, y-j) * kernel(i,j). Common kernels: blur (1/9 * ones(3,3)), edge detection (Sobel, Laplacian), sharpen. Computational cost O(M*N*K^2) for M*N i...
+
+- Source: https://en.wikipedia.org/wiki/Kernel_(image_processing)
+- Citation: Wikipedia contributors, 'Kernel (image processing)', Wikipedia.
+- Example: 3x3 blur kernel on 5x5 image: each output pixel is the average of its 3x3 neighbourhood.
 
 #### `mri_signal`
 
@@ -18331,7 +19375,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> MRI signal depends on proton density, T1 (spin-lattice relaxation), and T2 (spin-spin relaxation). Spin echo signal: S = M_0 * (1-exp(-TR/T1)) * exp(-TE/T2), where TR is repetition time and TE is echo...
+
+- Source: https://en.wikipedia.org/wiki/Magnetic_resonance_imaging#MRI_contrast
+- Citation: Wikipedia contributors, 'Magnetic resonance imaging', Wikipedia.
+- Example: Brain tissue: T1=1000ms, T2=80ms. TR=500ms, TE=20ms. S/M_0 = (1-exp(-0.5))*exp(-0.25) = 0.393*0.779 = 0.306.
 
 
 ### ml_deep
@@ -18624,7 +19674,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | chord_construct |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A chord progression is a sequence of chords. Roman numeral analysis: I=tonic, IV=subdominant, V=dominant, vi=relative minor. Common progressions: I-IV-V-I (blues), I-V-vi-IV (pop), ii-V-I (jazz). Voic...
+
+- Source: https://en.wikipedia.org/wiki/Chord_progression
+- Citation: Wikipedia contributors, 'Chord progression', Wikipedia.
+- Example: Key of C major: I-V-vi-IV = C-G-Am-F.
 
 #### `voice_leading`
 
@@ -18637,7 +19693,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | chord_construct |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Voice leading governs how individual voices (parts) move between chords. Rules: prefer stepwise motion, avoid parallel 5ths and octaves, keep common tones, resolve leading tones up and 7ths down. Smoo...
+
+- Source: https://en.wikipedia.org/wiki/Voice_leading
+- Citation: Wikipedia contributors, 'Voice leading', Wikipedia.
+- Example: C major to G major: C stays (common tone), E moves to D (step down), G stays (common tone), add B.
 
 
 ### network_science
@@ -18744,7 +19806,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | binary_arithmetic |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Cyclic Redundancy Check (CRC) detects errors by treating data as a polynomial and computing the remainder when divided by a generator polynomial. CRC-32 uses generator 0x04C11DB7. The sender appends t...
+
+- Source: https://en.wikipedia.org/wiki/Cyclic_redundancy_check
+- Citation: Wikipedia contributors, 'Cyclic redundancy check', Wikipedia.
+- Example: Data: 1101, Generator: 1011 (CRC-3). Append 3 zeros: 1101000. XOR division gives remainder 001. Transmit: 1101001.
 
 #### `tcp_window`
 
@@ -18757,7 +19825,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The TCP sliding window controls flow: the receiver advertises a window size (bytes it can buffer). The sender can have at most window_size bytes in flight. Throughput <= window_size / RTT. Window scal...
+
+- Source: https://en.wikipedia.org/wiki/TCP_window_scale_option
+- Citation: Wikipedia contributors, 'TCP window scale option', Wikipedia.
+- Example: Window = 64 KB, RTT = 100 ms. Max throughput = 65536 / 0.1 = 655360 bytes/s = 5.24 Mbps.
 
 
 ### networking_ext
@@ -18773,7 +19847,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Sliding window protocols (Go-Back-N, Selective Repeat) allow multiple packets in flight. Sender window: frames that can be sent without ACK. Go-Back-N: receiver only accepts in-order; on error retrans...
+
+- Source: https://en.wikipedia.org/wiki/Sliding_window_protocol
+- Citation: Wikipedia contributors, 'Sliding window protocol', Wikipedia.
+- Example: Window size W=4, sequence numbers 0-7. Frames 0,1,2,3 sent. ACK 0,1 received: window slides to 2,3,4,5.
 
 #### `tcp_congestion`
 
@@ -18786,7 +19866,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> TCP congestion control adjusts sending rate to avoid network overload. Slow start: cwnd doubles each RTT until ssthresh. Congestion avoidance: cwnd increases by 1 MSS per RTT. On loss (timeout): ssthr...
+
+- Source: https://en.wikipedia.org/wiki/TCP_congestion_control
+- Citation: Wikipedia contributors, 'TCP congestion control', Wikipedia.
+- Example: Initial cwnd=1 MSS, ssthresh=16. After 4 RTTs in slow start: cwnd = 1, 2, 4, 8, 16. At cwnd=16 (= ssthresh): switch to congestion avoidance: 17, 18, 19...
 
 
 ### networks_deep
@@ -19017,7 +20103,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> BLEU measures translation quality by comparing n-gram precision to references. BLEU = BP * exp(sum(w_n * log(p_n))), where p_n is modified n-gram precision and BP is brevity penalty: BP = min(1, exp(1...
+
+- Source: https://en.wikipedia.org/wiki/BLEU
+- Citation: Wikipedia contributors, 'BLEU', Wikipedia.
+- Example: Candidate: 'the cat sat'. Reference: 'the cat sat on the mat'. Unigram precision: 3/3 = 1.0. Bigram: 2/2 = 1.0. BP = exp(1-6/3) = exp(-1) = 0.368. BLEU-2 = 0.368.
 
 #### `ngram_probability`
 
@@ -19030,7 +20122,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> N-gram language model: P(w_n | w_1..w_{n-1}) ~ P(w_n | w_{n-N+1}..w_{n-1}) = count(w_{n-N+1}..w_n) / count(w_{n-N+1}..w_{n-1}). Bigram: P(w_n|w_{n-1}). Smoothing (Laplace, Kneser-Ney) handles unseen n...
+
+- Source: https://en.wikipedia.org/wiki/Language_model#N-gram
+- Citation: Wikipedia contributors, 'Language model', Wikipedia.
+- Example: Bigram P('the'|'in') = count('in the') / count('in') = 500/1000 = 0.5.
 
 #### `perplexity`
 
@@ -19043,7 +20141,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Perplexity measures how well a language model predicts text: PP = 2^(-1/N * sum(log2(P(w_i)))). Lower perplexity = better model. Equivalent to the weighted average branching factor. For a uniform dist...
+
+- Source: https://en.wikipedia.org/wiki/Perplexity
+- Citation: Wikipedia contributors, 'Perplexity', Wikipedia.
+- Example: Model assigns P(w1)=0.5, P(w2)=0.25, P(w3)=0.25. PP = 2^(-1/3 * (log2(0.5)+log2(0.25)+log2(0.25))) = 2^(-1/3*(-1-2-2)) = 2^(5/3) = 3.175.
 
 #### `tf_idf`
 
@@ -19056,7 +20160,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> TF-IDF weights terms by their importance: TF(t,d) = count(t in d) / |d|, IDF(t) = log(N / df(t)), where N is total documents and df(t) is documents containing t. TF-IDF = TF * IDF. High value = term i...
+
+- Source: https://en.wikipedia.org/wiki/Tf%E2%80%93idf
+- Citation: Wikipedia contributors, 'tf-idf', Wikipedia.
+- Example: Term 'quantum' appears 5 times in doc of 100 words. 10000 docs, 50 contain 'quantum'. TF=0.05, IDF=log(10000/50)=5.298. TF-IDF=0.265.
 
 
 ### nonlinear_dynamics
@@ -19119,7 +20229,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.percentile on resamples` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Bootstrap confidence intervals: resample with replacement B times, compute the statistic for each resample. The percentile method uses the alpha/2 and 1-alpha/2 quantiles of the bootstrap distribution...
+
+- Source: https://en.wikipedia.org/wiki/Bootstrapping_(statistics)
+- Citation: Wikipedia contributors, 'Bootstrapping (statistics)', Wikipedia.
+- Example: Data: [2,4,6,8]. B=1000 bootstrap means. 2.5th percentile = 3.0, 97.5th = 7.0. 95% CI: [3.0, 7.0].
 
 #### `kruskal_wallis`
 
@@ -19135,7 +20251,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.kruskal` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Kruskal-Wallis test is a nonparametric one-way ANOVA. Rank all observations, compute H = (12/(N(N+1))) * sum(R_i^2/n_i) - 3(N+1), where R_i is rank sum and n_i is group size. H follows chi-squared...
+
+- Source: https://en.wikipedia.org/wiki/Kruskal%E2%80%93Wallis_one-way_analysis_of_variance
+- Citation: Wikipedia contributors, 'Kruskal-Wallis one-way analysis of variance', Wikipedia.
+- Example: 3 groups, N=12. H = 12/(12*13) * (R1^2/4 + R2^2/4 + R3^2/4) - 39. If H > chi2_crit(2), reject H0.
 
 #### `mann_whitney_u`
 
@@ -19151,7 +20273,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.mannwhitneyu` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Mann-Whitney U test is a nonparametric test comparing two independent samples. Rank all observations together. U = n1*n2 + n1*(n1+1)/2 - R1, where R1 is the rank sum of group 1. Small U indicates ...
+
+- Source: https://en.wikipedia.org/wiki/Mann%E2%80%93Whitney_U_test
+- Citation: Wikipedia contributors, 'Mann-Whitney U test', Wikipedia.
+- Example: Group A: [3,5,7] ranks [2,4,5]. Group B: [1,4,8] ranks [1,3,6]. R1=11. U=3*3+3*4/2-11=9+6-11=4.
 
 #### `permutation_test`
 
@@ -19167,7 +20295,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.permutation_test` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A permutation test assesses significance by computing the test statistic for all (or many random) permutations of the data labels. The p-value is the proportion of permuted statistics as extreme as th...
+
+- Source: https://en.wikipedia.org/wiki/Resampling_(statistics)#Permutation_tests
+- Citation: Wikipedia contributors, 'Resampling (statistics)', Wikipedia.
+- Example: Observed mean difference = 5. 10000 random permutations: 300 have |diff| >= 5. p-value = 300/10000 = 0.03.
 
 
 ### nuclear_ext
@@ -19183,7 +20317,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | radioactive_decay |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Radioactive activity A = lambda*N = A_0*exp(-lambda*t), where lambda = ln(2)/t_half is the decay constant and N is the number of undecayed atoms. Units: Becquerel (Bq) = 1 disintegration/s. Curie (Ci)...
+
+- Source: https://en.wikipedia.org/wiki/Radioactive_decay#Activity
+- Citation: Wikipedia contributors, 'Radioactive decay', Wikipedia.
+- Example: N = 1e20 atoms, t_half = 5 years. lambda = ln(2)/5 = 0.1386 yr^{-1}. A = 0.1386 * 1e20 = 1.386e19 yr^{-1} = 4.394e11 Bq.
 
 #### `carbon_dating`
 
@@ -19196,7 +20336,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | half_life |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Carbon-14 dating: living organisms maintain C-14/C-12 ratio equal to atmospheric level. After death, C-14 decays (t_half = 5730 years). Age t = -5730/ln(2) * ln(A/A_0), where A/A_0 is the remaining fr...
+
+- Source: https://en.wikipedia.org/wiki/Radiocarbon_dating
+- Citation: Wikipedia contributors, 'Radiocarbon dating', Wikipedia.
+- Example: Sample has 25% of original C-14. t = -5730/0.693 * ln(0.25) = -8267 * (-1.386) = 11460 years.
 
 #### `dose_calculation`
 
@@ -19209,7 +20355,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Radiation dose: absorbed dose D = energy deposited / mass (Gray, Gy = J/kg). Equivalent dose H = D * w_R, where w_R is radiation weighting factor (1 for gamma/beta, 20 for alpha). Effective dose E = s...
+
+- Source: https://en.wikipedia.org/wiki/Absorbed_dose
+- Citation: Wikipedia contributors, 'Radiation dose', Wikipedia.
+- Example: 1 Gy gamma radiation to whole body: H = 1*1 = 1 Sv. 0.1 Gy alpha particles: H = 0.1*20 = 2 Sv (much more damaging).
 
 #### `neutron_moderation`
 
@@ -19222,7 +20374,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Neutron moderation slows fast neutrons (MeV) to thermal energies (~0.025 eV) for efficient fission. Moderators: light nuclei (H2O, D2O, graphite) with high scattering and low absorption cross sections...
+
+- Source: https://en.wikipedia.org/wiki/Neutron_moderator
+- Citation: Wikipedia contributors, 'Neutron moderator', Wikipedia.
+- Example: Hydrogen (A=1): delta E/E = 2/4 = 0.5. Loses 50% energy per collision. ~18 collisions to thermalise 2 MeV neutron.
 
 
 ### nuclear_physics
@@ -19434,7 +20592,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Newton's divided difference interpolation: p(x) = f[x_0] + f[x_0,x_1]*(x-x_0) + f[x_0,x_1,x_2]*(x-x_0)*(x-x_1) + ... Divided differences: f[x_i,x_{i+1}] = (f[x_{i+1}]-f[x_i])/(x_{i+1}-x_i). Adding a n...
+
+- Source: https://en.wikipedia.org/wiki/Newton%27s_divided_differences_interpolation_formula
+- Citation: Wikipedia contributors, 'Newton's divided differences interpolation formula', Wikipedia.
+- Example: Points (1,1),(2,4),(3,9). f[1]=1. f[1,2]=(4-1)/1=3. f[1,2,3]=(f[2,3]-f[1,2])/2=(5-3)/2=1. p(x)=1+3(x-1)+1(x-1)(x-2)=x^2.
 
 #### `numerical_integration_error`
 
@@ -19447,7 +20611,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | definite_integral |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Trapezoid rule error: O(h^2) globally, exact for degree 1. Simpson's rule: O(h^4), exact for degree 3. Gaussian quadrature with n points: exact for degree 2n-1. Richardson extrapolation improves accur...
+
+- Source: https://en.wikipedia.org/wiki/Numerical_integration#Error_analysis
+- Citation: Wikipedia contributors, 'Numerical integration', Wikipedia.
+- Example: Trapezoid with h=0.1: error ~ (b-a)^3/(12*n^2)*f''. Halving h reduces error by 4x. Simpson with h=0.1: error ~ (b-a)^5/(180*n^4)*f''''.
 
 
 ### numerical_linalg
@@ -19466,7 +20636,13 @@ status, knowledge atom, and dependencies.
 | Function | `iterative matrix solve` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Gauss-Seidel iteration: x_i^{k+1} = (b_i - sum_{j<i} a_ij*x_j^{k+1} - sum_{j>i} a_ij*x_j^k) / a_ii. Uses updated values immediately (unlike Jacobi). Converges for SPD matrices. Generally faster than J...
+
+- Source: https://en.wikipedia.org/wiki/Gauss%E2%80%93Seidel_method
+- Citation: Wikipedia contributors, 'Gauss-Seidel method', Wikipedia.
+- Example: Same system as Jacobi: x^1=[1.25, 1.25], x^2=[0.9375, 1.354], faster convergence.
 
 #### `jacobi_iteration`
 
@@ -19482,7 +20658,13 @@ status, knowledge atom, and dependencies.
 | Function | `iterative matrix solve` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Jacobi iteration solves Ax=b: x_i^{k+1} = (b_i - sum_{j!=i} a_ij*x_j^k) / a_ii. Converges if A is strictly diagonally dominant (|a_ii| > sum_{j!=i}|a_ij|). Parallel-friendly: each component updates in...
+
+- Source: https://en.wikipedia.org/wiki/Jacobi_method
+- Citation: Wikipedia contributors, 'Jacobi method', Wikipedia.
+- Example: [[4,1],[1,3]]x=[5,5]. Jacobi from x=[0,0]: x^1=[1.25, 1.667], x^2=[0.833, 1.25], ... converges to [0.909, 1.364].
 
 
 ### numerical_methods_ext
@@ -20412,7 +21594,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | set_operations |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A simplicial complex is a collection of simplices (vertices, edges, triangles, tetrahedra, ...) closed under taking faces. The Rips complex connects points within distance epsilon. Geometric realisati...
+
+- Source: https://en.wikipedia.org/wiki/Simplicial_complex
+- Citation: Wikipedia contributors, 'Simplicial complex', Wikipedia.
+- Example: Points {A,B,C} with d(A,B)=1, d(B,C)=1, d(A,C)=2. At epsilon=1.5: edges AB,BC but not AC. Triangle ABC not included.
 
 #### `vietoris_rips`
 
@@ -20425,7 +21613,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | comparison |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Vietoris-Rips complex at scale epsilon includes a simplex [v0,...,vk] iff all pairwise distances d(vi,vj) <= epsilon. Easier to compute than Cech complex. As epsilon varies, simplices appear/disap...
+
+- Source: https://en.wikipedia.org/wiki/Vietoris%E2%80%93Rips_complex
+- Citation: Wikipedia contributors, 'Vietoris-Rips complex', Wikipedia.
+- Example: 3 points: A,B at distance 1, B,C at 1.5, A,C at 2. At epsilon=1: edge AB only. At 1.5: edges AB,BC. At 2: triangle ABC.
 
 
 ### pharmacology
@@ -20539,7 +21733,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Two formulations are bioequivalent if their rate and extent of absorption are not significantly different. Criteria: 90% CI for AUC and C_max ratios must fall within 80-125%. Tested via crossover stud...
+
+- Source: https://en.wikipedia.org/wiki/Bioequivalence
+- Citation: Wikipedia contributors, 'Bioequivalence', Wikipedia.
+- Example: Test/Reference AUC ratio = 1.05, 90% CI (0.95, 1.15). Within 0.80-1.25 -> bioequivalent.
 
 #### `drug_interaction`
 
@@ -20552,7 +21752,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Drug interactions alter a drug's effect: pharmacokinetic (affect absorption, distribution, metabolism, excretion) or pharmacodynamic (synergy, antagonism). CYP450 inhibitors increase drug levels; indu...
+
+- Source: https://en.wikipedia.org/wiki/Drug_interaction
+- Citation: Wikipedia contributors, 'Drug interaction', Wikipedia.
+- Example: Ketoconazole (CYP3A4 inhibitor) + midazolam -> midazolam AUC increases 15x due to reduced metabolism.
 
 #### `loading_dose`
 
@@ -20565,7 +21771,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Loading dose achieves target plasma concentration immediately: LD = V_d * C_target / F, where V_d is volume of distribution, C_target is desired concentration, and F is bioavailability. Maintenance do...
+
+- Source: https://en.wikipedia.org/wiki/Loading_dose
+- Citation: Wikipedia contributors, 'Loading dose', Wikipedia.
+- Example: V_d = 50 L, C_target = 10 mg/L, F = 1 (IV). LD = 50 * 10 = 500 mg.
 
 #### `receptor_occupancy`
 
@@ -20578,7 +21790,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Clark equation: occupancy = [D] / ([D] + K_d), where [D] is drug concentration and K_d is dissociation constant. At [D] = K_d, 50% of receptors are occupied. E_max model: E = E_max * [D] / ([D] + ...
+
+- Source: https://en.wikipedia.org/wiki/Occupancy_theory
+- Citation: Wikipedia contributors, 'Receptor occupancy', Wikipedia.
+- Example: K_d = 10 nM, [D] = 30 nM. Occupancy = 30/(30+10) = 0.75 = 75%.
 
 
 ### photonics
@@ -20594,7 +21812,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | snells_law |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The numerical aperture of an optical fibre is NA = sqrt(n_core^2 - n_clad^2), where n_core and n_clad are refractive indices of core and cladding. The acceptance angle theta_max = arcsin(NA). Typical ...
+
+- Source: https://en.wikipedia.org/wiki/Numerical_aperture
+- Citation: Wikipedia contributors, 'Numerical aperture', Wikipedia.
+- Example: n_core = 1.48, n_clad = 1.46. NA = sqrt(1.48^2 - 1.46^2) = sqrt(2.1904 - 2.1316) = sqrt(0.0588) = 0.2425. theta_max = arcsin(0.2425) = 14.03 degrees.
 
 #### `laser_gain`
 
@@ -20607,7 +21831,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The small-signal gain coefficient of a laser medium is g = sigma * (N_2 - (g_2/g_1)*N_1), where sigma is the stimulated emission cross section, N_2 and N_1 are upper and lower state populations, and g...
+
+- Source: https://en.wikipedia.org/wiki/Laser#Gain_medium_and_cavity
+- Citation: Wikipedia contributors, 'Laser', Wikipedia.
+- Example: sigma = 3e-20 cm^2, N_2 = 5e17 cm^-3, N_1 = 1e17 cm^-3, g_1 = g_2 = 1. g = 3e-20 * (5e17 - 1e17) = 3e-20 * 4e17 = 0.012 cm^-1.
 
 #### `laser_threshold`
 
@@ -20620,7 +21850,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The laser threshold condition requires the round-trip gain to equal losses: 2*g*L = -ln(R1*R2) + 2*alpha*L, where g is gain coefficient, L is cavity length, R1 and R2 are mirror reflectivities, and al...
+
+- Source: https://en.wikipedia.org/wiki/Laser#Threshold_condition
+- Citation: Wikipedia contributors, 'Laser threshold', Wikipedia.
+- Example: L = 0.3 m, R1 = 1.0, R2 = 0.95, alpha = 0.01 cm^-1. g_th = 0.01 + ln(1/0.95)/(2*30) = 0.01 + 0.0513/60 = 0.01 + 0.000855 = 0.0109 cm^-1.
 
 #### `photonic_bandgap`
 
@@ -20633,7 +21869,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A photonic crystal has a photonic bandgap: a range of frequencies where light cannot propagate. The mid-gap frequency is approximately f ~ c / (2*n_eff*a), where a is the lattice period and n_eff is t...
+
+- Source: https://en.wikipedia.org/wiki/Photonic_crystal
+- Citation: Wikipedia contributors, 'Photonic crystal', Wikipedia.
+- Example: a = 500 nm, n_eff = 2.5. f ~ 3e8 / (2*2.5*500e-9) = 1.2e14 Hz. lambda ~ 2.5 um (mid-infrared).
 
 
 ### physical_chemistry
@@ -20980,7 +22222,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Coulomb logarithm ln(Lambda) = ln(lambda_D / b_min) characterises the ratio of maximum to minimum impact parameters in plasma collisions. b_min ~ e^2 / (4*pi*epsilon_0*k_B*T) (classical) or the de...
+
+- Source: https://en.wikipedia.org/wiki/Coulomb_logarithm
+- Citation: Wikipedia contributors, 'Coulomb logarithm', Wikipedia.
+- Example: T = 1e6 K, n = 1e20 m^-3. lambda_D ~ 7.43e-5 m. b_min ~ 1.67e-12 m. ln(Lambda) ~ ln(7.43e-5 / 1.67e-12) ~ ln(4.45e7) ~ 17.6.
 
 #### `cyclotron_frequency`
 
@@ -20993,7 +22241,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The cyclotron frequency omega_c = q*B / m is the angular frequency at which a charged particle gyrates around a magnetic field line. The cyclotron radius (Larmor radius) is r_L = m*v_perp / (q*B). For...
+
+- Source: https://en.wikipedia.org/wiki/Cyclotron_resonance
+- Citation: Wikipedia contributors, 'Cyclotron resonance', Wikipedia.
+- Example: B = 0.1 T, electron. f_ce = 1.602e-19 * 0.1 / (2*pi*9.109e-31) = 1.602e-20 / 5.725e-30 = 2.799e9 Hz ~ 2.8 GHz.
 
 #### `debye_length`
 
@@ -21006,7 +22260,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | square_root |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Debye length lambda_D = sqrt(epsilon_0 * k_B * T / (n_e * e^2)) is the distance over which charge carriers screen out electric fields in a plasma. Beyond lambda_D, the plasma is quasi-neutral. k_B...
+
+- Source: https://en.wikipedia.org/wiki/Debye_length
+- Citation: Wikipedia contributors, 'Debye length', Wikipedia.
+- Example: T = 1e4 K, n_e = 1e18 m^-3. lambda_D = sqrt(8.854e-12 * 1.381e-23 * 1e4 / (1e18 * (1.602e-19)^2)) = sqrt(4.76e-6) = 2.18e-3 m = 2.18 mm.
 
 #### `mhd_alfven`
 
@@ -21019,7 +22279,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | square_root |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Alfven speed is v_A = B / sqrt(mu_0 * rho), where B is the magnetic field strength and rho is the mass density. Alfven waves are transverse MHD waves propagating along field lines at this speed. T...
+
+- Source: https://en.wikipedia.org/wiki/Alfv%C3%A9n_wave
+- Citation: Wikipedia contributors, 'Alfven wave', Wikipedia.
+- Example: B = 0.01 T, rho = 1e-12 kg/m^3 (solar corona). v_A = 0.01 / sqrt(4*pi*1e-7 * 1e-12) = 0.01 / 3.54e-10 ~ 2.82e7 m/s.
 
 #### `plasma_beta`
 
@@ -21032,7 +22298,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The plasma beta is the ratio of plasma (thermal) pressure to magnetic pressure: beta = n*k_B*T / (B^2 / (2*mu_0)). Beta < 1 means the magnetic field dominates; beta > 1 means thermal pressure dominate...
+
+- Source: https://en.wikipedia.org/wiki/Beta_(plasma_physics)
+- Citation: Wikipedia contributors, 'Beta (plasma physics)', Wikipedia.
+- Example: n = 1e20 m^-3, T = 1e7 K, B = 5 T. P_thermal = 1e20 * 1.381e-23 * 1e7 = 1.381e4 Pa. P_magnetic = 5^2 / (2 * 4*pi*1e-7) = 9.947e6 Pa. beta = 1.381e4 / 9.947e6 = 0.00139.
 
 #### `plasma_frequency`
 
@@ -21045,7 +22317,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | square_root |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The electron plasma frequency omega_pe = sqrt(n_e * e^2 / (epsilon_0 * m_e)) is the natural oscillation frequency of electrons in a plasma. Electromagnetic waves with omega < omega_pe cannot propagate...
+
+- Source: https://en.wikipedia.org/wiki/Plasma_oscillation
+- Citation: Wikipedia contributors, 'Plasma oscillation', Wikipedia.
+- Example: n_e = 1e12 m^-3. f_pe ~ 9 * sqrt(1e12) = 9 * 1e6 = 9 MHz.
 
 
 ### polymer_science
@@ -21061,7 +22339,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The root-mean-square end-to-end distance of an ideal polymer chain is R = l * sqrt(N), where l is bond length and N is number of bonds. For a freely jointed chain: <R^2> = N*l^2. With bond angle theta...
+
+- Source: https://en.wikipedia.org/wiki/Ideal_chain
+- Citation: Wikipedia contributors, 'Ideal chain', Wikipedia.
+- Example: N = 1000 bonds, l = 1.54 Angstrom (C-C). R = 1.54 * sqrt(1000) = 1.54 * 31.62 = 48.7 Angstrom = 4.87 nm.
 
 #### `molecular_weight_avg`
 
@@ -21074,7 +22358,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | arithmetic_mean |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Number-average MW: M_n = sum(N_i*M_i)/sum(N_i). Weight-average MW: M_w = sum(N_i*M_i^2)/sum(N_i*M_i). Polydispersity index PDI = M_w/M_n >= 1. PDI = 1 for monodisperse, PDI = 2 for most probable distr...
+
+- Source: https://en.wikipedia.org/wiki/Molar_mass_distribution
+- Citation: Wikipedia contributors, 'Molar mass distribution', Wikipedia.
+- Example: Species: 100 chains at 10 kDa, 50 chains at 20 kDa. M_n = (100*10 + 50*20)/(100+50) = 2000/150 = 13.33 kDa. M_w = (100*100 + 50*400)/(100*10+50*20) = 30000/2000 = 15 kDa. PDI = 1.125.
 
 #### `viscosity_intrinsic`
 
@@ -21087,7 +22377,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Mark-Houwink equation relates intrinsic viscosity to molecular weight: [eta] = K * M^a, where K and a are polymer-solvent dependent constants. a = 0.5 for theta solvent, 0.6-0.8 for good solvents,...
+
+- Source: https://en.wikipedia.org/wiki/Mark%E2%80%93Houwink_equation
+- Citation: Wikipedia contributors, 'Mark-Houwink equation', Wikipedia.
+- Example: K = 1.1e-4 dL/g, a = 0.725, M = 100000 g/mol. [eta] = 1.1e-4 * 100000^0.725 = 1.1e-4 * 5623 = 0.619 dL/g.
 
 
 ### power_systems
@@ -21703,7 +22999,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Erlang B formula gives the blocking probability in a loss system with c servers and offered load A (Erlangs): B(c,A) = (A^c/c!) / sum_{k=0}^{c}(A^k/k!). Used in telecom to dimension trunk groups. No q...
+
+- Source: https://en.wikipedia.org/wiki/Erlang_B_formula
+- Citation: Wikipedia contributors, 'Erlang B formula', Wikipedia.
+- Example: c=3 servers, A=2 Erlangs. B(3,2) = (8/6)/(1+2+2+1.333) = 1.333/6.333 = 0.211. 21.1% of calls blocked.
 
 #### `erlang_c`
 
@@ -21716,7 +23018,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | erlang_b |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Erlang C gives the probability of queuing (waiting) in a system with c servers and offered load A < c: C(c,A) = B(c,A)*c/(c-A*(1-B(c,A))). Average wait for queued calls: W = C(c,A)*service_time / (c-A...
+
+- Source: https://en.wikipedia.org/wiki/Erlang_C_formula
+- Citation: Wikipedia contributors, 'Erlang C formula', Wikipedia.
+- Example: c=5 servers, A=4 Erlangs, service time 3 min. C(5,4) ~ 0.174. Average wait ~ 0.174*3/(5-4) = 0.522 min.
 
 #### `priority_queue`
 
@@ -21729,7 +23037,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Priority queuing serves higher-priority customers first. Preemptive: interrupt current service for higher priority arrival. Non-preemptive: finish current service, then serve highest priority. W_k (wa...
+
+- Source: https://en.wikipedia.org/wiki/Priority_queue_(queueing_theory)
+- Citation: Wikipedia contributors, 'Priority queue (queueing theory)', Wikipedia.
+- Example: Two priority classes. rho_1=0.3, rho_2=0.4. Class 1 (high) wait: W_1 = W_0/(1-rho_1). Class 2: W_2 = W_0/((1-rho_1)*(1-rho_1-rho_2)).
 
 
 ### real_analysis
@@ -22025,7 +23339,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | expected_value |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Upper Confidence Bound (UCB1) for multi-armed bandits: select arm with highest UCB = Q_a + c*sqrt(ln(t)/N_a), where Q_a is estimated value, t is total plays, N_a is plays of arm a, c controls explorat...
+
+- Source: https://en.wikipedia.org/wiki/Multi-armed_bandit#Upper_confidence_bounds
+- Citation: Wikipedia contributors, 'Multi-armed bandit', Wikipedia.
+- Example: 3 arms, t=100, Q=[0.5,0.3,0.7], N=[40,30,30], c=2. UCB = [0.5+0.43, 0.3+0.49, 0.7+0.49] = [0.93, 0.79, 1.19]. Select arm 3.
 
 
 ### robotics
@@ -22208,7 +23528,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> In an intrinsic semiconductor, n = p = n_i = sqrt(N_c * N_v) * exp(-E_g/(2*k_B*T)). For doped semiconductors: n-type n ~ N_D, p = n_i^2/N_D. p-type p ~ N_A, n = n_i^2/N_A. The mass action law: n*p = n...
+
+- Source: https://en.wikipedia.org/wiki/Charge_carrier_density
+- Citation: Wikipedia contributors, 'Charge carrier density', Wikipedia.
+- Example: Si at 300 K: n_i = 1.5e10 cm^-3. N_D = 1e16 cm^-3 (n-type). n = 1e16 cm^-3, p = (1.5e10)^2 / 1e16 = 2.25e4 cm^-3.
 
 #### `depletion_width`
 
@@ -22221,7 +23547,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The depletion width of a pn junction is W = sqrt(2*epsilon_s*(V_bi - V)*(1/N_A + 1/N_D) / q), where V_bi is built-in potential and V is applied voltage (negative for reverse bias). The width increases...
+
+- Source: https://en.wikipedia.org/wiki/Depletion_region
+- Citation: Wikipedia contributors, 'Depletion region', Wikipedia.
+- Example: V_bi = 0.7 V, V = -5 V (reverse), N_A = 1e17, N_D = 1e16 cm^-3, epsilon_s = 1.04e-12 F/cm. W = sqrt(2*1.04e-12*5.7*(1e-17+1e-16)/1.6e-19) ~ 0.87 um.
 
 #### `diode_iv`
 
@@ -22234,7 +23566,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The ideal diode equation (Shockley equation): I = I_s * (exp(V/(n*V_T)) - 1), where I_s is reverse saturation current, n is ideality factor (1-2), and V_T = k_B*T/q ~ 25.85 mV at 300 K. Forward bias: ...
+
+- Source: https://en.wikipedia.org/wiki/Shockley_diode_equation
+- Citation: Wikipedia contributors, 'Shockley diode equation', Wikipedia.
+- Example: I_s = 1e-12 A, n = 1, V = 0.6 V, T = 300 K. I = 1e-12 * (exp(0.6/0.02585) - 1) = 1e-12 * (exp(23.2) - 1) ~ 1e-12 * 1.19e10 = 0.0119 A.
 
 #### `mosfet_threshold`
 
@@ -22247,7 +23585,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The MOSFET threshold voltage V_T = V_FB + 2*phi_F + sqrt(2*epsilon_s*q*N_A*2*phi_F)/C_ox, where V_FB is flat-band voltage, phi_F = (k_B*T/q)*ln(N_A/n_i) is Fermi potential, and C_ox = epsilon_ox/t_ox ...
+
+- Source: https://en.wikipedia.org/wiki/Threshold_voltage
+- Citation: Wikipedia contributors, 'Threshold voltage', Wikipedia.
+- Example: phi_F = 0.42 V, N_A = 1e17 cm^-3, t_ox = 5 nm, epsilon_ox = 3.45e-11 F/m. C_ox = 3.45e-11 / 5e-9 = 6.9e-3 F/m^2.
 
 #### `pn_junction`
 
@@ -22260,7 +23604,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A pn junction forms at the interface between p-type and n-type semiconductors. The built-in potential V_bi = (k_B*T/q) * ln(N_A*N_D/n_i^2), where N_A, N_D are acceptor and donor concentrations, n_i is...
+
+- Source: https://en.wikipedia.org/wiki/P%E2%80%93n_junction
+- Citation: Wikipedia contributors, 'p-n junction', Wikipedia.
+- Example: N_A = 1e17 cm^-3, N_D = 1e16 cm^-3, n_i = 1.5e10 cm^-3, T = 300 K. V_bi = 0.02585 * ln(1e17*1e16 / (1.5e10)^2) = 0.02585 * ln(4.44e12) = 0.754 V.
 
 
 ### sequences_ext
@@ -22279,7 +23629,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.series` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A power series sum(a_n * x^n) converges within radius R = 1/limsup|a_n|^(1/n) (root test) or R = lim|a_n/a_{n+1}| (ratio test). Common: e^x = sum x^n/n!, sin x = sum (-1)^n x^{2n+1}/(2n+1)!, 1/(1-x) =...
+
+- Source: https://en.wikipedia.org/wiki/Power_series
+- Citation: Wikipedia contributors, 'Power series', Wikipedia.
+- Example: e^1 = sum 1/n! = 1+1+0.5+0.167+0.042+... = 2.718. Converges for all x (R=inf).
 
 #### `recurrence_second_order`
 
@@ -22295,7 +23651,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.solvers.recurr.rsolve` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A second-order linear recurrence a_n = p*a_{n-1} + q*a_{n-2} has solution a_n = A*r1^n + B*r2^n, where r1,r2 are roots of x^2 - px - q = 0. If r1=r2: a_n = (A+Bn)*r^n. Fibonacci: a_n = a_{n-1}+a_{n-2}...
+
+- Source: https://en.wikipedia.org/wiki/Recurrence_relation#Solving_linear_recurrence_relations
+- Citation: Wikipedia contributors, 'Recurrence relation', Wikipedia.
+- Example: a_n = 3*a_{n-1} - 2*a_{n-2}, a_0=1, a_1=3. Char eq: x^2-3x+2=0, roots 1,2. a_n = -1*1^n + 2*2^n = 2^{n+1}-1.
 
 
 ### signal_ext
@@ -22661,7 +24023,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.spatial` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The minimum enclosing circle of a point set can be found in O(n) expected time (Welzl's algorithm). The circle is defined by at most 3 points on its boundary. Recursively: if a point lies outside the ...
+
+- Source: https://en.wikipedia.org/wiki/Smallest-circle_problem
+- Citation: Wikipedia contributors, 'Smallest-circle problem', Wikipedia.
+- Example: Points (0,0),(1,0),(0,1). Circle centre (0.5,0.5), radius sqrt(0.5) ~ 0.707.
 
 #### `plane_line_intersection`
 
@@ -22677,7 +24045,13 @@ status, knowledge atom, and dependencies.
 | Function | `parametric line + plane eq` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A line r(t) = p + t*d intersects plane n.x = c at t = (c - n.p)/(n.d). If n.d = 0, line is parallel (no intersection unless n.p = c). The intersection point is r(t) = p + t*d.
+
+- Source: https://en.wikipedia.org/wiki/Line%E2%80%93plane_intersection
+- Citation: Wikipedia contributors, 'Line-plane intersection', Wikipedia.
+- Example: Line: p=(1,0,0), d=(0,0,1). Plane: z=3 (n=(0,0,1), c=3). t = (3-0)/1 = 3. Point: (1,0,3).
 
 #### `spherical_distance`
 
@@ -22715,7 +24089,13 @@ status, knowledge atom, and dependencies.
 | Function | `matrix multiply + translate` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An affine transformation maps points via y = A*x + b, where A is a linear transformation matrix and b is a translation vector. Preserves collinearity and ratios of distances. Composed as 3x3 homogeneo...
+
+- Source: https://en.wikipedia.org/wiki/Affine_transformation
+- Citation: Wikipedia contributors, 'Affine transformation', Wikipedia.
+- Example: Scale by 2 and translate by (1,3): A=[[2,0],[0,2]], b=[1,3]. Point (1,1) -> (2*1+1, 2*1+3) = (3,5).
 
 #### `closest_pair`
 
@@ -22728,7 +24108,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | distance_2d |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Find the closest pair of points in a set. Brute force: O(n^2). Divide and conquer: sort by x, split, recurse on halves, check strip of width 2*delta around dividing line. Complexity O(n log n).
+
+- Source: https://en.wikipedia.org/wiki/Closest_pair_of_points_problem
+- Citation: Wikipedia contributors, 'Closest pair of points problem', Wikipedia.
+- Example: Points (1,1),(3,2),(4,3),(6,1). Closest: (3,2)-(4,3), distance sqrt(2) = 1.414.
 
 #### `convex_hull_2d`
 
@@ -22744,7 +24130,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.spatial.ConvexHull` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The convex hull is the smallest convex polygon containing all points. Graham scan: sort by polar angle from lowest point, process points maintaining left turns only. Complexity O(n log n). Jarvis marc...
+
+- Source: https://en.wikipedia.org/wiki/Convex_hull_algorithms
+- Citation: Wikipedia contributors, 'Convex hull algorithms', Wikipedia.
+- Example: Points: (0,0),(1,0),(0,1),(0.5,0.5),(1,1). Hull: (0,0),(1,0),(1,1),(0,1).
 
 #### `rotation_3d`
 
@@ -22760,7 +24152,13 @@ status, knowledge atom, and dependencies.
 | Function | `rotation matrix multiply` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> 3D rotation matrices: Rx(theta) rotates about x-axis, Ry about y, Rz about z. Each is a 3x3 orthogonal matrix with det=1. Composition: R = Rz*Ry*Rx (Euler angles). Alternative: quaternions avoid gimba...
+
+- Source: https://en.wikipedia.org/wiki/Rotation_matrix
+- Citation: Wikipedia contributors, 'Rotation matrix', Wikipedia.
+- Example: Rz(90 deg) * [1,0,0] = [0,1,0]. Point rotated 90 degrees about z-axis.
 
 #### `voronoi_cell`
 
@@ -22776,7 +24174,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.spatial.Voronoi` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Voronoi diagram partitions space into cells, one per site, where each cell contains all points closer to its site than any other. Cell boundaries are perpendicular bisectors of segments connecting n...
+
+- Source: https://en.wikipedia.org/wiki/Voronoi_diagram
+- Citation: Wikipedia contributors, 'Voronoi diagram', Wikipedia.
+- Example: Sites: (0,0), (4,0), (2,3). Voronoi cell of (0,0) bounded by bisectors of segments to (4,0) and (2,3).
 
 
 ### spectroscopy
@@ -23626,7 +25030,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The maximum deflection of a simply supported beam with a central point load P is delta = P*L^3 / (48*E*I), where L is span length, E is Young's modulus, and I is moment of inertia. For a uniformly dis...
+
+- Source: https://en.wikipedia.org/wiki/Deflection_(engineering)
+- Citation: Wikipedia contributors, 'Deflection (engineering)', Wikipedia.
+- Example: P = 10 kN, L = 4 m, E = 200 GPa, I = 1e-4 m^4. delta = 10e3 * 64 / (48 * 200e9 * 1e-4) = 640000 / 960000 = 0.667 mm.
 
 #### `buckling_load`
 
@@ -23639,7 +25049,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Euler's critical buckling load for a column: P_cr = pi^2 * E * I / L_e^2, where E is Young's modulus, I is minimum moment of inertia, and L_e is effective length. L_e depends on end conditions: pinned...
+
+- Source: https://en.wikipedia.org/wiki/Euler%27s_critical_load
+- Citation: Wikipedia contributors, 'Euler's critical load', Wikipedia.
+- Example: E = 200 GPa, I = 5e-6 m^4, L = 3 m (pinned-pinned). P_cr = pi^2 * 200e9 * 5e-6 / 9 = 1.097e6 N ~ 1097 kN.
 
 #### `shear_bending`
 
@@ -23652,7 +25068,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The bending stress in a beam is sigma = M*y / I, where M is bending moment, y is distance from neutral axis, and I is moment of inertia. Maximum stress occurs at y = c (outermost fibre). Shear stress ...
+
+- Source: https://en.wikipedia.org/wiki/Bending
+- Citation: Wikipedia contributors, 'Bending', Wikipedia.
+- Example: M = 50 kN*m, I = 1e-4 m^4, y = 0.15 m. sigma = 50e3 * 0.15 / 1e-4 = 75e6 Pa = 75 MPa.
 
 #### `truss_analysis`
 
@@ -23668,7 +25090,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.solve` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Truss analysis uses the method of joints or method of sections to find member forces. At each joint, sum of forces = 0 in x and y. Members carry only axial forces (tension or compression). Statical de...
+
+- Source: https://en.wikipedia.org/wiki/Truss
+- Citation: Wikipedia contributors, 'Truss', Wikipedia.
+- Example: Simple truss: 3 members, 3 joints, 3 reactions. 3 + 3 = 6 = 2*3: statically determinate.
 
 
 ### systems
@@ -24240,7 +25668,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.correlate` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The autocorrelation function rho(k) = Cov(X_t, X_{t+k}) / Var(X_t) measures linear dependence at lag k. For an AR(1) process X_t = phi*X_{t-1} + e_t: rho(k) = phi^k. The partial autocorrelation (PACF)...
+
+- Source: https://en.wikipedia.org/wiki/Autocorrelation
+- Citation: Wikipedia contributors, 'Autocorrelation', Wikipedia.
+- Example: AR(1) with phi=0.8: rho(1)=0.8, rho(2)=0.64, rho(3)=0.512. Exponential decay.
 
 #### `seasonal_decompose`
 
@@ -24256,7 +25690,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.signal` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Time series decomposition separates a series into trend (T), seasonal (S), and residual (R) components. Additive: Y = T + S + R. Multiplicative: Y = T * S * R. Methods: moving average for trend, then ...
+
+- Source: https://en.wikipedia.org/wiki/Decomposition_of_time_series
+- Citation: Wikipedia contributors, 'Decomposition of time series', Wikipedia.
+- Example: Monthly sales with yearly seasonality. MA(12) extracts trend. Seasonal = original/trend (multiplicative). Residual = original/(trend*seasonal).
 
 #### `stationarity_check`
 
@@ -24269,7 +25709,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | std_dev |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A stationary time series has constant mean, variance, and autocorrelation over time. Tests: Augmented Dickey-Fuller (ADF) tests for unit root (non-stationarity). KPSS tests for stationarity. Differenc...
+
+- Source: https://en.wikipedia.org/wiki/Stationary_process
+- Citation: Wikipedia contributors, 'Stationary process', Wikipedia.
+- Example: ADF test: H0 = unit root (non-stationary). p-value = 0.03 < 0.05 -> reject H0 -> series is stationary.
 
 
 ### topology
@@ -24307,7 +25753,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Hertzian contact theory gives the contact area and pressure between two elastic spheres. Contact radius a = (3*F*R/(4*E*))^(1/3), where R = R1*R2/(R1+R2) is effective radius and 1/E* = (1-nu1^2)/E1 + ...
+
+- Source: https://en.wikipedia.org/wiki/Contact_mechanics#Hertzian_theory_of_non-adhesive_elastic_contact
+- Citation: Wikipedia contributors, 'Contact mechanics', Wikipedia.
+- Example: F = 100 N, R1 = R2 = 0.01 m (R = 0.005 m), E1 = E2 = 200 GPa, nu = 0.3. E* = 200e9/(2*(1-0.09)) = 109.9 GPa. a = (3*100*0.005/(4*109.9e9))^(1/3) = (3.41e-9)^(1/3) = 1.506e-3 m ~ 1.5 mm.
 
 #### `lubrication_regime`
 
@@ -24320,7 +25772,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Stribeck curve identifies three lubrication regimes based on the Hersey number eta*v/(P): (1) boundary lubrication (direct surface contact, high friction), (2) mixed lubrication (partial film), (3...
+
+- Source: https://en.wikipedia.org/wiki/Stribeck_curve
+- Citation: Wikipedia contributors, 'Stribeck curve', Wikipedia.
+- Example: h_min = 0.5 um, sigma = 0.3 um. lambda = 0.5/0.3 = 1.67. lambda < 1: boundary. 1 < lambda < 3: mixed. lambda > 3: hydrodynamic. Result: mixed lubrication.
 
 #### `wear_rate`
 
@@ -24333,7 +25791,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Archard's wear equation: V = K * F * s / H, where V is wear volume, K is dimensionless wear coefficient, F is normal load, s is sliding distance, and H is hardness. Specific wear rate k = K/H = V/(F*s...
+
+- Source: https://en.wikipedia.org/wiki/Archard_equation
+- Citation: Wikipedia contributors, 'Archard equation', Wikipedia.
+- Example: K = 1e-3, F = 50 N, s = 1000 m, H = 1 GPa. V = 1e-3 * 50 * 1000 / 1e9 = 5e-8 m^3 = 50 mm^3.
 
 
 ### trigonometry_ext
@@ -24351,7 +25815,13 @@ status, knowledge atom, and dependencies.
 | Library | `math` |
 | Function | `math.sinh/cosh/tanh` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Hyperbolic functions: sinh(x) = (e^x - e^(-x))/2, cosh(x) = (e^x + e^(-x))/2, tanh(x) = sinh(x)/cosh(x). Identity: cosh^2(x) - sinh^2(x) = 1. Derivatives: d/dx sinh(x) = cosh(x), d/dx cosh(x) = sinh(x...
+
+- Source: https://en.wikipedia.org/wiki/Hyperbolic_functions
+- Citation: Wikipedia contributors, 'Hyperbolic functions', Wikipedia.
+- Example: sinh(1) = (e-1/e)/2 = (2.718-0.368)/2 = 1.175. cosh(1) = (e+1/e)/2 = 1.543. tanh(1) = 0.762.
 
 #### `inverse_hyperbolic`
 
@@ -24366,7 +25836,13 @@ status, knowledge atom, and dependencies.
 | Library | `math` |
 | Function | `math.asinh/acosh/atanh` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Inverse hyperbolic functions: arsinh(x) = ln(x + sqrt(x^2+1)), arcosh(x) = ln(x + sqrt(x^2-1)) for x>=1, artanh(x) = 0.5*ln((1+x)/(1-x)) for |x|<1. Used in integration of sqrt(x^2+/-1) forms.
+
+- Source: https://en.wikipedia.org/wiki/Inverse_hyperbolic_functions
+- Citation: Wikipedia contributors, 'Inverse hyperbolic functions', Wikipedia.
+- Example: arsinh(1) = ln(1+sqrt(2)) = ln(2.414) = 0.881. arcosh(2) = ln(2+sqrt(3)) = ln(3.732) = 1.317.
 
 #### `trig_substitution`
 
@@ -24382,7 +25858,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.integrate with trig sub` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Trigonometric substitution simplifies integrals containing sqrt(a^2-x^2), sqrt(a^2+x^2), or sqrt(x^2-a^2). Substitutions: x=a*sin(t), x=a*tan(t), x=a*sec(t) respectively. Converts to trigonometric int...
+
+- Source: https://en.wikipedia.org/wiki/Trigonometric_substitution
+- Citation: Wikipedia contributors, 'Trigonometric substitution', Wikipedia.
+- Example: integral sqrt(1-x^2) dx. Let x=sin(t), dx=cos(t)dt. integral cos^2(t)dt = t/2 + sin(2t)/4 + C = arcsin(x)/2 + x*sqrt(1-x^2)/2 + C.
 
 
 ### wavelet_theory
@@ -24401,7 +25883,13 @@ status, knowledge atom, and dependencies.
 | Function | `Haar IDWT` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Haar wavelet reconstruction (inverse transform): from decomposition coefficients, reconstruct signal by reversing the decomposition. At each level: x_{2k} = a_k + d_k, x_{2k+1} = a_k - d_k. Start from...
+
+- Source: https://en.wikipedia.org/wiki/Haar_wavelet
+- Citation: Wikipedia contributors, 'Haar wavelet', Wikipedia.
+- Example: Decomposition: [5.5, -0.5, -1, 4]. Level 1: a=[5.5-(-0.5), 5.5+(-0.5)] = [6,5] err -> [5,6]. Level 0: [5+(-1), 5-(-1), 6+4, 6-4] = [4,6,10,2].
 
 #### `haar_wavelet_decompose`
 
@@ -24417,7 +25905,13 @@ status, knowledge atom, and dependencies.
 | Function | `Haar DWT coefficients` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Haar wavelet decomposition: averages (a) and differences (d) of adjacent pairs. Level 1: a_k = (x_{2k}+x_{2k+1})/2, d_k = (x_{2k}-x_{2k+1})/2. Recursively decompose averages. Perfect reconstruction: x...
+
+- Source: https://en.wikipedia.org/wiki/Haar_wavelet
+- Citation: Wikipedia contributors, 'Haar wavelet', Wikipedia.
+- Example: [4,6,10,2]. Averages: [5,6]. Differences: [-1,4]. Next level: avg [5.5], diff [-0.5]. Decomposition: [5.5, -0.5, -1, 4].
 
 #### `thresholding`
 
@@ -24430,7 +25924,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Wavelet thresholding for denoising: compute DWT, set small coefficients to zero (hard threshold) or shrink toward zero (soft threshold: sign(d)*(|d|-lambda)+). Universal threshold: lambda = sigma*sqrt...
+
+- Source: https://en.wikipedia.org/wiki/Wavelet_shrinkage
+- Citation: Wikipedia contributors, 'Wavelet shrinkage', Wikipedia.
+- Example: Noisy signal, DWT coefficients: [5.2, -3.1, 0.1, -0.05, 4.8]. Threshold lambda=1. Soft: [4.2, -2.1, 0, 0, 3.8]. Hard: [5.2, -3.1, 0, 0, 4.8].
 
 #### `wavelet_energy`
 
@@ -24446,7 +25946,13 @@ status, knowledge atom, and dependencies.
 | Function | `sum(c_j^2) per level` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Wavelet energy at scale j: E_j = sum(|d_j,k|^2). Total energy is preserved: sum(E_j) + |a_J|^2 = sum(|x_k|^2) (Parseval's theorem). Energy distribution across scales reveals signal characteristics: co...
+
+- Source: https://en.wikipedia.org/wiki/Wavelet#Energy_preservation
+- Citation: Wikipedia contributors, 'Wavelet', Wikipedia.
+- Example: Signal energy: 100. Wavelet: E_1=60 (fine), E_2=30, E_3=10 (coarse). Most energy at fine scale -> signal has sharp features.
 
 
 ---
@@ -24762,7 +26268,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.poisson` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A compound Poisson process S(t) = sum_{i=1}^{N(t)} X_i, where N(t)~Poisson(lambda*t) and X_i are iid. E[S(t)]=lambda*t*E[X]. Var[S(t)]=lambda*t*E[X^2]. MGF: M_S(s) = exp(lambda*t*(M_X(s)-1)).
+
+- Source: https://en.wikipedia.org/wiki/Compound_Poisson_process
+- Citation: Wikipedia contributors, 'Compound Poisson process', Wikipedia.
+- Example: Claims: lambda=10/year, X~Exp(mean=1000). E[S(1)]=10000. Var[S(1)]=10*2e6=2e7.
 
 
 ### advanced_analysis
@@ -25974,7 +27486,13 @@ status, knowledge atom, and dependencies.
 | Function | `sum(exp(j*k*d*n*cos(theta)))` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The array factor of a uniform linear array of N elements with spacing d and progressive phase shift alpha is AF = sin(N*psi/2) / sin(psi/2), where psi = k*d*cos(theta) + alpha, k = 2*pi/lambda. Main b...
+
+- Source: https://en.wikipedia.org/wiki/Phased_array
+- Citation: Wikipedia contributors, 'Phased array', Wikipedia.
+- Example: N = 4, d = lambda/2, alpha = 0 (broadside). At theta = 90 deg: psi = 0. AF = N = 4 (maximum).
 
 
 ### applied_science
@@ -26051,7 +27569,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | nfa_simulate |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The pumping lemma for context-free languages: for every CFL L, there exists p such that any s in L with |s| >= p can be written as s = uvxyz where |vy| >= 1, |vxy| <= p, and uv^i xy^i z is in L for al...
+
+- Source: https://en.wikipedia.org/wiki/Pumping_lemma_for_context-free_languages
+- Citation: Wikipedia contributors, 'Pumping lemma for context-free languages', Wikipedia.
+- Example: L = {a^n b^n c^n}: pump v and y. If v=a^j y=b^j, then pumping gives more a's and b's but not c's. Not CFL.
 
 
 ### bayesian_statistics
@@ -26067,7 +27591,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | bayes_theorem |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Bayes factor BF_{12} = P(data|M_1)/P(data|M_2) compares two models. BF > 3: moderate evidence for M1. BF > 10: strong. BF > 100: decisive. P(data|M) = integral(P(data|theta,M)*P(theta|M) dtheta) i...
+
+- Source: https://en.wikipedia.org/wiki/Bayes_factor
+- Citation: Wikipedia contributors, 'Bayes factor', Wikipedia.
+- Example: Model 1: P(data|M1) = 0.03. Model 2: P(data|M2) = 0.001. BF = 30. Strong evidence for M1.
 
 #### `conjugate_prior`
 
@@ -26083,7 +27613,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A conjugate prior is a prior distribution that, combined with a particular likelihood, yields a posterior of the same family. Beta-Binomial: Beta(a,b) prior + Binomial data -> Beta(a+k, b+n-k) posteri...
+
+- Source: https://en.wikipedia.org/wiki/Conjugate_prior
+- Citation: Wikipedia contributors, 'Conjugate prior', Wikipedia.
+- Example: Prior Beta(1,1) (uniform). 10 trials, 7 successes. Posterior Beta(1+7, 1+3) = Beta(8,4). Posterior mean = 8/12 = 0.667.
 
 #### `credible_interval`
 
@@ -26099,7 +27635,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.*.ppf` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Bayesian credible interval [a,b] has P(a <= theta <= b | data) = 1-alpha. Unlike frequentist CI, it directly gives the probability that the parameter is in the interval. Highest Density Interval (HD...
+
+- Source: https://en.wikipedia.org/wiki/Credible_interval
+- Citation: Wikipedia contributors, 'Credible interval', Wikipedia.
+- Example: Posterior Beta(8,4). 95% credible interval: [0.38, 0.89]. There's a 95% probability theta is in this range.
 
 #### `empirical_bayes`
 
@@ -26115,7 +27657,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.optimize` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Empirical Bayes estimates hyperparameters of the prior from the data itself: theta_EB = argmax P(data|theta) where P(data|theta) = integral P(data|psi)*P(psi|theta) dpsi. Shrinks individual estimates ...
+
+- Source: https://en.wikipedia.org/wiki/Empirical_Bayes_method
+- Citation: Wikipedia contributors, 'Empirical Bayes method', Wikipedia.
+- Example: 100 batting averages. Empirical Bayes prior Beta(a,b) estimated from data. Each player's estimate shrunk towards the overall average.
 
 #### `posterior_predictive`
 
@@ -26131,7 +27679,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The posterior predictive distribution integrates out the parameter: P(x_new|data) = integral(P(x_new|theta)*P(theta|data) dtheta). For Beta-Binomial: posterior predictive of next trial is Beta-Binomia...
+
+- Source: https://en.wikipedia.org/wiki/Posterior_predictive_distribution
+- Citation: Wikipedia contributors, 'Posterior predictive distribution', Wikipedia.
+- Example: Posterior Beta(8,4). P(next success) = E[theta|data] = 8/12 = 0.667.
 
 
 ### biochemistry
@@ -26566,7 +28120,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | division |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An instrumental variable Z affects treatment T but has no direct effect on outcome Y (only through T). IV estimates: beta_IV = Cov(Y,Z)/Cov(T,Z). Two-stage least squares: (1) regress T on Z, get T_hat...
+
+- Source: https://en.wikipedia.org/wiki/Instrumental_variables_estimation
+- Citation: Wikipedia contributors, 'Instrumental variables estimation', Wikipedia.
+- Example: Z = distance to hospital, T = treatment received, Y = health outcome. beta_IV = Cov(Y,distance)/Cov(T,distance).
 
 #### `propensity_score`
 
@@ -26582,7 +28142,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.optimize (logistic)` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Propensity score e(X) = P(T=1|X) is the probability of treatment given covariates. Rosenbaum & Rubin: conditioning on e(X) removes confounding bias. Methods: stratification, matching, or inverse proba...
+
+- Source: https://en.wikipedia.org/wiki/Propensity_score_matching
+- Citation: Wikipedia contributors, 'Propensity score matching', Wikipedia.
+- Example: Logistic regression: e(X) = 1/(1+exp(-(0.5*age - 2*income + 1))). Match treated (e=0.7) with control (e=0.68). Estimate ATE from matched pairs.
 
 #### `regression_discontinuity`
 
@@ -26595,7 +28161,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | linear_regression |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Regression discontinuity design exploits a sharp cutoff in treatment assignment. Units just above the cutoff are treated; those just below are not. The causal effect is estimated as the jump in outcom...
+
+- Source: https://en.wikipedia.org/wiki/Regression_discontinuity_design
+- Citation: Wikipedia contributors, 'Regression discontinuity design', Wikipedia.
+- Example: Scholarship awarded if score >= 80. Compare outcomes of students scoring 79 vs 81. Jump at 80 = causal effect of scholarship.
 
 
 ### chemistry_deep
@@ -26680,7 +28252,13 @@ status, knowledge atom, and dependencies.
 | Function | `BCH generator polynomial` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> BCH codes are a class of cyclic error-correcting codes. A BCH(n,k,t) code over GF(2) corrects up to t errors. The generator polynomial g(x) is the LCM of minimal polynomials of alpha, alpha^2, ..., al...
+
+- Source: https://en.wikipedia.org/wiki/BCH_code
+- Citation: Wikipedia contributors, 'BCH code', Wikipedia.
+- Example: BCH(15,7,2): corrects 2 errors, g(x) has degree 8. Message 1000000 -> codeword 100000010100110.
 
 #### `reed_solomon`
 
@@ -26696,7 +28274,13 @@ status, knowledge atom, and dependencies.
 | Function | `RS encoding over GF(2^m)` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Reed-Solomon codes operate on symbols (not bits) over GF(2^m). RS(n,k) with symbols of m bits corrects up to t = (n-k)/2 symbol errors. Used in CDs (RS(255,223) over GF(2^8)), QR codes, and deep-space...
+
+- Source: https://en.wikipedia.org/wiki/Reed%E2%80%93Solomon_error_correction
+- Citation: Wikipedia contributors, 'Reed-Solomon error correction', Wikipedia.
+- Example: RS(255,223) over GF(2^8): 223 data symbols, 32 parity symbols. Corrects up to 16 symbol errors.
 
 
 ### cognitive_science
@@ -27001,7 +28585,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.optimize.linprog` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Basis pursuit solves min ||x||_1 subject to Ax = y (or Ax ~ y for noisy case: basis pursuit denoising). Equivalent to a linear program. Under RIP, recovers the sparsest solution. LASSO formulation: mi...
+
+- Source: https://en.wikipedia.org/wiki/Basis_pursuit
+- Citation: Wikipedia contributors, 'Basis pursuit', Wikipedia.
+- Example: A (50x100), y measured. Solve LP: minimise sum|x_i| subject to Ax=y. Solution has ~5 nonzero components.
 
 #### `rip_condition`
 
@@ -27014,7 +28604,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | matrix_multiply |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Restricted Isometry Property (RIP): a matrix A satisfies RIP of order s if (1-delta_s)*||x||^2 <= ||Ax||^2 <= (1+delta_s)*||x||^2 for all s-sparse x. If delta_{2s} < sqrt(2)-1, then L1 minimisatio...
+
+- Source: https://en.wikipedia.org/wiki/Restricted_isometry_property
+- Citation: Wikipedia contributors, 'Restricted isometry property', Wikipedia.
+- Example: n=100 signal, s=5 sparse. Need m ~ 5*log(100/5)*C ~ 5*3*C ~ 50 measurements (with constant C).
 
 
 ### computability
@@ -27080,7 +28676,13 @@ status, knowledge atom, and dependencies.
 | Function | `sigma = C : epsilon` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Generalised Hooke's law relates stress and strain via the elasticity tensor: sigma_ij = C_ijkl * epsilon_kl. For isotropic materials, sigma_ij = lambda * delta_ij * epsilon_kk + 2*mu * epsilon_ij, whe...
+
+- Source: https://en.wikipedia.org/wiki/Hooke%27s_law#Isotropic_materials
+- Citation: Wikipedia contributors, 'Hooke's law', Wikipedia.
+- Example: E = 200 GPa, nu = 0.3, epsilon_xx = 0.001, epsilon_yy = epsilon_zz = 0. lambda = 115.4 GPa, mu = 76.9 GPa. sigma_xx = 115.4*0.001 + 2*76.9*0.001 = 269.2 MPa.
 
 #### `strain_tensor`
 
@@ -27096,7 +28698,13 @@ status, knowledge atom, and dependencies.
 | Function | `symmetric gradient of displacement` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The infinitesimal strain tensor epsilon_ij = 0.5 * (du_i/dx_j + du_j/dx_i) where u is the displacement vector. Normal strains epsilon_ii represent elongation/compression; shear strains epsilon_ij (i !...
+
+- Source: https://en.wikipedia.org/wiki/Infinitesimal_strain_theory
+- Citation: Wikipedia contributors, 'Infinitesimal strain theory', Wikipedia.
+- Example: Displacement field u = [0.001*x, -0.0005*y, 0]. epsilon_xx = 0.001, epsilon_yy = -0.0005, epsilon_xy = 0.
 
 #### `stress_tensor`
 
@@ -27112,7 +28720,13 @@ status, knowledge atom, and dependencies.
 | Function | `3x3 symmetric tensor` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Cauchy stress tensor sigma_ij describes the state of stress at a point in a deformable body. It is a symmetric 3x3 tensor where sigma_ii are normal stresses and sigma_ij (i != j) are shear stresse...
+
+- Source: https://en.wikipedia.org/wiki/Cauchy_stress_tensor
+- Citation: Wikipedia contributors, 'Cauchy stress tensor', Wikipedia.
+- Example: sigma = [[100, 50, 0], [50, -30, 0], [0, 0, 20]] MPa. On surface n = [1, 0, 0]: t = [100, 50, 0] MPa.
 
 #### `von_mises`
 
@@ -27125,7 +28739,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | stress_tensor |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The von Mises yield criterion predicts yielding when the von Mises stress sigma_vm reaches the yield strength sigma_y. For 3D: sigma_vm = sqrt(0.5*((s1-s2)^2 + (s2-s3)^2 + (s3-s1)^2)), where s1, s2, s...
+
+- Source: https://en.wikipedia.org/wiki/Von_Mises_yield_criterion
+- Citation: Wikipedia contributors, 'Von Mises yield criterion', Wikipedia.
+- Example: s1 = 100 MPa, s2 = 50 MPa, s3 = 0. sigma_vm = sqrt(0.5*(50^2 + 50^2 + 100^2)) = sqrt(0.5*12500) = 86.6 MPa. If sigma_y = 250 MPa: safe (86.6 < 250).
 
 
 ### control_ext
@@ -27320,7 +28940,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | gradient_descent |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Interior point / barrier method: approximate constraints by adding a barrier -t*sum(log(-f_i(x))) to the objective, increasing t to tighten the approximation. Each barrier subproblem solved by Newton'...
+
+- Source: https://en.wikipedia.org/wiki/Interior-point_method
+- Citation: Wikipedia contributors, 'Interior-point method', Wikipedia.
+- Example: min c^T x s.t. Ax<=b. Barrier: min c^T x - (1/t)*sum log(b_i - a_i^T x). t=1: loose. t=100: tight. Solve for increasing t.
 
 #### `convex_conjugate`
 
@@ -27336,7 +28962,13 @@ status, knowledge atom, and dependencies.
 | Function | `Legendre transform via sympy` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The convex conjugate (Fenchel conjugate) of f is f*(y) = sup_x(y^T x - f(x)). Properties: f** = f (if f is closed convex), (f+g)* involves infimal convolution. The conjugate of ||x||^2/2 is ||y||^2/2.
+
+- Source: https://en.wikipedia.org/wiki/Convex_conjugate
+- Citation: Wikipedia contributors, 'Convex conjugate', Wikipedia.
+- Example: f(x) = x^2/2. f*(y) = sup_x(xy - x^2/2). Setting derivative to 0: y-x=0, x=y. f*(y) = y^2 - y^2/2 = y^2/2.
 
 #### `dual_problem`
 
@@ -27370,7 +29002,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | gradient_descent |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The proximal operator prox_{tf}(v) = argmin_x(f(x) + (1/2t)||x-v||^2). For f=||x||_1: soft thresholding prox(v)_i = sign(v_i)*max(|v_i|-t, 0). Proximal gradient descent: x_{k+1} = prox_{t_k g}(x_k - t...
+
+- Source: https://en.wikipedia.org/wiki/Proximal_operator
+- Citation: Wikipedia contributors, 'Proximal operator', Wikipedia.
+- Example: f = ||x||_1, t=0.5, v=[2,-0.3,1]. prox(v) = [1.5, 0, 0.5]. Values shrunk toward zero.
 
 #### `strong_duality`
 
@@ -27383,7 +29021,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | dual_problem |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Strong duality: the optimal values of the primal and dual problems are equal (zero duality gap). Holds for convex problems satisfying Slater's condition (a strictly feasible point exists). KKT conditi...
+
+- Source: https://en.wikipedia.org/wiki/Strong_duality
+- Citation: Wikipedia contributors, 'Strong duality', Wikipedia.
+- Example: min x^2 s.t. x >= 1. Dual: max lambda*(1) - lambda^2/4. Primal opt: x*=1, f*=1. Dual opt: lambda*=2, g*=1. Zero gap.
 
 #### `subgradient`
 
@@ -27396,7 +29040,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | gradient_descent |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A subgradient of a convex function f at x is any g such that f(y) >= f(x) + g^T(y-x) for all y. The subdifferential df(x) is the set of all subgradients. Subgradient method: x_{k+1} = x_k - alpha_k * ...
+
+- Source: https://en.wikipedia.org/wiki/Subgradient_method
+- Citation: Wikipedia contributors, 'Subgradient method', Wikipedia.
+- Example: f(x) = |x|. At x=0: subdifferential = [-1,1]. At x>0: df = {1}. Subgradient step from x=0 with g=0.5: x_1 = -0.5*alpha.
 
 
 ### cryptanalysis
@@ -27412,7 +29062,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Meet-in-the-middle attack reduces the cost of attacking double encryption from O(2^(2n)) to O(2^(n+1)) in time and O(2^n) space. Encrypt P with all possible K1, store results. Decrypt C with all possi...
+
+- Source: https://en.wikipedia.org/wiki/Meet-in-the-middle_attack
+- Citation: Wikipedia contributors, 'Meet-in-the-middle attack', Wikipedia.
+- Example: Double-DES: 2^56 encryptions + 2^56 decryptions + sorting = ~2^57 work. Much less than brute-forcing 2^112 key pairs.
 
 
 ### crypto_deep
@@ -27526,7 +29182,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mod_inv |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Digital Signature Algorithm (DSA) signs a message hash using a private key x. Choose random k, compute r = (g^k mod p) mod q, s = k^{-1} * (H(m) + x*r) mod q. The signature is (r, s). Verification...
+
+- Source: https://en.wikipedia.org/wiki/Digital_Signature_Algorithm
+- Citation: Wikipedia contributors, 'Digital Signature Algorithm', Wikipedia.
+- Example: p=23, q=11, g=4, x=7, k=3. r = (4^3 mod 23) mod 11 = 18 mod 11 = 7. For H(m) = 5: s = 3^{-1}*(5+7*7) mod 11 = 4*(5+49) mod 11 = 4*54 mod 11 = 216 mod 11 = 7.
 
 #### `elgamal_encrypt`
 
@@ -27558,7 +29220,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mod_pow |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A zero-knowledge proof lets a prover convince a verifier of a statement's truth without revealing any information beyond the statement's validity. Properties: completeness (honest prover convinces), s...
+
+- Source: https://en.wikipedia.org/wiki/Zero-knowledge_proof
+- Citation: Wikipedia contributors, 'Zero-knowledge proof', Wikipedia.
+- Example: Prover knows a 3-colouring of a graph. Commits to a random permutation of colours. Verifier picks an edge; prover reveals those two vertices' colours. If different, verifier accepts. Repeat to gain co...
 
 
 ### cryptography
@@ -27577,7 +29245,13 @@ status, knowledge atom, and dependencies.
 | Function | `GF(2^8) matrix multiply` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> MixColumns is a step in AES that multiplies each column of the state by a fixed matrix in GF(2^8). The matrix is [[2,3,1,1],[1,2,3,1],[1,1,2,3],[3,1,1,2]]. Multiplication in GF(2^8) uses the irreducib...
+
+- Source: https://en.wikipedia.org/wiki/Rijndael_MixColumns
+- Citation: Wikipedia contributors, 'Rijndael MixColumns', Wikipedia.
+- Example: Input column [0xDB, 0x13, 0x53, 0x45]. After MixColumns: [0x8E, 0x4D, 0xA1, 0xBC].
 
 #### `diffie_hellman`
 
@@ -27907,7 +29581,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.integrate.solve_bvp` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Boundary value problems specify conditions at two points: y(a)=A, y(b)=B. Shooting method: guess y'(a), solve IVP, adjust guess until y(b)=B. Finite difference: discretise domain, solve system of line...
+
+- Source: https://en.wikipedia.org/wiki/Boundary_value_problem
+- Citation: Wikipedia contributors, 'Boundary value problem', Wikipedia.
+- Example: y'' = -pi^2*y, y(0)=0, y(1)=0. Solution: y = C*sin(pi*x). Boundary conditions determine C.
 
 #### `exact_ode`
 
@@ -27923,7 +29603,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.dsolve` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An ODE M(x,y)dx + N(x,y)dy = 0 is exact if dM/dy = dN/dx. Solution: F(x,y) = C where dF/dx = M, dF/dy = N. If not exact, an integrating factor mu may make it exact: mu*M dx + mu*N dy = 0.
+
+- Source: https://en.wikipedia.org/wiki/Exact_differential_equation
+- Citation: Wikipedia contributors, 'Exact differential equation', Wikipedia.
+- Example: (2xy+3)dx + (x^2-1)dy = 0. dM/dy = 2x = dN/dx. Exact. F = x^2*y + 3x - y = C.
 
 #### `laplace_solve_ode`
 
@@ -27939,7 +29625,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.integrals.transforms.laplace_transform` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Solving ODEs via Laplace transform: (1) take L{} of both sides, (2) use L{y'} = sY - y(0), L{y''} = s^2Y - sy(0) - y'(0), (3) solve for Y(s), (4) inverse Laplace to get y(t). Handles initial condition...
+
+- Source: https://en.wikipedia.org/wiki/Laplace_transform_applied_to_differential_equations
+- Citation: Wikipedia contributors, 'Laplace transform applied to differential equations', Wikipedia.
+- Example: y' + 2y = 3, y(0) = 1. L: sY - 1 + 2Y = 3/s. Y = (3/s + 1)/(s+2) = 3/(s(s+2)) + 1/(s+2). y(t) = 3/2*(1-e^{-2t}) + e^{-2t} = 3/2 - 1/2*e^{-2t}.
 
 #### `stability_ode`
 
@@ -27955,7 +29647,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.eigvals for Jacobian` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Equilibrium x* of x' = f(x) is stable if nearby solutions stay nearby. Asymptotically stable: solutions converge to x*. Linearisation: x' = Df(x*) * (x - x*). Stable if all eigenvalues of Df have nega...
+
+- Source: https://en.wikipedia.org/wiki/Stability_theory
+- Citation: Wikipedia contributors, 'Stability theory', Wikipedia.
+- Example: x' = -x^3. Equilibrium x*=0. V=x^2, V' = 2x*(-x^3) = -2x^4 < 0. Asymptotically stable.
 
 #### `system_ode_matrix`
 
@@ -27971,7 +29669,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.integrate.solve_ivp` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A system of linear ODEs x' = Ax has solution x(t) = exp(At)*x(0). For diagonalisable A = PDP^{-1}: exp(At) = P*diag(exp(lambda_i*t))*P^{-1}. Eigenvalues determine stability: all Re(lambda) < 0 -> asym...
+
+- Source: https://en.wikipedia.org/wiki/Matrix_exponential
+- Citation: Wikipedia contributors, 'Matrix exponential', Wikipedia.
+- Example: x'=[[0,1],[-2,-3]]x. Eigenvalues: -1,-2 (both negative -> stable). x(t) = c1*v1*e^{-t} + c2*v2*e^{-2t}.
 
 #### `variation_of_parameters`
 
@@ -27987,7 +29691,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.dsolve` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Variation of parameters solves non-homogeneous linear ODEs y'' + p(x)y' + q(x)y = g(x). Given homogeneous solutions y1, y2, the particular solution is y_p = -y1*integral(y2*g/W) + y2*integral(y1*g/W),...
+
+- Source: https://en.wikipedia.org/wiki/Variation_of_parameters
+- Citation: Wikipedia contributors, 'Variation of parameters', Wikipedia.
+- Example: y'' + y = sec(x). y1=cos x, y2=sin x, W=1. y_p = -cos x * integral(sin x * sec x) + sin x * integral(cos x * sec x) = -cos x * integral(tan x) + sin x * x.
 
 
 ### differential_geometry
@@ -28075,7 +29785,13 @@ status, knowledge atom, and dependencies.
 | Function | `E,F,G from surface partials` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The first fundamental form of a surface measures lengths and angles: I = E*du^2 + 2F*du*dv + G*dv^2, where E = r_u.r_u, F = r_u.r_v, G = r_v.r_v. Area element dA = sqrt(EG-F^2) du dv.
+
+- Source: https://en.wikipedia.org/wiki/First_fundamental_form
+- Citation: Wikipedia contributors, 'First fundamental form', Wikipedia.
+- Example: Sphere r(u,v) = (sin u cos v, sin u sin v, cos u). E=1, F=0, G=sin^2 u. dA = sin u du dv.
 
 #### `frenet_serret`
 
@@ -28091,7 +29807,13 @@ status, knowledge atom, and dependencies.
 | Function | `T,N,B from r(t)` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Frenet-Serret formulas describe a curve in 3D: T' = kappa*N, N' = -kappa*T + tau*B, B' = -tau*N, where T is tangent, N is normal, B is binormal, kappa is curvature, tau is torsion. They form an or...
+
+- Source: https://en.wikipedia.org/wiki/Frenet%E2%80%93Serret_formulas
+- Citation: Wikipedia contributors, 'Frenet-Serret formulas', Wikipedia.
+- Example: Helix r(t) = (cos t, sin t, t). T=(-sin t, cos t, 1)/sqrt(2). kappa = 1/2, tau = 1/2. Constant curvature and torsion.
 
 
 ### dimensionality_reduction
@@ -28110,7 +29832,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.svd` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Truncated SVD: A ~ U_k * Sigma_k * V_k^T, keeping only top k singular values. Optimal rank-k approximation (Eckart-Young theorem). Used for dimensionality reduction, latent semantic analysis, and matr...
+
+- Source: https://en.wikipedia.org/wiki/Singular_value_decomposition#Truncated_SVD
+- Citation: Wikipedia contributors, 'Singular value decomposition', Wikipedia.
+- Example: A (100x50), rank 50. Keep k=10: A_10 = U_10 * diag(s_1..s_10) * V_10^T. Reconstruction error = sum(s_11^2..s_50^2).
 
 
 ### discrete_ext
@@ -28340,7 +30068,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | rlc_impedance |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> In an AC circuit, real power P = V_rms * I_rms * cos(phi), reactive power Q = V_rms * I_rms * sin(phi), and apparent power S = V_rms * I_rms. The power factor is PF = cos(phi) = P / S. P is measured i...
+
+- Source: https://en.wikipedia.org/wiki/AC_power
+- Citation: Wikipedia contributors, 'AC power', Wikipedia.
+- Example: V_rms = 120 V, I_rms = 5 A, phi = 30 deg. P = 120 * 5 * cos(30) = 600 * 0.866 = 519.6 W. Q = 600 * sin(30) = 600 * 0.5 = 300 VAR. S = 600 VA.
 
 #### `faraday_law`
 
@@ -28391,7 +30125,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | complex_arithmetic |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The impedance of a series RLC circuit is Z = sqrt(R^2 + (XL - XC)^2), where XL = omega * L is inductive reactance and XC = 1 / (omega * C) is capacitive reactance. The phase angle is phi = arctan((XL ...
+
+- Source: https://en.wikipedia.org/wiki/RLC_circuit
+- Citation: Wikipedia contributors, 'RLC circuit', Wikipedia.
+- Example: R = 100 Ohm, L = 0.1 H, C = 10e-6 F, f = 50 Hz. omega = 2*pi*50 = 314.16. XL = 31.42 Ohm, XC = 318.31 Ohm. Z = sqrt(100^2 + (31.42 - 318.31)^2) = sqrt(10000 + 82342) = 303.8 Ohm.
 
 
 ### electromagnetism_ext
@@ -28407,7 +30147,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | derivative |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Maxwell's addition to Ampere's law: the displacement current density J_d = epsilon_0 * dE/dt. The total current in Ampere's law becomes I_enc + epsilon_0 * d(Phi_E)/dt, allowing electromagnetic wave p...
+
+- Source: https://en.wikipedia.org/wiki/Displacement_current
+- Citation: Wikipedia contributors, 'Displacement current', Wikipedia.
+- Example: A parallel plate capacitor with area A = 0.01 m^2, dV/dt = 1e6 V/s, d = 0.001 m. dE/dt = dV/dt / d = 1e9 V/(m*s). J_d = 8.854e-12 * 1e9 = 8.854e-3 A/m^2.
 
 #### `poynting_vector`
 
@@ -29058,7 +30804,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | nash_equilibrium |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Bayesian game includes incomplete information: players have private types drawn from a known distribution. Players maximise expected utility given their type and beliefs about others' types. Bayesia...
+
+- Source: https://en.wikipedia.org/wiki/Bayesian_game
+- Citation: Wikipedia contributors, 'Bayesian game', Wikipedia.
+- Example: Auction: each bidder's valuation is private, drawn from U[0,1]. First-price: BNE bid = (n-1)/n * value. With 2 bidders: bid half your value.
 
 #### `correlated_equilibrium`
 
@@ -29071,7 +30823,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | expected_value |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A correlated equilibrium uses a public signal (correlation device) to coordinate players. A mediator privately recommends actions. If no player benefits from deviating from the recommendation, it's a ...
+
+- Source: https://en.wikipedia.org/wiki/Correlated_equilibrium
+- Citation: Wikipedia contributors, 'Correlated equilibrium', Wikipedia.
+- Example: Traffic game: mediator tells one driver to go and the other to wait. Neither wants to deviate. Better than the mixed Nash where both sometimes crash.
 
 #### `evolutionary_stable`
 
@@ -29084,7 +30842,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | nash_equilibrium |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An Evolutionary Stable Strategy (ESS) is a strategy that, if adopted by a population, cannot be invaded by a rare mutant strategy. Condition: E(s,s) > E(s',s) for all s' != s, or E(s,s) = E(s',s) and ...
+
+- Source: https://en.wikipedia.org/wiki/Evolutionarily_stable_strategy
+- Citation: Wikipedia contributors, 'Evolutionarily stable strategy', Wikipedia.
+- Example: Hawk-Dove game: if V < C, mixed ESS with frequency of Hawks = V/C. Neither pure Hawk nor pure Dove is ESS.
 
 
 ### general_relativity
@@ -29642,7 +31406,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mutual_information |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A multiple-access channel has two senders, one receiver. Capacity region: R_1 <= I(X_1;Y|X_2), R_2 <= I(X_2;Y|X_1), R_1+R_2 <= I(X_1,X_2;Y). Achievable via successive decoding or joint decoding.
+
+- Source: https://en.wikipedia.org/wiki/Multiple-access_channel_(information_theory)
+- Citation: Wikipedia contributors, 'Multiple-access channel', Wikipedia.
+- Example: Binary adder channel: Y=X_1+X_2. C_sum = 1.5 bits (3 output levels). Each user can send up to 1 bit if the other sends 0.5 bits.
 
 #### `polar_code`
 
@@ -29655,7 +31425,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | basic_prob |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Polar codes achieve Shannon capacity with efficient encoding and decoding (O(n log n)). Based on channel polarization: as block length n->inf, synthetic channels polarize to either perfectly reliable ...
+
+- Source: https://en.wikipedia.org/wiki/Polar_code_(coding_theory)
+- Citation: Wikipedia contributors, 'Polar code (coding theory)', Wikipedia.
+- Example: N=8 polar code: 4 data bits on reliable channels, 4 frozen bits (set to 0). Encoding: multiply by generator matrix G = F^{otimes 3} where F=[[1,0],[1,1]].
 
 #### `rate_distortion_binary`
 
@@ -29668,7 +31444,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | info_entropy |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Rate-distortion for binary source with Hamming distortion: R(D) = H(p) - H(D) for D <= min(p,1-p), else R(D)=0. The source coding theorem: achievable if rate >= R(D). R(0) = H(p) (lossless rate).
+
+- Source: https://en.wikipedia.org/wiki/Rate%E2%80%93distortion_theory#Binary_source
+- Citation: Wikipedia contributors, 'Rate-distortion theory', Wikipedia.
+- Example: Binary source p=0.1. R(0.05) = H(0.1)-H(0.05) = 0.469-0.286 = 0.183 bits/symbol. At D=0.1: R=0 (just send all zeros).
 
 #### `slepian_wolf`
 
@@ -29681,7 +31463,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | info_entropy |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Slepian-Wolf theorem: two correlated sources X,Y can be losslessly compressed separately at rates R_X >= H(X|Y), R_Y >= H(Y|X), R_X+R_Y >= H(X,Y). Achieves the same total rate as joint encoding, even ...
+
+- Source: https://en.wikipedia.org/wiki/Slepian%E2%80%93Wolf_coding
+- Citation: Wikipedia contributors, 'Slepian-Wolf coding', Wikipedia.
+- Example: H(X)=H(Y)=1 bit, H(X,Y)=1.5 bits. Joint rate = 1.5. Slepian-Wolf: R_X=1, R_Y=0.5 (or R_X=0.5, R_Y=1).
 
 
 ### info_theory_ext
@@ -29697,7 +31485,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mutual_information |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Data processing inequality: if X->Y->Z is a Markov chain, then I(X;Z) <= I(X;Y). Processing Y to get Z can only lose information about X, never gain it. Equality iff Z is a sufficient statistic for X.
+
+- Source: https://en.wikipedia.org/wiki/Data_processing_inequality
+- Citation: Wikipedia contributors, 'Data processing inequality', Wikipedia.
+- Example: X = original image, Y = compressed, Z = decompressed. I(X;Z) <= I(X;Y). Lossy compression loses information.
 
 #### `rate_distortion`
 
@@ -29710,7 +31504,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | info_entropy |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Rate-distortion theory: the minimum rate R(D) to describe a source with average distortion <= D. For Gaussian source with MSE distortion: R(D) = max(0, 0.5*log(sigma^2/D)). Shannon's source coding the...
+
+- Source: https://en.wikipedia.org/wiki/Rate%E2%80%93distortion_theory
+- Citation: Wikipedia contributors, 'Rate-distortion theory', Wikipedia.
+- Example: Gaussian source, sigma^2=4, D=1. R(1) = 0.5*log(4/1) = 0.5*2 = 1 bit/sample.
 
 #### `typical_set`
 
@@ -29723,7 +31523,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | info_entropy |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The typical set A_epsilon^n contains sequences x^n whose empirical entropy is close to H(X): 2^{-n(H+epsilon)} <= P(x^n) <= 2^{-n(H-epsilon)}. By AEP, P(A_epsilon^n) > 1-epsilon for large n. |A_epsilo...
+
+- Source: https://en.wikipedia.org/wiki/Typical_set
+- Citation: Wikipedia contributors, 'Typical set', Wikipedia.
+- Example: Binary source p=0.1. H=0.469 bits. n=100: |A_epsilon| ~ 2^47 ~ 1.4e14 typical sequences out of 2^100 ~ 1.3e30 total.
 
 
 ### information_geometry
@@ -29742,7 +31548,13 @@ status, knowledge atom, and dependencies.
 | Function | `natural parameters` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An exponential family distribution has the form f(x|theta) = h(x)*exp(eta(theta)^T * T(x) - A(theta)), where T(x) is sufficient statistic, eta is natural parameter, and A(theta) is log-normalizer. Pro...
+
+- Source: https://en.wikipedia.org/wiki/Exponential_family
+- Citation: Wikipedia contributors, 'Exponential family', Wikipedia.
+- Example: Bernoulli(p): h(x)=1, eta=log(p/(1-p)), T(x)=x, A=log(1+exp(eta))=-log(1-p).
 
 #### `fisher_information`
 
@@ -29758,7 +31570,13 @@ status, knowledge atom, and dependencies.
 | Function | `E[(d log f / d theta)^2]` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Fisher information matrix I(theta)_ij = E[d(log f)/d(theta_i) * d(log f)/d(theta_j)]. For a single parameter: I(theta) = -E[d^2 log f / d theta^2]. The Cramer-Rao bound: Var(theta_hat) >= 1/I(thet...
+
+- Source: https://en.wikipedia.org/wiki/Fisher_information
+- Citation: Wikipedia contributors, 'Fisher information', Wikipedia.
+- Example: Bernoulli(p): log f = x*log(p) + (1-x)*log(1-p). I(p) = 1/(p*(1-p)). At p=0.5: I=4. Cramer-Rao: Var >= 0.25/n.
 
 #### `kl_geometry`
 
@@ -29774,7 +31592,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.stats.entropy` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> KL divergence D_KL(P||Q) = sum(P(x)*log(P(x)/Q(x))) is not symmetric and not a true metric. However, for infinitesimally close distributions, d_KL(theta, theta+dtheta) ~ 0.5 * dtheta^T * I(theta) * dt...
+
+- Source: https://en.wikipedia.org/wiki/Information_geometry
+- Citation: Wikipedia contributors, 'Information geometry', Wikipedia.
+- Example: P = Bernoulli(0.5), Q = Bernoulli(0.6). D_KL = 0.5*log(0.5/0.6) + 0.5*log(0.5/0.4) = -0.0912 + 0.1116 = 0.0204.
 
 
 ### information_theory
@@ -29903,7 +31727,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | pumping_lemma |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A language L is regular iff it can be described by a regular expression, recognised by a DFA/NFA, or generated by a regular grammar. To prove non-regularity: use the pumping lemma. If for every pumpin...
+
+- Source: https://en.wikipedia.org/wiki/Regular_language
+- Citation: Wikipedia contributors, 'Regular language', Wikipedia.
+- Example: L = {a^n b^n}: assume regular with pumping length p. s = a^p b^p. Pumping the a's gives a^{p+k}b^p not in L. Therefore not regular.
 
 
 ### logic_deep
@@ -30180,7 +32010,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | sigma_algebra |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Modes of convergence for sequences of functions: pointwise (f_n(x)->f(x) for each x), uniform (sup|f_n-f|->0), in L^p (integral|f_n-f|^p->0), in measure (mu({|f_n-f|>epsilon})->0), almost everywhere (...
+
+- Source: https://en.wikipedia.org/wiki/Modes_of_convergence
+- Citation: Wikipedia contributors, 'Modes of convergence', Wikipedia.
+- Example: f_n(x) = x^n on [0,1]. Pointwise: f_n->0 for x<1, f_n(1)=1. Converges a.e. but not uniformly.
 
 #### `outer_measure`
 
@@ -30193,7 +32029,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | lebesgue_measure |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An outer measure mu* is a set function defined on all subsets with: mu*(empty)=0, monotonicity, countable subadditivity: mu*(union A_i) <= sum mu*(A_i). Lebesgue outer measure of A in R: mu*(A) = inf{...
+
+- Source: https://en.wikipedia.org/wiki/Outer_measure
+- Citation: Wikipedia contributors, 'Outer measure', Wikipedia.
+- Example: A = {1/n : n >= 1}. Cover by intervals [1/n-epsilon/2^n, 1/n+epsilon/2^n]. mu*(A) <= sum epsilon/2^{n-1} = 2*epsilon -> mu*(A)=0.
 
 #### `product_measure`
 
@@ -30209,7 +32051,13 @@ status, knowledge atom, and dependencies.
 | Function | `Fubini: iterated integral` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Given measure spaces (X,mu) and (Y,nu), the product measure mu x nu on X x Y satisfies (mu x nu)(A x B) = mu(A)*nu(B) for measurable rectangles. Fubini's theorem: integral of f over X x Y equals the i...
+
+- Source: https://en.wikipedia.org/wiki/Product_measure
+- Citation: Wikipedia contributors, 'Product measure', Wikipedia.
+- Example: X=[0,1] with Lebesgue, Y=[0,1] with Lebesgue. (mu x nu)([0,0.5] x [0,0.3]) = 0.5 * 0.3 = 0.15.
 
 
 ### measure_theory
@@ -30329,7 +32177,13 @@ status, knowledge atom, and dependencies.
 | Function | `filtered backprojection` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> CT reconstruction from projections uses filtered backprojection: f(x,y) = integral_0^pi [p(theta, x*cos(theta)+y*sin(theta)) * h] d(theta), where p is the filtered projection (Radon transform filtered...
+
+- Source: https://en.wikipedia.org/wiki/Radon_transform
+- Citation: Wikipedia contributors, 'Radon transform', Wikipedia.
+- Example: 180 projections at 1-degree intervals. Each pixel accumulates contributions from all projection angles passing through it.
 
 #### `fourier_kspace`
 
@@ -30345,7 +32199,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.fft.fft2` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> In MRI, k-space is the spatial frequency domain. Each point in k-space is acquired by applying gradients. The image is obtained by 2D inverse Fourier transform of k-space. Centre of k-space = contrast...
+
+- Source: https://en.wikipedia.org/wiki/K-space_(MRI)
+- Citation: Wikipedia contributors, 'K-space (magnetic resonance imaging)', Wikipedia.
+- Example: 256x256 k-space matrix. Centre filled first (low frequencies). Apply 2D IFFT -> 256x256 anatomical image.
 
 
 ### ml_deep
@@ -30738,7 +32598,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mass_defect |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Nuclear fission splits a heavy nucleus into lighter fragments, releasing energy from the mass defect: E = (m_reactants - m_products)*c^2. U-235 + neutron -> Kr-92 + Ba-141 + 3 neutrons + ~200 MeV. Cri...
+
+- Source: https://en.wikipedia.org/wiki/Nuclear_fission
+- Citation: Wikipedia contributors, 'Nuclear fission', Wikipedia.
+- Example: U-235 fission: mass defect ~ 0.215 u. E = 0.215 * 931.5 MeV/u = 200.3 MeV per fission.
 
 #### `nuclear_fusion`
 
@@ -30751,7 +32617,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mass_defect |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Nuclear fusion combines light nuclei, releasing energy. D + T -> He-4 + n + 17.6 MeV. Requires overcoming Coulomb barrier (temperature > 10^7 K). Lawson criterion for self-sustaining fusion: n*tau_E >...
+
+- Source: https://en.wikipedia.org/wiki/Nuclear_fusion
+- Citation: Wikipedia contributors, 'Nuclear fusion', Wikipedia.
+- Example: D-T fusion: mass defect = (2.014+3.016) - (4.003+1.009) = 0.018 u. E = 0.018 * 931.5 = 16.77 MeV.
 
 
 ### nuclear_physics
@@ -31284,7 +33156,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.integrate.solve_ivp` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Adams-Bashforth methods are explicit linear multistep methods for ODEs. AB2: y_{n+1} = y_n + h/2*(3*f_n - f_{n-1}). AB4: y_{n+1} = y_n + h/24*(55*f_n - 59*f_{n-1} + 37*f_{n-2} - 9*f_{n-3}). Higher ord...
+
+- Source: https://en.wikipedia.org/wiki/Linear_multistep_method#Adams%E2%80%93Bashforth_methods
+- Citation: Wikipedia contributors, 'Linear multistep method', Wikipedia.
+- Example: y' = y, y(0)=1, h=0.1. AB2 (after Euler startup): y_1=1.1. y_2 = 1.1 + 0.05*(3*1.1 - 1) = 1.1+0.05*2.3 = 1.215.
 
 #### `eigenvalue_power_iteration`
 
@@ -31300,7 +33178,13 @@ status, knowledge atom, and dependencies.
 | Function | `power method convergence` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Power iteration finds the dominant eigenvalue: x_{k+1} = A*x_k / ||A*x_k||. Converges to the eigenvector for the largest |eigenvalue|. Rate: |lambda_2/lambda_1|^k. Inverse iteration (using (A-sigma*I)...
+
+- Source: https://en.wikipedia.org/wiki/Power_iteration
+- Citation: Wikipedia contributors, 'Power iteration', Wikipedia.
+- Example: A=[[2,1],[1,2]]. Start x=[1,0]. Ax=[2,1], normalise=[0.894,0.447]. After iterations converges to [1,1]/sqrt(2), lambda=3.
 
 #### `gaussian_quadrature`
 
@@ -31316,7 +33200,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.integrate.quadrature` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Gaussian quadrature approximates integrals using optimal node placement: integral ~ sum w_i * f(x_i). n-point Gauss-Legendre quadrature is exact for polynomials of degree <= 2n-1. Nodes are roots of L...
+
+- Source: https://en.wikipedia.org/wiki/Gaussian_quadrature
+- Citation: Wikipedia contributors, 'Gaussian quadrature', Wikipedia.
+- Example: 2-point Gauss-Legendre: nodes x=+/-1/sqrt(3), weights w=1. integral_{-1}^{1} x^3 dx = 1*((-1/sqrt(3))^3) + 1*((1/sqrt(3))^3) = 0. Exact (degree 3 < 2*2-1=3).
 
 #### `nonlinear_system`
 
@@ -31332,7 +33222,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.optimize.fsolve` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Nonlinear system F(x)=0 solved by Newton's method: x_{k+1} = x_k - J(x_k)^{-1}*F(x_k), where J is the Jacobian matrix. Quadratic convergence near the root. Alternative: Broyden's method (quasi-Newton,...
+
+- Source: https://en.wikipedia.org/wiki/Newton%27s_method#Nonlinear_systems_of_equations
+- Citation: Wikipedia contributors, 'Newton's method#Nonlinear_systems', Wikipedia.
+- Example: f1=x^2+y^2-4, f2=x*y-1. J=[[2x,2y],[y,x]]. At (1.5,0.7): F=[0.74,0.05], J=[[3,1.4],[0.7,1.5]]. Newton step: dx = -J^{-1}*F.
 
 
 ### numerical_linalg
@@ -31351,7 +33247,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.cholesky` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Cholesky decomposition: A = LL^T for symmetric positive definite A, where L is lower triangular. L_ii = sqrt(A_ii - sum_{k<i} L_ik^2). L_ji = (A_ji - sum_{k<j} L_jk*L_ik) / L_jj. Half the cost of LU. ...
+
+- Source: https://en.wikipedia.org/wiki/Cholesky_decomposition
+- Citation: Wikipedia contributors, 'Cholesky decomposition', Wikipedia.
+- Example: A=[[4,2],[2,5]]. L_11=sqrt(4)=2. L_21=2/2=1. L_22=sqrt(5-1)=2. A = [[2,0],[1,2]]*[[2,1],[0,2]].
 
 #### `least_squares`
 
@@ -31367,7 +33269,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.lstsq` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Least squares solves the overdetermined system Ax~b by minimising ||Ax-b||^2. Normal equations: A^T A x = A^T b. Numerically better: use QR decomposition (Rx = Q^T b) or SVD. Pseudoinverse: x = (A^T A...
+
+- Source: https://en.wikipedia.org/wiki/Least_squares
+- Citation: Wikipedia contributors, 'Least squares', Wikipedia.
+- Example: Points (0,1),(1,3),(2,5). A=[[1,0],[1,1],[1,2]], b=[1,3,5]. Normal eqs: [[3,3],[3,5]]x = [9,13]. x = [1, 2]. Line: y = 1+2x.
 
 #### `qr_decomposition`
 
@@ -31383,7 +33291,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.qr` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> QR decomposition factors A = QR where Q is orthogonal and R is upper triangular. Methods: Gram-Schmidt (numerically unstable), Modified Gram-Schmidt, Householder reflections (stable, O(2mn^2/3) flops)...
+
+- Source: https://en.wikipedia.org/wiki/QR_decomposition
+- Citation: Wikipedia contributors, 'QR decomposition', Wikipedia.
+- Example: A=[[1,1],[1,-1]]. Gram-Schmidt: q1=[1,1]/sqrt(2), q2=[1,-1]/sqrt(2). R=[[sqrt(2),0],[0,sqrt(2)]].
 
 #### `svd_compute`
 
@@ -31399,7 +33313,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.svd` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> SVD: A = U*Sigma*V^T where U,V are orthogonal, Sigma is diagonal. Sigma contains singular values sigma_1 >= sigma_2 >= ... >= 0. Computed via bidiagonalisation then QR iteration. Rank = number of non-...
+
+- Source: https://en.wikipedia.org/wiki/Singular_value_decomposition
+- Citation: Wikipedia contributors, 'Singular value decomposition', Wikipedia.
+- Example: A=[[3,2],[2,3]]. SVD: sigma_1=5, sigma_2=1. Condition number = 5. Well-conditioned.
 
 
 ### numerical_methods_ext
@@ -32277,7 +34197,13 @@ status, knowledge atom, and dependencies.
 | Function | `rank(ker) - rank(im)` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Betti numbers b_k = rank(H_k) count the number of k-dimensional 'holes': b_0 = connected components, b_1 = loops/tunnels, b_2 = voids. Computed as b_k = rank(ker(d_k)) - rank(im(d_{k+1})). Euler chara...
+
+- Source: https://en.wikipedia.org/wiki/Betti_number
+- Citation: Wikipedia contributors, 'Betti number', Wikipedia.
+- Example: Torus: b_0=1, b_1=2, b_2=1. chi = 1-2+1 = 0.
 
 #### `bottleneck_distance`
 
@@ -32290,7 +34216,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | persistence_diagram |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The bottleneck distance between persistence diagrams P and Q is: d_B(P,Q) = inf_{gamma} sup_x ||x - gamma(x)||_inf, where gamma ranges over bijections (including diagonal points). Measures the maximum...
+
+- Source: https://en.wikipedia.org/wiki/Persistent_homology#Stability
+- Citation: Wikipedia contributors, 'Persistent homology', Wikipedia.
+- Example: P = {(0,3), (1,2)}. Q = {(0,2.8), (0.9,2.1)}. Optimal matching gives d_B = max(0.2, 0.14) = 0.2.
 
 #### `boundary_operator`
 
@@ -32306,7 +34238,13 @@ status, knowledge atom, and dependencies.
 | Function | `boundary matrix from simplicial complex` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The boundary operator d_n maps n-simplices to (n-1)-chains: d_n([v0,...,vn]) = sum(-1)^i [v0,...,v_hat_i,...,vn]. Key property: d_{n-1} . d_n = 0. This defines a chain complex and homology groups H_n ...
+
+- Source: https://en.wikipedia.org/wiki/Simplicial_homology
+- Citation: Wikipedia contributors, 'Simplicial homology', Wikipedia.
+- Example: d_1([A,B]) = [B]-[A]. d_2([A,B,C]) = [B,C]-[A,C]+[A,B]. d_1(d_2([A,B,C])) = (C-B)-(C-A)+(B-A) = 0.
 
 #### `persistence_diagram`
 
@@ -32319,7 +34257,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | vietoris_rips |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A persistence diagram plots (birth, death) of topological features across scales. Long-lived features (far from diagonal) represent significant topology; short-lived features are noise. Computed via t...
+
+- Source: https://en.wikipedia.org/wiki/Persistent_homology
+- Citation: Wikipedia contributors, 'Persistent homology', Wikipedia.
+- Example: Point cloud forming a circle: H_0 pair born at 0, dies when circle connects. H_1 pair born when loop appears, dies when filled. Loop has large persistence.
 
 
 ### pharmacology_deep
@@ -32338,7 +34282,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.integrate.solve_ivp` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Michaelis-Menten pharmacokinetics: -dC/dt = V_max * C / (K_m + C). At low C (C << K_m): first-order (rate proportional to C). At high C (C >> K_m): zero-order (rate = V_max, constant). Phenytoin and e...
+
+- Source: https://en.wikipedia.org/wiki/Michaelis%E2%80%93Menten_kinetics
+- Citation: Wikipedia contributors, 'Michaelis-Menten kinetics', Wikipedia.
+- Example: V_max = 500 mg/day, K_m = 5 mg/L, C = 15 mg/L. Rate = 500*15/(5+15) = 375 mg/day.
 
 #### `two_compartment_model`
 
@@ -32354,7 +34304,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.integrate.solve_ivp` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Two-compartment PK model: C(t) = A*exp(-alpha*t) + B*exp(-beta*t), where alpha (distribution) > beta (elimination). A and B are hybrid constants. V_d = dose / (A + B). CL = dose / AUC.
+
+- Source: https://en.wikipedia.org/wiki/Pharmacokinetics#Multi-compartment_models
+- Citation: Wikipedia contributors, 'Pharmacokinetics', Wikipedia.
+- Example: A=8 mg/L, alpha=2 hr^-1, B=2 mg/L, beta=0.2 hr^-1. At t=1: C = 8*e^-2 + 2*e^-0.2 = 1.083 + 1.637 = 2.72 mg/L.
 
 
 ### physical_chemistry
@@ -32509,7 +34465,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | logarithm |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Flory-Huggins free energy of mixing per lattice site: dG_mix/(k_B*T*N) = phi*ln(phi)/N_1 + (1-phi)*ln(1-phi)/N_2 + chi*phi*(1-phi), where phi is volume fraction, N_1, N_2 are degrees of polymerisa...
+
+- Source: https://en.wikipedia.org/wiki/Flory%E2%80%93Huggins_solution_theory
+- Citation: Wikipedia contributors, 'Flory-Huggins solution theory', Wikipedia.
+- Example: N_1 = 100, N_2 = 1 (polymer + solvent), phi = 0.1, chi = 0.4. dG/(kT*N) = 0.1*ln(0.1)/100 + 0.9*ln(0.9)/1 + 0.4*0.1*0.9 = -0.0023 + (-0.0948) + 0.036 = -0.0611.
 
 
 ### power_systems
@@ -33068,7 +35030,13 @@ status, knowledge atom, and dependencies.
 | Function | `3-qubit repetition code` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The 3-qubit bit flip code encodes |0> as |000> and |1> as |111>. A single bit flip on any qubit is corrected by majority vote. Syndrome measurement: two CNOT parity checks identify which qubit flipped...
+
+- Source: https://en.wikipedia.org/wiki/Quantum_error_correction#Bit_flip_code
+- Citation: Wikipedia contributors, 'Quantum error correction', Wikipedia.
+- Example: |0> encoded as |000>. Bit flip on qubit 2: |010>. Syndrome measures parity of qubits (1,2) and (2,3). Syndrome 11 -> error on qubit 2. Correct by flipping qubit 2.
 
 #### `phase_flip_code`
 
@@ -33084,7 +35052,13 @@ status, knowledge atom, and dependencies.
 | Function | `3-qubit phase flip code` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The 3-qubit phase flip code encodes |+> as |+++> and |-> as |--->. A phase flip (Z error) on any qubit is detected by measuring in the X basis. Combines with bit flip code to form the Shor 9-qubit cod...
+
+- Source: https://en.wikipedia.org/wiki/Quantum_error_correction
+- Citation: Wikipedia contributors, 'Quantum error correction', Wikipedia.
+- Example: |+> encoded as |+++>. Phase flip on qubit 1: |-++>. Hadamard all, measure parity. Syndrome identifies qubit 1.
 
 
 ### quantum_ext
@@ -33556,7 +35530,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mm1_queue |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Jackson network is an open network of queuing nodes where arrivals are Poisson and service is exponential. Product form solution: P(n1,...,nK) = prod P_k(n_k), where each node behaves as an independ...
+
+- Source: https://en.wikipedia.org/wiki/Jackson_network
+- Citation: Wikipedia contributors, 'Jackson network', Wikipedia.
+- Example: 3-node network. External arrivals: lambda_1=5. Routing: 50% from node 1 to node 2, 50% exit. lambda_2=2.5. Each node analysed independently.
 
 #### `mg1_queue`
 
@@ -33569,7 +35549,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | mm1_queue |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> M/G/1 queue (Poisson arrivals, general service, 1 server). Pollaczek-Khinchine formula: L_q = (rho^2*(1+C_s^2))/(2*(1-rho)), where rho=lambda/mu, C_s=sigma_s/E[S] is coefficient of variation of servic...
+
+- Source: https://en.wikipedia.org/wiki/M/G/1_queue
+- Citation: Wikipedia contributors, 'M/G/1 queue', Wikipedia.
+- Example: lambda=8/hr, E[S]=6 min=0.1 hr, sigma_s=3 min. rho=0.8, C_s=0.5. L_q = (0.64*1.25)/(2*0.2) = 0.8/0.4 = 2 customers.
 
 
 ### real_analysis
@@ -33934,7 +35920,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | multiplication |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> REINFORCE policy gradient: nabla J(theta) = E[sum_t(nabla log pi(a_t|s_t,theta) * G_t)], where G_t is return from step t. Update: theta += alpha*G_t*nabla log pi. High variance; reduced by subtracting...
+
+- Source: https://en.wikipedia.org/wiki/REINFORCE_(algorithm)
+- Citation: Wikipedia contributors, 'REINFORCE', Wikipedia.
+- Example: Episode return G=10. Policy pi(a|s,theta) = softmax. nabla log pi = [0.3, -0.3]. Update: theta += 0.01*10*[0.3,-0.3] = [0.03,-0.03].
 
 #### `sarsa_update`
 
@@ -33947,7 +35939,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | q_value_update |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> SARSA is an on-policy TD control algorithm: Q(S_t,A_t) += alpha*(R_{t+1} + gamma*Q(S_{t+1},A_{t+1}) - Q(S_t,A_t)). The name comes from (S,A,R,S',A'). Learns the value of the policy being followed, inc...
+
+- Source: https://en.wikipedia.org/wiki/State%E2%80%93action%E2%80%93reward%E2%80%93state%E2%80%93action
+- Citation: Wikipedia contributors, 'State-action-reward-state-action', Wikipedia.
+- Example: Q(s1,right)=5, R=1, Q(s2,up)=8, gamma=0.9, alpha=0.1. Update: Q(s1,right) += 0.1*(1+0.9*8-5) = 5+0.1*3.2 = 5.32.
 
 #### `td_lambda`
 
@@ -33960,7 +35958,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | bellman_equation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> TD(lambda) combines MC and TD learning: e_t(s) = gamma*lambda*e_{t-1}(s) + I(S_t=s) (eligibility trace). Update: V(s) += alpha*delta_t*e_t(s), where delta_t = R_{t+1} + gamma*V(S_{t+1}) - V(S_t). lamb...
+
+- Source: https://en.wikipedia.org/wiki/Temporal_difference_learning#TD-Lambda
+- Citation: Wikipedia contributors, 'Temporal difference learning', Wikipedia.
+- Example: lambda=0.9, gamma=0.99. State visited at t=0: e_0=1. At t=1: e_0=0.891. TD error propagates back through trace.
 
 
 ### robotics
@@ -34312,7 +36316,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.spatial.Delaunay` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Delaunay triangulation has the property that no point lies inside any triangle's circumcircle. Maximises the minimum angle. Dual of the Voronoi diagram. InCircle test checks if point d is inside the...
+
+- Source: https://en.wikipedia.org/wiki/Delaunay_triangulation
+- Citation: Wikipedia contributors, 'Delaunay triangulation', Wikipedia.
+- Example: Triangle (0,0),(1,0),(0,1). Circumcircle centre (0.5,0.5), radius sqrt(0.5). Point (0.4,0.4) is inside -> not Delaunay if part of another triangle.
 
 
 ### statistical_mechanics
@@ -34831,7 +36841,13 @@ status, knowledge atom, and dependencies.
 | Function | `scipy.signal / statsmodels` |
 | PyPI | `scipy>=1.11` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> ARIMA(p,d,q): AutoRegressive Integrated Moving Average. AR(p): X_t = sum(phi_i*X_{t-i}) + e_t. MA(q): X_t = e_t + sum(theta_j*e_{t-j}). I(d): difference d times to achieve stationarity. Box-Jenkins me...
+
+- Source: https://en.wikipedia.org/wiki/Autoregressive_integrated_moving_average
+- Citation: Wikipedia contributors, 'Autoregressive integrated moving average', Wikipedia.
+- Example: ARIMA(1,1,0): first difference, then AR(1). dX_t = 0.8*dX_{t-1} + e_t. Forecast: dX_{T+1} = 0.8*dX_T.
 
 
 ### topology
@@ -35166,7 +37182,13 @@ status, knowledge atom, and dependencies.
 | Function | `analysis/synthesis filter bank` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A filter bank implements the discrete wavelet transform: analysis filters (lowpass h0, highpass h1) decompose the signal, followed by downsampling by 2. Synthesis filters reconstruct. Perfect reconstr...
+
+- Source: https://en.wikipedia.org/wiki/Filter_bank
+- Citation: Wikipedia contributors, 'Filter bank', Wikipedia.
+- Example: Haar filters: h0 = [1,1]/sqrt(2) (lowpass), h1 = [1,-1]/sqrt(2) (highpass). Convolve signal with filters, downsample by 2.
 
 #### `multiresolution`
 
@@ -35179,7 +37201,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | exponentiation |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Multiresolution analysis (MRA) provides a framework for wavelet theory: a nested sequence of subspaces V_0 subset V_1 subset ... with a scaling function phi and wavelet psi. V_j captures features at s...
+
+- Source: https://en.wikipedia.org/wiki/Multiresolution_analysis
+- Citation: Wikipedia contributors, 'Multiresolution analysis', Wikipedia.
+- Example: Image compression: V_0 = thumbnail (low frequency). W_0 = details needed for full resolution. Keep V_0 + large W_0 coefficients, discard small ones.
 
 
 ---
@@ -35627,7 +37655,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | morphism_compose |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An abelian category has: zero object, binary products/coproducts, kernels/cokernels, and every monomorphism is a kernel, every epimorphism is a cokernel. Examples: Ab, R-Mod, sheaves of abelian groups...
+
+- Source: https://en.wikipedia.org/wiki/Abelian_category
+- Citation: Wikipedia contributors, 'Abelian category', Wikipedia.
+- Example: In Ab: kernel of f: A->B is the subgroup {a : f(a)=0}. Cokernel is B/im(f). Short exact sequence: 0->Z->Z->Z/2->0 (multiplication by 2).
 
 #### `adjunction_unit_counit`
 
@@ -35640,7 +37674,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | natural_transform |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An adjunction F -| G between categories C and D consists of natural transformations eta: Id_C -> GF (unit) and epsilon: FG -> Id_D (counit) satisfying the triangle identities: (epsilon_F).(F_eta) = id...
+
+- Source: https://en.wikipedia.org/wiki/Adjoint_functors
+- Citation: Wikipedia contributors, 'Adjoint functors', Wikipedia.
+- Example: Free-forgetful adjunction: F: Set->Grp (free group), G: Grp->Set (underlying set). eta(x) = generator x in F({x}). epsilon maps formal words to their group product.
 
 #### `enriched_category`
 
@@ -35653,7 +37693,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | morphism_compose |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A V-enriched category has hom-objects Hom(A,B) in a monoidal category V (instead of sets). Composition is a morphism in V: Hom(B,C) tensor Hom(A,B) -> Hom(A,C). Examples: Ab-enriched (abelian groups),...
+
+- Source: https://en.wikipedia.org/wiki/Enriched_category
+- Citation: Wikipedia contributors, 'Enriched category', Wikipedia.
+- Example: Metric space as [0,inf]-enriched category: objects = points, Hom(x,y) = d(x,y). Composition = triangle inequality: d(x,z) <= d(x,y)+d(y,z).
 
 #### `monad_compute`
 
@@ -35666,7 +37712,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | functor_apply |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A monad on a category C is a triple (T, eta, mu) where T: C->C is an endofunctor, eta: Id->T is the unit, and mu: T^2->T is multiplication, satisfying mu . T(mu) = mu . mu_T and mu . eta_T = mu . T(et...
+
+- Source: https://en.wikipedia.org/wiki/Monad_(category_theory)
+- Citation: Wikipedia contributors, 'Monad (category theory)', Wikipedia.
+- Example: Maybe monad: T(A) = A + {Nothing}. return(a) = Just(a). join(Just(Just(a))) = Just(a), join(Nothing) = Nothing.
 
 
 ### category_theory
@@ -35799,7 +37851,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | conditional_prob |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Pearl's do-calculus provides rules for identifying causal effects from observational data using a causal DAG. The do-operator: P(Y|do(X)) removes incoming edges to X. Three rules handle insertion/dele...
+
+- Source: https://en.wikipedia.org/wiki/Do_calculus
+- Citation: Wikipedia contributors, 'Do-calculus', Wikipedia.
+- Example: DAG: Z->X->Y, Z->Y. P(Y|do(X)) = sum_Z P(Y|X,Z)*P(Z) (back-door adjustment). Confounding by Z is removed.
 
 
 ### complex_analysis
@@ -36098,7 +38156,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.diffgeom` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Mean curvature H = (kappa_1 + kappa_2)/2, where kappa_1 and kappa_2 are principal curvatures. Minimal surfaces have H = 0 everywhere (soap films). H = (eG - 2fF + gE) / (2(EG-F^2)) from fundamental fo...
+
+- Source: https://en.wikipedia.org/wiki/Mean_curvature
+- Citation: Wikipedia contributors, 'Mean curvature', Wikipedia.
+- Example: Cylinder radius R: kappa_1 = 1/R, kappa_2 = 0. H = 1/(2R). Not a minimal surface.
 
 #### `parallel_transport`
 
@@ -36114,7 +38178,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.diffgeom` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Parallel transport moves a vector along a curve while keeping it 'as parallel as possible' (covariant derivative = 0). On a curved surface, parallel transport around a closed loop rotates the vector b...
+
+- Source: https://en.wikipedia.org/wiki/Parallel_transport
+- Citation: Wikipedia contributors, 'Parallel transport', Wikipedia.
+- Example: On a sphere: transport a vector from North Pole along 0-deg meridian to equator, along equator to 90-deg meridian, back to pole. Vector rotates 90 degrees.
 
 #### `second_fundamental_form`
 
@@ -36130,7 +38200,13 @@ status, knowledge atom, and dependencies.
 | Function | `sympy.diffgeom` |
 | PyPI | `sympy>=1.12` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The second fundamental form II = e*du^2 + 2f*du*dv + g*dv^2 measures curvature, where e = r_uu.n, f = r_uv.n, g = r_vv.n. Gaussian curvature K = (eg-f^2)/(EG-F^2). Mean curvature H = (eG-2fF+gE)/(2(EG...
+
+- Source: https://en.wikipedia.org/wiki/Second_fundamental_form
+- Citation: Wikipedia contributors, 'Second fundamental form', Wikipedia.
+- Example: Sphere of radius R: e=g=1/R, f=0, E=G=R^2, F=0. K = 1/R^2. H = 1/R.
 
 
 ### formal_verification
@@ -36609,7 +38685,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.linalg.solve` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The natural gradient scales the ordinary gradient by the inverse Fisher information matrix: theta_{t+1} = theta_t - eta * I(theta_t)^{-1} * grad L. This makes updates invariant to reparametrisation, c...
+
+- Source: https://en.wikipedia.org/wiki/Natural_gradient_descent
+- Citation: Wikipedia contributors, 'Natural gradient descent', Wikipedia.
+- Example: Exponential family with I = [[2,0],[0,4]], grad = [1,2]. Natural grad = [[0.5,0],[0,0.25]] * [1,2] = [0.5, 0.5]. Step is scaled by curvature.
 
 
 ### logic_deep
@@ -36921,7 +39003,13 @@ status, knowledge atom, and dependencies.
 | Function | `numpy.average (weighted)` |
 | PyPI | `numpy>=1.24` |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The conditional expectation E[X|G] is the G-measurable function satisfying integral_A E[X|G] dP = integral_A X dP for all A in G. For discrete G = sigma({B_1,...,B_n}): E[X|G] = sum (E[X*1_{B_i}]/P(B_...
+
+- Source: https://en.wikipedia.org/wiki/Conditional_expectation
+- Citation: Wikipedia contributors, 'Conditional expectation', Wikipedia.
+- Example: X uniform on [0,1], G = sigma({[0,0.5], (0.5,1]}). E[X|G] = 0.25 on [0,0.5], 0.75 on (0.5,1].
 
 #### `radon_nikodym`
 
@@ -36934,7 +39022,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | lebesgue_measure |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Radon-Nikodym theorem: if nu is absolutely continuous w.r.t. mu (nu << mu), there exists a measurable function f (the Radon-Nikodym derivative dnu/dmu) such that nu(A) = integral_A f dmu. f is uni...
+
+- Source: https://en.wikipedia.org/wiki/Radon%E2%80%93Nikodym_theorem
+- Citation: Wikipedia contributors, 'Radon-Nikodym theorem', Wikipedia.
+- Example: mu = Lebesgue measure, nu({A}) = integral_A 2x dx. Then dnu/dmu = f(x) = 2x.
 
 
 ### measure_theory
@@ -37088,7 +39182,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | taylor_series |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An approximation bound quantifies how close an approximate solution is to optimal. Additive: |f(x_approx) - f(x*)| <= epsilon. Multiplicative: f(x_approx) <= alpha*f(x*) (alpha-approximation). PTAS: a...
+
+- Source: https://en.wikipedia.org/wiki/Approximation_algorithm
+- Citation: Wikipedia contributors, 'Approximation algorithm', Wikipedia.
+- Example: Greedy set cover: ln(n)-approximation. For n=100: solution is at most ln(100) ~ 4.6 times optimal.
 
 #### `dimensional_check`
 
@@ -37101,7 +39201,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | dimensional_analysis |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Dimensional checking verifies formula correctness by ensuring both sides have the same physical dimensions. Each term in a sum must have the same dimensions. Arguments of transcendental functions must...
+
+- Source: https://en.wikipedia.org/wiki/Dimensional_analysis
+- Citation: Wikipedia contributors, 'Dimensional analysis', Wikipedia.
+- Example: E = mc^2: [E] = [M*L^2*T^{-2}]. [mc^2] = [M]*[L^2*T^{-2}] = [M*L^2*T^{-2}]. Consistent.
 
 #### `proof_strategy`
 
@@ -37114,7 +39220,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | verify_proof |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Choosing a proof strategy: direct proof (assume premises, derive conclusion), proof by contradiction (assume negation, derive contradiction), proof by induction (base case + inductive step), proof by ...
+
+- Source: https://en.wikipedia.org/wiki/Mathematical_proof
+- Citation: Wikipedia contributors, 'Mathematical proof', Wikipedia.
+- Example: Prove sqrt(2) is irrational: contradiction. Assume p/q in lowest terms, then p^2=2q^2 implies p even, then q even, contradicting lowest terms.
 
 
 ### meta_reasoning_t7
@@ -37449,7 +39561,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | quantifier_eval |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A set S is definable in a structure M if there is a formula phi(x) such that S = {a in M : M |= phi(a)}. With parameters: phi(x, b) for fixed b. Example: even numbers are definable in (Z,+,0) by 'exis...
+
+- Source: https://en.wikipedia.org/wiki/Definable_set
+- Citation: Wikipedia contributors, 'Definable set', Wikipedia.
+- Example: In (N, +, *, 0, 1): primes are definable by 'x>1 and forall y forall z (x=y*z -> y=1 or z=1)'.
 
 #### `elementary_equivalence`
 
@@ -37462,7 +39580,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | structure_check |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Two structures M and N are elementarily equivalent (M equiv N) if they satisfy exactly the same first-order sentences. Isomorphic structures are elementarily equivalent, but not conversely (e.g., (Q,<...
+
+- Source: https://en.wikipedia.org/wiki/Elementary_equivalence
+- Citation: Wikipedia contributors, 'Elementary equivalence', Wikipedia.
+- Example: (Q,<) and (R,<): both are dense linear orders without endpoints. Any first-order sentence true in one is true in the other.
 
 #### `structure_check`
 
@@ -37475,7 +39599,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | quantifier_eval |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A structure M = (A, ...) interprets the symbols of a first-order language: constants as elements, function symbols as functions, relation symbols as relations. A sentence phi is true in M (M |= phi) i...
+
+- Source: https://en.wikipedia.org/wiki/Structure_(mathematical_logic)
+- Citation: Wikipedia contributors, 'Structure (mathematical logic)', Wikipedia.
+- Example: M = (Z, +, *, 0, 1). The sentence 'forall x exists y (x+y=0)' is true in M (additive inverses exist).
 
 
 ### nonlinear_dynamics
@@ -37941,7 +40071,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | stabilizer_check |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Logical operators in a quantum error-correcting code are Pauli operators that commute with all stabilizers but are not themselves stabilizers. They act on the encoded logical qubit. For an [[n,k,d]] c...
+
+- Source: https://en.wikipedia.org/wiki/Stabilizer_code#Logical_operators
+- Citation: Wikipedia contributors, 'Stabilizer code', Wikipedia.
+- Example: Shor code logical X: X on all 9 qubits. Logical Z: Z on qubits 1,2,3. Both commute with all stabilizers, anticommute with each other.
 
 #### `shor_code`
 
@@ -37954,7 +40090,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | phase_flip_code |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Shor code is a 9-qubit code that corrects any single-qubit error. It concatenates the 3-qubit phase flip code with the 3-qubit bit flip code. |0> -> (|000>+|111>)(|000>+|111>)(|000>+|111>)/2sqrt(2...
+
+- Source: https://en.wikipedia.org/wiki/Quantum_error_correction#Shor_code
+- Citation: Wikipedia contributors, 'Shor code', Wikipedia.
+- Example: Bit flip on qubit 5: detected by parity checks within the second block of three. Phase flip: detected by inter-block parity checks.
 
 #### `stabilizer_check`
 
@@ -37967,7 +40109,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | quantum_gate |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The stabilizer formalism describes quantum error-correcting codes via a group of Pauli operators that stabilize the code space: S|psi> = |psi> for all S in the stabilizer group. Error detection: if E ...
+
+- Source: https://en.wikipedia.org/wiki/Stabilizer_code
+- Citation: Wikipedia contributors, 'Stabilizer code', Wikipedia.
+- Example: 3-qubit bit flip code stabilizers: Z1Z2 and Z2Z3. Bit flip X1: X1 anticommutes with Z1Z2 (syndrome 1) but commutes with Z2Z3 (syndrome 0). Syndrome 10 -> error on qubit 1.
 
 #### `steane_code`
 
@@ -37980,7 +40128,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | stabilizer_check |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The Steane code is a [[7,1,3]] CSS code based on the classical [7,4,3] Hamming code. It encodes 1 logical qubit in 7 physical qubits and corrects any single-qubit error. Transversal gates (H, CNOT, S)...
+
+- Source: https://en.wikipedia.org/wiki/Steane_code
+- Citation: Wikipedia contributors, 'Steane code', Wikipedia.
+- Example: Logical |0> = (1/sqrt(8)) sum of even-weight codewords of Hamming(7,4). X-type errors detected by Hamming parity checks, Z-type by dual code checks.
 
 
 ### quantum_ext
@@ -38735,7 +40889,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | functor_apply |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A Kan extension of a functor F: C->E along K: C->D is the best approximation of F that factors through K. Left Kan extension Lan_K F: for each d in D, (Lan_K F)(d) = colim_{(c,f:Kc->d)} F(c). Right Ka...
+
+- Source: https://en.wikipedia.org/wiki/Kan_extension
+- Citation: Wikipedia contributors, 'Kan extension', Wikipedia.
+- Example: F: {*}->Set with F(*)=A, K: {*}->N (inclusion as 0). Left Kan of F along K: constant functor sending each n to A (the free extension).
 
 #### `topos_basics`
 
@@ -38748,7 +40908,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | natural_transform |
 | Verification | reference |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> A topos is a category that behaves like the category of sets: has finite limits, exponentials, and a subobject classifier Omega. The subobject classifier generalises {true, false}: Sub(A) ~ Hom(A, Ome...
+
+- Source: https://en.wikipedia.org/wiki/Topos
+- Citation: Wikipedia contributors, 'Topos', Wikipedia.
+- Example: Set is a topos with Omega = {0,1}. The classifier chi_S: A->{0,1} maps a in S to 1, a not in S to 0.
 
 
 ### category_theory
@@ -38988,7 +41154,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | verify_proof |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Theorem dependency analysis identifies which axioms, definitions, and prior theorems a result depends on. Dependency graph is a DAG. Removing a dependency may invalidate the theorem. Minimal dependenc...
+
+- Source: https://en.wikipedia.org/wiki/Mathematical_proof#Structure
+- Citation: Wikipedia contributors, 'Mathematical proof', Wikipedia.
+- Example: Fundamental theorem of calculus depends on: Riemann integral definition, Mean Value Theorem, limit definition. MVT depends on Rolle's theorem, which depends on Extreme Value Theorem.
 
 
 ### meta_reasoning_higher
@@ -39273,7 +41445,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | structure_check |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> The compactness theorem: a set of first-order sentences is satisfiable iff every finite subset is satisfiable. Applications: (1) if every finite substructure has property P, the structure has P (if P ...
+
+- Source: https://en.wikipedia.org/wiki/Compactness_theorem
+- Citation: Wikipedia contributors, 'Compactness theorem', Wikipedia.
+- Example: Axioms for infinite sets: add sentences phi_n = 'there exist n distinct elements' for each n. Every finite subset is satisfiable. By compactness, all together are satisfiable -> infinite model exists.
 
 #### `ultraproduct`
 
@@ -39286,7 +41464,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | compactness_apply |
 | Verification | circular |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> An ultraproduct of structures M_i (i in I) with ultrafilter U on I is the quotient of the direct product by the equivalence relation: (a_i) ~ (b_i) iff {i : a_i = b_i} in U. Los's theorem: the ultrapr...
+
+- Source: https://en.wikipedia.org/wiki/Ultraproduct
+- Citation: Wikipedia contributors, 'Ultraproduct', Wikipedia.
+- Example: Ultraproduct of (Z/nZ) with non-principal ultrafilter on N gives a field of characteristic 0 (each prime divides only finitely many n's).
 
 
 ### proof_theory
@@ -39440,7 +41624,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | hypothesis_design |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Scientific research methodology: (1) observe phenomenon, (2) formulate hypothesis, (3) design experiment (control group, randomisation, blinding), (4) collect data, (5) analyse (statistical tests), (6...
+
+- Source: https://en.wikipedia.org/wiki/Scientific_method
+- Citation: Wikipedia contributors, 'Scientific method', Wikipedia.
+- Example: Hypothesis: drug X lowers blood pressure. RCT: 100 patients randomised to drug/placebo. Measure BP at 12 weeks. t-test p=0.003 -> reject null.
 
 
 ### meta_reasoning_higher
@@ -40191,7 +42381,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | architecture_analysis |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Ablation studies systematically remove or modify components to measure their contribution. Design principles: change one thing at a time, use the same random seed, report confidence intervals, include...
+
+- Source: https://en.wikipedia.org/wiki/Ablation_(artificial_intelligence)
+- Citation: Wikipedia contributors, 'Ablation (artificial intelligence)', Wikipedia.
+- Example: Transformer ablation: remove layer norm (accuracy drops 15%), remove residual connections (drops 40%), remove positional encoding (drops 8%). Residual connections are most critical.
 
 #### `compute_budget_allocate`
 
@@ -40204,7 +42400,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | scaling_prediction |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Compute budget allocation distributes a fixed training FLOP budget across model size, data size, and training steps. Chinchilla scaling laws suggest tokens = 20 * parameters for compute-optimal traini...
+
+- Source: https://en.wikipedia.org/wiki/Neural_scaling_law
+- Citation: Wikipedia contributors, 'Neural scaling law', Wikipedia.
+- Example: Budget: 1e21 FLOPs. Chinchilla-optimal: ~10B params, ~200B tokens (20:1 ratio). Training for ~3000 steps at batch 4M tokens.
 
 #### `data_augmentation_strategy`
 
@@ -40217,7 +42419,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | training_diagnosis |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Data augmentation creates synthetic training examples by applying transformations that preserve labels. For images: rotation, flipping, colour jittering, mixup. For text: back-translation, synonym rep...
+
+- Source: https://en.wikipedia.org/wiki/Data_augmentation
+- Citation: Wikipedia contributors, 'Data augmentation', Wikipedia.
+- Example: Image classification: apply random horizontal flip (p=0.5), random crop (224x224 from 256x256), colour jitter (brightness +/-0.2). Increases effective dataset size 5-10x.
 
 #### `evaluation_metric_design`
 
@@ -40230,7 +42438,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | training_diagnosis |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Evaluation metric design selects or creates metrics that faithfully measure model capability. Considerations: does the metric correlate with downstream performance? Is it gameable? Does it capture bot...
+
+- Source: https://en.wikipedia.org/wiki/Evaluation_measures_(information_retrieval)
+- Citation: Wikipedia contributors, 'Evaluation measures (information retrieval)', Wikipedia.
+- Example: For a QA system: exact match is strict (ignores paraphrases), F1 is lenient (partial credit). Choose F1 for open-ended, exact match for factoid.
 
 #### `objective_function_critique`
 
@@ -40243,7 +42457,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | loss_design |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Objective function critique evaluates whether a loss function aligns with the true goal. Goodhart's law: when a measure becomes a target, it ceases to be a good measure. Common issues: reward hacking,...
+
+- Source: https://en.wikipedia.org/wiki/Goodhart%27s_law
+- Citation: Wikipedia contributors, 'Goodhart's law', Wikipedia.
+- Example: Cross-entropy loss for language modelling: penalises all wrong tokens equally, but 'cat' and 'dog' are closer than 'cat' and '17'. A distribution-matching loss might better capture semantic similarity...
 
 #### `self_improvement_propose`
 
@@ -40256,7 +42476,13 @@ status, knowledge atom, and dependencies.
 | Prerequisites | architecture_analysis |
 | Verification | classification |
 
-**Knowledge Atom**: *missing*
+**Knowledge Atom**
+
+> Self-improvement in ML involves a model proposing modifications to its own architecture, training procedure, or objective function. This includes neural architecture search (NAS), learned optimisers, ...
+
+- Source: https://en.wikipedia.org/wiki/Neural_architecture_search
+- Citation: Wikipedia contributors, 'Neural architecture search', Wikipedia.
+- Example: Model proposes adding a residual connection between layers 2 and 5. Evaluate: train modified architecture for 1000 steps, compare validation loss. If improved by >2%, adopt.
 
 
 ### meta_reasoning_upper
