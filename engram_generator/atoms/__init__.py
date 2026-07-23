@@ -91,3 +91,17 @@ from engram_generator.atoms import crypto_topo2_pde_funcext_atoms  # noqa: F401
 from engram_generator.atoms import climate_biostats_tensor_network_cognitive_atoms  # noqa: F401
 from engram_generator.atoms import qft_telecom_robotics_ocean_geophys_atoms  # noqa: F401
 from engram_generator.atoms import computability_proof_materials_aero_power_atoms  # noqa: F401
+from engram_generator.atoms import crypto_ext_atoms  # noqa: F401
+from engram_generator.atoms import continuum_mechanics_atoms  # noqa: F401
+from engram_generator.atoms import music_plasma_qec_atoms  # noqa: F401
+from engram_generator.atoms import persistent_game_spatial_atoms  # noqa: F401
+from engram_generator.atoms import automata_diffeq_trig_atoms  # noqa: F401
+from engram_generator.atoms import actuarial_medical_meta_atoms  # noqa: F401
+from engram_generator.atoms import diffgeo_measure_photon_semi_atoms  # noqa: F401
+from engram_generator.atoms import antenna_polymer_atoms  # noqa: F401
+from engram_generator.atoms import queuing_bayesian_causal_atoms  # noqa: F401
+from engram_generator.atoms import coding_wavelet_arch_atoms  # noqa: F401
+from engram_generator.atoms import timeseries_numlinalg_digelec_atoms  # noqa: F401
+from engram_generator.atoms import struct_heat_emext_cellbio_atoms  # noqa: F401
+from engram_generator.atoms import seq_geo_meas_ling_info_net_nuc_fluid_atoms  # noqa: F401
+from engram_generator.atoms import recursion_automata_numext_atoms  # noqa: F401
