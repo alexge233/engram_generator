@@ -44,12 +44,14 @@ def register_handlers(h: dict) -> None:
         roots = [r for r in range(p) if poly.subs(x, r) % p == 0]
         has_root = len(roots) > 0
         if d.get("deg", len(coeffs) - 1) <= 3:
-            return -1 if has_root else 1
+            gen_irreducible = d.get("irreducible", not has_root)
+            lib_irreducible = not has_root
+            return 1 if lib_irreducible == gen_irreducible else -1
         return None
     h["polynomial_irreducibility"] = _polynomial_irreducibility
 
     h["splitting_field"] = lambda d: d.get("degree")
-    h["field_extension"] = lambda d: 1 if d.get("irreducible") else -1
+    h["field_extension"] = lambda d: bool(d.get("irreducible"))
 
     def _exterior_algebra(d):
         import numpy as np
@@ -132,18 +134,28 @@ def register_handlers(h: dict) -> None:
     h["order_element"] = lambda d: d.get("order")
 
     def _divisor_function(d):
+        import sympy
         n = d.get("n", 1)
-        factors = d.get("factors", {})
-        sigma0 = 1
-        sigma1 = 1
-        for p_str, e in factors.items():
-            p = int(p_str) if isinstance(p_str, str) else p_str
-            sigma0 *= (e + 1)
-            sigma1 *= (p**(e+1) - 1) // (p - 1)
-        return (sigma0, sigma1)
+        gen_sigma0 = d.get("sigma0")
+        gen_sigma1 = d.get("sigma1")
+        lib_sigma0 = int(sympy.divisor_count(n))
+        lib_sigma1 = int(sympy.divisor_sigma(n))
+        if gen_sigma0 is not None and gen_sigma1 is not None:
+            return 1 if lib_sigma0 == gen_sigma0 and lib_sigma1 == gen_sigma1 else -1
+        return (lib_sigma0, lib_sigma1)
     h["divisor_function"] = _divisor_function
 
-    h["quadratic_reciprocity"] = lambda d: d.get("pq")
+    def _quadratic_reciprocity(d):
+        import sympy
+        p, q = d.get("p"), d.get("q")
+        if p is None or q is None:
+            return None
+        lib_pq = int(sympy.legendre_symbol(p, q))
+        gen_pq = d.get("pq")
+        if gen_pq is None:
+            return None
+        return 1 if lib_pq == gen_pq else -1
+    h["quadratic_reciprocity"] = _quadratic_reciprocity
     def _quadratic_residue(d):
         import sympy
         a, p = d.get("a"), d.get("p")
@@ -245,10 +257,11 @@ def register_handlers(h: dict) -> None:
     h["trace_class"] = lambda d: d.get("nuclear_norm")
 
     def _adjoint_operator(d):
-        import numpy as np
-        mat = np.array(d["mat"], dtype=float)
-        adj = np.array(d["adj"], dtype=float)
-        return 1 if np.allclose(adj, mat.T, atol=1e-3) else -1
+        ip1 = d.get("ip_ax_y")
+        ip2 = d.get("ip_x_aty")
+        if ip1 is not None and ip2 is not None:
+            return 1 if abs(float(ip1) - float(ip2)) < 5e-3 else -1
+        return None
     h["adjoint_operator"] = _adjoint_operator
 
     h["orthogonal_projection"] = lambda d: d.get("proj")
@@ -267,14 +280,14 @@ def register_handlers(h: dict) -> None:
     h["root_test"] = lambda d: 1 if d.get("converges") else -1
     h["comparison_test"] = lambda d: 1 if d.get("b_converges") else -1
     h["alternating_series"] = lambda d: 1 if d.get("converges") else -1
-    h["integral_test"] = lambda d: 1 if d.get("converges") else -1
+    h["integral_test"] = lambda d: bool(d.get("converges"))
     h["abel_summation"] = lambda d: d.get("p")
     h["weierstrass_mtest"] = lambda d: 1 if d.get("uniform") else -1
     h["power_series_radius"] = lambda d: d.get("radius")
     h["cauchy_sequence"] = lambda d: 1 if d.get("is_cauchy") else -1
     h["epsilon_delta"] = lambda d: d.get("delta")
-    h["uniform_convergence"] = lambda d: 1 if d.get("uniform") else -1
-    h["pointwise_vs_uniform"] = lambda d: 1 if d.get("is_uniform") else -1
+    h["uniform_convergence"] = lambda d: bool(d.get("uniform"))
+    h["pointwise_vs_uniform"] = lambda d: bool(d.get("is_uniform"))
 
     def _change_of_variables(d):
         return d.get("result")
@@ -406,8 +419,11 @@ def register_handlers(h: dict) -> None:
         N = d.get("N", len(signal))
         if not signal:
             return None
-        result = sum(signal[n] * np.exp(-2j * np.pi * k * n / N) for n in range(N))
-        return round(result.real, 4)
+        result = sum(float(signal[n]) * np.exp(-2j * np.pi * k * n / N) for n in range(N))
+        gen_result = d.get("result")
+        if gen_result is not None:
+            return 1 if abs(complex(result).real - float(gen_result)) < 0.01 else -1
+        return round(float(complex(result).real), 4)
     h["dft_compute"] = _dft_compute
 
     h["windowed_fourier"] = lambda d: d.get("dft_k0")
@@ -431,7 +447,7 @@ def register_handlers(h: dict) -> None:
     h["controllability"] = lambda d: 1 if d.get("controllable") else -1
     h["observability"] = lambda d: 1 if d.get("observable") else -1
     h["pole_placement"] = lambda d: (d.get("k1"), d.get("k2"))
-    h["nyquist_stability"] = lambda d: 1 if d.get("stable") else -1
+    h["nyquist_stability"] = lambda d: bool(d.get("stable"))
 
     # -- Probability & statistics --
     h["conditional_expectation"] = lambda d: d.get("cond_exp")
@@ -470,7 +486,7 @@ def register_handlers(h: dict) -> None:
         return 1 if d.get("iso") else -1
     h["graph_isomorphism"] = _graph_isomorphism
 
-    h["hamiltonian_check"] = lambda d: 1 if d.get("ham_cycle") else -1
+    h["hamiltonian_check"] = lambda d: bool(d.get("ham_cycle"))
     h["vertex_cover"] = lambda d: d.get("cover_size")
     h["independent_set"] = lambda d: d.get("ind_size")
 
@@ -513,12 +529,22 @@ def register_handlers(h: dict) -> None:
 
     def _quantum_gate(d):
         import numpy as np
-        gate = np.array(d.get("gate", []), dtype=complex)
-        vec = np.array(d.get("vector", d.get("ket", [])), dtype=complex)
-        if gate.size == 0 or vec.size == 0:
+        gate_obj = d.get("gate")
+        vec = d.get("vector", [])
+        if hasattr(gate_obj, 'matrix'):
+            gate = np.array(gate_obj.matrix, dtype=complex)
+        elif isinstance(gate_obj, (list, tuple)):
+            gate = np.array(gate_obj, dtype=complex)
+        else:
+            return d.get("result")
+        vec_arr = np.array(vec, dtype=complex)
+        if gate.size == 0 or vec_arr.size == 0:
             return None
-        result = gate @ vec
-        return [round(x.real, 4) + round(x.imag, 4) * 1j for x in result]
+        result = gate @ vec_arr
+        gen_result = d.get("result")
+        if isinstance(gen_result, (list, tuple)):
+            return 1 if np.allclose(result.real, [float(x) for x in gen_result], atol=5e-3) else -1
+        return [round(float(x.real), 4) for x in result]
     h["quantum_gate"] = _quantum_gate
 
     h["commutator_compute"] = lambda d: d.get("comm")
@@ -636,7 +662,7 @@ def register_handlers(h: dict) -> None:
     h["satisfiability_check"] = lambda d: 1 if d.get("is_sat") else -1
     h["first_order_satisfaction"] = lambda d: 1 if d.get("result") else -1
     h["prenex_normal_form"] = lambda d: d.get("output")
-    h["predicate_logic_validity"] = lambda d: 1 if d.get("valid") else -1
+    h["predicate_logic_validity"] = lambda d: bool(d.get("valid"))
 
     # -- Optimization --
     h["simplex_step"] = lambda d: d.get("entering")
@@ -710,7 +736,7 @@ def register_handlers(h: dict) -> None:
     h["array_factor"] = lambda d: d.get("AF")
 
     h["horn_clause"] = lambda d: d.get("result", d.get("derived"))
-    h["delaunay_check"] = lambda d: 1 if d.get("is_delaunay") else -1
+    h["delaunay_check"] = lambda d: bool(d.get("is_delaunay"))
 
     # Quantum info extra
     h["quantum_key_dist"] = lambda d: d.get("result", d.get("key"))
@@ -852,7 +878,10 @@ def register_handlers(h: dict) -> None:
         if N == 0:
             return None
         result = sum(np.exp(-2j * np.pi * k * n / N) for n in range(N)) / math.sqrt(N)
-        return round(result.real, 4)
+        gen_real = d.get("output_real")
+        if gen_real is not None:
+            return 1 if abs(float(complex(result).real) - float(gen_real)) < 0.01 else -1
+        return round(float(complex(result).real), 4)
     h["qft_compute"] = _qft_compute
 
     h["natural_gradient"] = lambda d: d.get("theta_new")

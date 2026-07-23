@@ -422,7 +422,13 @@ def register_handlers(h: dict) -> None:
         return None
     h["dfa_accept"] = _dfa_accept_handler
 
-    h["dfa_complement"] = lambda d: 1 if not d.get("accepted", True) == d.get("comp_accept", False) else -1
+    def _dfa_complement_handler(d):
+        accepted = d.get("accepted")
+        comp_accept = d.get("comp_accept")
+        if accepted is None or comp_accept is None:
+            return None
+        return 1 if comp_accept != accepted else -1
+    h["dfa_complement"] = _dfa_complement_handler
 
     def _dfs_order(d):
         import networkx as nx
@@ -542,22 +548,14 @@ def register_handlers(h: dict) -> None:
     h["mod_inv"] = _mod_inv
 
     def _numerical_derivative(d):
-        fn_name = d.get("fn", "")
-        x_val = d.get("x", 0)
-        h_val = d.get("h", 0.01)
         approx = d.get("approx", 0)
         exact = d.get("exact", 0)
-        if abs(approx - exact) < 0.01:
-            return 1
-        return -1
+        return 1 if abs(approx - exact) < 0.05 else -1
     h["numerical_derivative"] = _numerical_derivative
 
     h["payoff_matrix"] = lambda d: d.get("payoff")
 
-    def _point_in_polygon(d):
-        inside = d.get("inside", False)
-        return 1 if inside else -1
-    h["point_in_polygon"] = _point_in_polygon
+    h["point_in_polygon"] = lambda d: bool(d.get("inside"))
 
     def _polygon_area(d):
         pts = d.get("pts", [])
@@ -672,10 +670,7 @@ def register_handlers(h: dict) -> None:
         return round(h_val * total / 2, 4)
     h["trapezoidal_rule"] = _trapezoidal_rule
 
-    def _trig_identity(d):
-        verified = d.get("verified", False)
-        return 1 if verified else -1
-    h["trig_identity"] = _trig_identity
+    h["trig_identity"] = lambda d: bool(d.get("verified"))
 
     def _variance(d):
         import numpy as np

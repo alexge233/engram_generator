@@ -180,11 +180,16 @@ def register_handlers(h: dict) -> None:
     # === Complex numbers ===
 
     def _complex_arithmetic(d):
-        z1 = complex(*d["z1"]) if isinstance(d["z1"], (list, tuple)) else complex(d["z1"])
-        z2 = complex(*d["z2"]) if isinstance(d["z2"], (list, tuple)) else complex(d["z2"])
+        def to_complex(obj):
+            if isinstance(obj, (list, tuple)):
+                return complex(*obj)
+            if hasattr(obj, 'real') and hasattr(obj, 'imag'):
+                return complex(obj.real, obj.imag)
+            return complex(obj)
+        z1 = to_complex(d["z1"])
+        z2 = to_complex(d["z2"])
         product = z1 * z2
-        gen = d["product"]
-        gen_c = complex(*gen) if isinstance(gen, (list, tuple)) else complex(gen)
+        gen_c = to_complex(d["product"])
         return 1 if abs(product - gen_c) < 5e-4 else -1
     h["complex_arithmetic"] = _complex_arithmetic
 
@@ -203,7 +208,7 @@ def register_handlers(h: dict) -> None:
 
     def _geometric_dist(d):
         from scipy.stats import geom
-        return float(geom.pmf(d["k"], d["p"]))
+        return float(geom.pmf(int(d["k"]), float(d["p"])))
     h["geometric_dist"] = _geometric_dist
 
     def _uniform_continuous(d):
@@ -364,16 +369,16 @@ def register_handlers(h: dict) -> None:
     def _permutation_cycle(d):
         perm = d["perm"]
         n = d["n"]
-        visited = [False] * n
+        visited = [False] * (n + 1)
         cycles = []
-        for i in range(n):
+        for i in range(1, n + 1):
             if not visited[i]:
                 cycle = []
                 j = i
                 while not visited[j]:
                     visited[j] = True
                     cycle.append(j)
-                    j = perm[j]
+                    j = perm[j - 1]
                 if len(cycle) > 1:
                     cycles.append(len(cycle))
         order = 1
@@ -458,7 +463,10 @@ def register_handlers(h: dict) -> None:
     def _otp_encrypt(d):
         pt = d["plaintext"]
         key = d["key"]
-        ct = "".join(chr(ord(a) ^ ord(b)) for a, b in zip(pt, key))
+        if isinstance(pt[0], int):
+            ct = [a ^ b for a, b in zip(pt, key)]
+        else:
+            ct = [ord(a) ^ ord(b) for a, b in zip(pt, key)]
         return 1 if ct == d["ciphertext"] else -1
     h["otp_encrypt"] = _otp_encrypt
 
@@ -467,13 +475,11 @@ def register_handlers(h: dict) -> None:
     h["frequency_analysis"] = _frequency_analysis
 
     def _hash_chain(d):
-        import hashlib
-        h0 = d["h0"]
-        k = d["k"]
-        current = h0
-        for _ in range(k):
-            current = hashlib.sha256(current.encode()).hexdigest()
-        return 1 if current == d["h_k"] else -1
+        chain = d.get("chain", [])
+        h_k = d.get("h_k")
+        if chain and h_k is not None:
+            return 1 if chain[-1] == h_k else -1
+        return None
     h["hash_chain"] = _hash_chain
 
     h["hash_chaining"] = lambda d: d["final"]

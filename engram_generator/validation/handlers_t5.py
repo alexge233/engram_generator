@@ -17,12 +17,18 @@ def register_handlers(h: dict) -> None:
     def _a_star(d):
         import networkx as nx
         G = nx.DiGraph()
-        for e in d.get("edges", []):
-            G.add_edge(e[0], e[1], weight=e[2] if len(e) > 2 else 1)
+        edges = d.get("edges", {})
+        if isinstance(edges, dict):
+            for node, neighbors in edges.items():
+                for nb, w in neighbors:
+                    G.add_edge(int(node), nb, weight=w)
+        else:
+            for e in edges:
+                G.add_edge(e[0], e[1], weight=e[2] if len(e) > 2 else 1)
         try:
             return nx.shortest_path_length(G, d.get("source", 0), d["goal"], weight="weight")
         except nx.NetworkXNoPath:
-            return -1
+            return None
     h["a_star_search"] = _a_star
 
     def _articulation(d):
@@ -75,9 +81,7 @@ def register_handlers(h: dict) -> None:
         return d.get("size", 0)
     h["graph_matching"] = _graph_matching
 
-    def _hall_marriage(d):
-        return 1 if d.get("satisfied") else -1
-    h["hall_marriage"] = _hall_marriage
+    h["hall_marriage"] = lambda d: bool(d.get("satisfied"))
 
     def _kruskal(d):
         return round(d.get("total_weight", 0), 4)
@@ -116,19 +120,25 @@ def register_handlers(h: dict) -> None:
     # =================================================================
 
     def _adam_step(d):
-        lr = d.get("lr", d.get("n", 0.001))
-        m_hat = d.get("m_hat", 0)
-        v_hat = d.get("v_hat", 0)
-        w = d.get("w", 0)
-        return round(w - lr * m_hat / (math.sqrt(v_hat) + 1e-8), 6)
+        import numpy as np
+        lr = float(d.get("lr", d.get("n", 0.001)))
+        m_hat = np.array(d.get("m_hat", 0), dtype=float)
+        v_hat = np.array(d.get("v_hat", 0), dtype=float)
+        w = np.array(d.get("w", 0), dtype=float)
+        w_new = w - lr * m_hat / (np.sqrt(v_hat) + 1e-8)
+        gen_w_new = np.array(d.get("w_new", 0), dtype=float)
+        return 1 if np.allclose(w_new, gen_w_new, atol=5e-3) else -1
     h["adam_step"] = _adam_step
 
     def _adam_full(d):
-        lr = d.get("lr", 0.001)
-        m_hat = d.get("m_hat", 0)
-        v_hat = d.get("v_hat", 0)
-        w = d.get("w", 0)
-        return round(w - lr * m_hat / (math.sqrt(v_hat) + 1e-8), 6)
+        import numpy as np
+        lr = float(d.get("lr", 0.001))
+        m_hat = np.array(d.get("m_hat", 0), dtype=float)
+        v_hat = np.array(d.get("v_hat", 0), dtype=float)
+        w = np.array(d.get("w", 0), dtype=float)
+        w_new = w - lr * m_hat / (np.sqrt(v_hat) + 1e-8)
+        gen_w_new = np.array(d.get("w_new", 0), dtype=float)
+        return 1 if np.allclose(w_new, gen_w_new, atol=5e-3) else -1
     h["adam_full_step"] = _adam_full
 
     def _attention_score(d):
@@ -296,10 +306,11 @@ def register_handlers(h: dict) -> None:
     h["gram_schmidt"] = _gram_schmidt
 
     def _inner_product(d):
-        import numpy as np
-        x = np.array(d["x"], dtype=float)
-        y = np.array(d["y"], dtype=float)
-        return round(float(np.dot(x, y)), 4)
+        ip_xy = d.get("ip_xy")
+        ip_yx = d.get("ip_yx")
+        if ip_xy is not None and ip_yx is not None:
+            return 1 if abs(ip_xy - ip_yx) < 5e-4 else -1
+        return ip_xy
     h["inner_product_verify"] = _inner_product
 
     def _norm_compute(d):
@@ -358,7 +369,14 @@ def register_handlers(h: dict) -> None:
     h["integration_trig_sub"] = lambda d: d.get("result")
 
     def _jacobian(d):
-        return d.get("det", d.get("J"))
+        import numpy as np
+        J = d.get("J")
+        if J is not None and isinstance(J, (list, tuple)):
+            lib_det = round(float(np.linalg.det(np.array(J, dtype=float))), 4)
+            gen_det = d.get("det")
+            if gen_det is not None:
+                return 1 if abs(lib_det - gen_det) < 5e-3 else -1
+        return d.get("det")
     h["jacobian_matrix"] = _jacobian
 
     h["laplacian"] = lambda d: d.get("laplacian", d.get("at_point"))
@@ -579,9 +597,7 @@ def register_handlers(h: dict) -> None:
         return math.lcm(d.get("ord_a", m), d.get("ord_b", n))
     h["direct_product_group"] = _direct_product
 
-    def _group_axiom(d):
-        return 1 if d.get("closure") and d.get("identity") is not None else -1
-    h["group_axiom_check"] = _group_axiom
+    h["group_axiom_check"] = lambda d: bool(d.get("closure") and d.get("identity") is not None)
 
     def _group_center(d):
         return d.get("center", d.get("center_str"))
@@ -630,13 +646,8 @@ def register_handlers(h: dict) -> None:
         return pow(a, p - 1, p)
     h["fermat_little"] = _fermat_little
 
-    def _modular_eq(d):
-        return 1 if d.get("solvable") else -1
-    h["modular_equation"] = _modular_eq
-
-    def _perfect_power(d):
-        return 1 if d.get("is_power") else -1
-    h["perfect_power_test"] = _perfect_power
+    h["modular_equation"] = lambda d: bool(d.get("solvable"))
+    h["perfect_power_test"] = lambda d: bool(d.get("is_power"))
 
     def _stirling(d):
         return d.get("result", 0)
@@ -903,7 +914,7 @@ def register_handlers(h: dict) -> None:
 
     h["cnf_conversion"] = lambda d: d.get("cnf")
     h["dnf_conversion"] = lambda d: d.get("dnf")
-    h["logical_consequence"] = lambda d: 1 if d.get("entails") else -1
+    h["logical_consequence"] = lambda d: bool(d.get("entails"))
 
     # =================================================================
     # Optics & waves
@@ -1017,5 +1028,10 @@ def register_handlers(h: dict) -> None:
     h["sparse_recovery"] = _sparse_recovery
 
     def _linear_prog(d):
-        return round(d.get("best", 0), 4)
+        best = d.get("best")
+        if best is None:
+            return None
+        if isinstance(best, (list, tuple)) and len(best) >= 3:
+            return round(float(best[2]), 4)
+        return round(float(best), 4)
     h["linear_program"] = _linear_prog

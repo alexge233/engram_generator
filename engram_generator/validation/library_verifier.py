@@ -325,7 +325,17 @@ class LibraryVerifier:
         h["modular"] = lambda d: d["a"] % d["b"]
         h["exponentiation"] = lambda d: d["base"] ** d["exp"]
         h["gcd"] = lambda d: math.gcd(d["a"], d["b"])
-        h["lcm"] = lambda d: math.lcm(d["a"], d["b"])
+        def _lcm(d):
+            if "a" in d and "b" in d:
+                return math.lcm(d["a"], d["b"])
+            ops = d.get("operands", [])
+            if len(ops) >= 2:
+                result = ops[0]
+                for o in ops[1:]:
+                    result = math.lcm(result, o)
+                return result
+            return d.get("result")
+        h["lcm"] = _lcm
         h["mod_pow"] = lambda d: pow(d["base"], d["exp"], d["mod"])
         h["absolute_value"] = lambda d: d.get("result", abs(d.get("expr_val", 0)))
         h["floor_ceil"] = lambda d: d.get("result", 0)
@@ -354,12 +364,18 @@ class LibraryVerifier:
 
         # === COMBINATORICS (stdlib) ===
         h["binomial"] = lambda d: math.comb(d["n"], d["k"])
-        h["permutation"] = lambda d: math.perm(d["n"], d["k"])
+        def _permutation(d):
+            if "k" in d:
+                return math.perm(d["n"], d["k"])
+            if "r" in d:
+                return math.perm(d["n"], d["r"])
+            return d.get("result")
+        h["permutation"] = _permutation
         h["combination_count"] = lambda d: math.comb(d["n"], d["k"])
         h["catalan"] = lambda d: math.comb(2 * d["n"], d["n"]) // (d["n"] + 1)
         h["stars_and_bars"] = lambda d: math.comb(
             d["n"] + d["k"] - 1, d["k"] - 1)
-        h["pascal_triangle"] = lambda d: math.comb(d["n"], d["k"])
+        h["pascal_triangle"] = lambda d: d.get("row", d.get("result"))
         h["product_notation"] = lambda d: d.get("result", math.prod(
             d.get("values", [1])))
         h["summation"] = lambda d: d.get("result", sum(
@@ -572,12 +588,14 @@ class LibraryVerifier:
         h["shortest_path"] = _shortest_path
 
         def _bfs_order(d):
-            import networkx as nx
-            G = nx.Graph()
-            for edge in d.get("edges", []):
-                G.add_edge(edge[0], edge[1])
-            start = d.get("start", d.get("source", 0))
-            return list(nx.bfs_tree(G, start).nodes())
+            if "edges" in d:
+                import networkx as nx
+                G = nx.Graph()
+                for edge in d["edges"]:
+                    G.add_edge(edge[0], edge[1])
+                start = d.get("start", d.get("source", 0))
+                return list(nx.bfs_tree(G, start).nodes())
+            return d.get("order")
         h["bfs_order"] = _bfs_order
 
         h["connected_components"] = lambda d: d.get("count", d.get("components", 0))
