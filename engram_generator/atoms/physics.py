@@ -28,6 +28,7 @@ register_atom(Atom(
         "equations are valid only when acceleration is constant "
         "(uniform acceleration) and motion is along a straight line."
     ),
+    example="v_0=0, a=9.81 m/s^2, t=3s: v = 0 + 9.81*3 = 29.43 m/s",
     tier=4,
     domain="physics",
     source=(
@@ -53,6 +54,7 @@ register_atom(Atom(
         "in classical mechanics without reference to the forces that "
         "cause the motion."
     ),
+    example="v_0=10 m/s, a=2 m/s^2, t=5s: s = 10*5 + 0.5*2*25 = 50 + 25 = 75 m",
     tier=4,
     domain="physics",
     source=(
@@ -133,6 +135,7 @@ register_atom(Atom(
         "mechanical energy changes little and its conservation is a "
         "useful approximation."
     ),
+    example="Ball m=2kg at h=10m: PE = 2*9.81*10 = 196.2J. At ground: KE = 196.2J, v = sqrt(2*196.2/2) = 14.0 m/s",
     tier=4,
     domain="physics",
     source=(
@@ -211,6 +214,7 @@ register_atom(Atom(
         "combination of the empirical Boyle's law, Charles's law, "
         "Avogadro's law, and Gay-Lussac's law."
     ),
+    example="n=1 mol, T=273.15K, P=101325 Pa: V = nRT/P = 1*8.314*273.15/101325 = 0.02241 m^3 = 22.41 L",
     tier=4,
     domain="physics",
     source=(
@@ -237,6 +241,7 @@ register_atom(Atom(
         "period for any finite amplitude, but the error is negligible "
         "for small angles (less than about 15 degrees)."
     ),
+    example="L=1m, g=9.81: T = 2*pi*sqrt(1/9.81) = 2*pi*0.3193 = 2.006 s",
     tier=4,
     domain="physics",
     source=(
@@ -266,6 +271,7 @@ register_atom(Atom(
         "one medium to another, their frequency remains the same but "
         "their wavelength and speed may change."
     ),
+    example="Sound in air: v=343 m/s, f=440 Hz (concert A). lambda = v/f = 343/440 = 0.78 m",
     tier=4,
     domain="physics",
     source=(
@@ -328,6 +334,7 @@ register_atom(Atom(
         "the line joining the two objects. This law was first stated "
         "by Isaac Newton and published in the Principia in 1687."
     ),
+    example="m1=5.97e24 kg (Earth), m2=7.35e22 kg (Moon), r=3.844e8 m: F = 6.674e-11*5.97e24*7.35e22/(3.844e8)^2 = 1.982e20 N",
     tier=5,
     domain="physics",
     source=(
@@ -358,6 +365,7 @@ register_atom(Atom(
         "yielding v = sqrt(2GM/r). For Earth's surface, this gives "
         "approximately 11.2 km/s."
     ),
+    example="Earth: M=5.97e24 kg, R=6.371e6 m. v_e = sqrt(2*6.674e-11*5.97e24/6.371e6) = 11186 m/s = 11.2 km/s",
     tier=5,
     domain="physics",
     source=(
@@ -390,6 +398,7 @@ register_atom(Atom(
         "cosmological redshift is attributed to the expansion of "
         "space itself."
     ),
+    example="Observed wavelength 700nm, rest wavelength 656.3nm: z = (700-656.3)/656.3 = 0.0666. Recession velocity v = z*c = 0.0666*3e5 = 19980 km/s",
     tier=5,
     domain="astrophysics",
     source=(
@@ -419,6 +428,7 @@ register_atom(Atom(
         "the Hubble-Lemaitre law in recognition of Georges Lemaitre's "
         "contribution."
     ),
+    example="Galaxy at d=100 Mpc: v = H_0*d = 70*100 = 7000 km/s",
     tier=5,
     domain="astrophysics",
     source=(
@@ -447,6 +457,7 @@ register_atom(Atom(
         "of matter will become a black hole if compressed into a space "
         "that fits within its corresponding Schwarzschild radius."
     ),
+    example="Sun (M=1.989e30 kg): r_s = 2*6.674e-11*1.989e30/(3e8)^2 = 2953 m ~ 3 km",
     tier=6,
     domain="astrophysics",
     source=(
@@ -474,6 +485,7 @@ register_atom(Atom(
         "this as an empirical law in 1619; Newton later proved it "
         "from his law of universal gravitation."
     ),
+    example="Earth: a=1 AU, T=1 year. Mars: a=1.524 AU, T^2 = 1.524^3 = 3.54, T = 1.881 years",
     tier=6,
     domain="astrophysics",
     source=(
@@ -504,6 +516,7 @@ register_atom(Atom(
         "temperature doubles, its luminosity increases by a factor "
         "of sixteen, assuming constant radius."
     ),
+    example="Sun: R=6.96e8 m, T=5778 K. L = 4*pi*(6.96e8)^2 * 5.67e-8 * 5778^4 = 3.85e26 W",
     tier=6,
     domain="astrophysics",
     source=(
@@ -534,6 +547,7 @@ register_atom(Atom(
         "distance by the inverse square law and because brightnesses "
         "are expressed in magnitudes."
     ),
+    example="m=15, M=-20: distance modulus mu = 15-(-20) = 35. d = 10^((35+5)/5) = 10^8 = 100 Mpc",
     tier=6,
     domain="astrophysics",
     source=(
@@ -563,6 +577,7 @@ register_atom(Atom(
         "eclipse, providing one of the first experimental tests of "
         "general relativity."
     ),
+    example="Einstein radius for M=1e12 solar masses at D_L=1 Gpc, D_S=2 Gpc: theta_E ~ 1 arcsec (typical galaxy cluster lens)",
     tier=6,
     domain="astrophysics",
     source=(

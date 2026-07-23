@@ -67,6 +67,7 @@ register_atom(Atom(atom_type="formula", name="venn_diagram_count",
     content="For two sets: |A ∪ B| = |A| + |B| - |A ∩ B|. "
     "For three sets: |A ∪ B ∪ C| = |A| + |B| + |C| - |A ∩ B| - |A ∩ C| - |B ∩ C| + |A ∩ B ∩ C|. "
     "This is the inclusion-exclusion principle.",
+    example="|A|=30, |B|=20, |A and B|=10. |A or B| = 30 + 20 - 10 = 40",
     tier=2, domain="sets",
     source="Wikipedia contributors, 'Inclusion-exclusion principle', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Inclusion%E2%80%93exclusion_principle",

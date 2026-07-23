@@ -7,6 +7,7 @@ register_atom(Atom(atom_type="algorithm", name="unit_conversion_length",
     content="Length conversions: 1 km = 1000 m, 1 m = 100 cm, 1 cm = 10 mm. "
     "Imperial: 1 mile = 1.609 km, 1 foot = 0.3048 m, 1 inch = 2.54 cm. "
     "Multiply by the conversion factor to change units.",
+    example="5 miles to km: 5 * 1.609 = 8.045 km",
     tier=0, domain="measurement",
     source="Wikipedia contributors, 'Conversion of units', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Conversion_of_units"))
@@ -15,6 +16,7 @@ register_atom(Atom(atom_type="algorithm", name="unit_conversion_mass",
     content="Mass conversions: 1 kg = 1000 g, 1 g = 1000 mg. "
     "Imperial: 1 pound = 0.4536 kg, 1 ounce = 28.35 g. "
     "1 metric ton = 1000 kg.",
+    example="10 pounds to kg: 10 * 0.4536 = 4.536 kg",
     tier=0, domain="measurement",
     source="Wikipedia contributors, 'Conversion of units', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Conversion_of_units"))
@@ -22,6 +24,7 @@ register_atom(Atom(atom_type="algorithm", name="unit_conversion_mass",
 register_atom(Atom(atom_type="algorithm", name="unit_conversion_temp",
     content="Temperature conversions: C = (F - 32) * 5/9, F = C * 9/5 + 32, K = C + 273.15. "
     "Key points: water freezes at 0C/32F/273.15K, boils at 100C/212F/373.15K.",
+    example="98.6 F to C: (98.6 - 32) * 5/9 = 37.0 C. 100 C to K: 100 + 273.15 = 373.15 K",
     tier=0, domain="measurement",
     source="Wikipedia contributors, 'Conversion of units of temperature', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Conversion_of_units_of_temperature"))

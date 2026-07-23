@@ -69,17 +69,22 @@ def get_generator(task_name: str, **kwargs) -> StepGenerator:
     return _REGISTRY[task_name](**kwargs)
 
 
-def get_all_generators(**kwargs) -> list[StepGenerator]:
+def get_all_generators(verified_only: bool = False, **kwargs) -> list[StepGenerator]:
     """Instantiate all registered generators.
 
     Args:
+        verified_only: If True, only return generators with independent
+            verification (library or double-blind).
         **kwargs: Passed to each generator constructor.
 
     Returns:
         List of StepGenerator instances.
     """
     _ensure_loaded()
-    return [cls(**kwargs) for cls in _REGISTRY.values()]
+    gens = [cls(**kwargs) for cls in _REGISTRY.values()]
+    if verified_only:
+        gens = [g for g in gens if g.is_verified]
+    return gens
 
 
 def _ensure_oos_loaded() -> None:

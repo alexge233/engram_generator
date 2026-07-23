@@ -104,6 +104,7 @@ register_atom(Atom(
         "the three-dimensional space enclosed. For a box with dimensions "
         "3 x 4 x 5, V = 60 cubic units."
     ),
+    example="l=5, w=3, h=4: V = 5*3*4 = 60 cubic units",
     tier=1, domain="geometry",
     source="Wikipedia contributors, 'Cuboid', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Cuboid",
@@ -135,6 +136,7 @@ register_atom(Atom(
         "is M = ((x1 + x2) / 2, (y1 + y2) / 2). The midpoint divides the "
         "segment into two equal parts."
     ),
+    example="A=(2,4), B=(6,8): M = ((2+6)/2, (4+8)/2) = (4, 6)",
     tier=2, domain="geometry",
     source="Wikipedia contributors, 'Midpoint', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Midpoint",
@@ -150,6 +152,7 @@ register_atom(Atom(
         "a negative slope falls, zero is horizontal, and undefined (division "
         "by zero) is vertical."
     ),
+    example="A=(1,2), B=(4,8): m = (8-2)/(4-1) = 6/3 = 2",
     tier=2, domain="geometry",
     source="Wikipedia contributors, 'Slope', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Slope",
@@ -164,6 +167,7 @@ register_atom(Atom(
         "found by subtracting their sum from 180. This is a consequence of the "
         "parallel postulate in Euclidean geometry."
     ),
+    example="Angles 50 and 60 degrees. Third angle = 180 - 50 - 60 = 70 degrees",
     tier=2, domain="geometry",
     source="Wikipedia contributors, 'Triangle', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Triangle",
@@ -180,6 +184,7 @@ register_atom(Atom(
         "that two triangles are similar if two pairs of corresponding angles "
         "are equal."
     ),
+    example="Triangle 1: sides 3,4,5. Triangle 2 scale factor 2: sides 6,8,10. Side ratio = 6/3 = 2",
     tier=2, domain="geometry",
     source="Wikipedia contributors, 'Similarity (geometry)', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Similarity_(geometry)",
@@ -228,6 +233,7 @@ register_atom(Atom(
         "degrees, convert first: theta_rad = theta_deg * pi / 180. "
         "The full circumference corresponds to theta = 2*pi."
     ),
+    example="r=5, theta=pi/3 (60 degrees): s = 5 * pi/3 = 5.236 cm",
     tier=3, domain="geometry",
     source="Wikipedia contributors, 'Arc length', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Arc_length",
@@ -244,6 +250,7 @@ register_atom(Atom(
         "For a 90-degree sector (pi/2 radians) of radius 4: "
         "A = 0.5 * 16 * (pi/2) = 4*pi ≈ 12.57."
     ),
+    example="r=6, theta=pi/4 (45 degrees): A = (1/2)*36*(pi/4) = 14.137 sq units",
     tier=3, domain="geometry",
     source="Wikipedia contributors, 'Circular sector', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Circular_sector",
@@ -291,6 +298,7 @@ register_atom(Atom(
         "The surface area is A = 4 * pi * r^2. For a sphere of radius 3, "
         "V = (4/3) * pi * 27 = 36*pi ≈ 113.10."
     ),
+    example="r=4: V = (4/3)*pi*64 = 268.08 cubic units",
     tier=4, domain="geometry",
     source="Wikipedia contributors, 'Sphere', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Sphere",
@@ -306,6 +314,7 @@ register_atom(Atom(
         "and the total surface area is 2 * pi * r * (r + h). "
         "For a cylinder of radius 3 and height 10, V = pi * 9 * 10 = 90*pi ≈ 282.74."
     ),
+    example="r=3, h=7: V = pi*9*7 = 197.92 cubic units",
     tier=4, domain="geometry",
     source="Wikipedia contributors, 'Cylinder', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Cylinder",

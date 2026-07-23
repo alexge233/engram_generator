@@ -11,6 +11,7 @@ register_atom(Atom(atom_type="algorithm", name="bayes_chain",
     content="Bayesian updating applies Bayes' theorem repeatedly as new evidence arrives: "
     "P(H|E1,E2) ∝ P(E2|H) * P(H|E1). Start with prior P(H), update with each observation. "
     "The posterior after one update becomes the prior for the next.",
+    example="Prior P(H)=0.5. Evidence E1: P(E1|H)=0.8, P(E1|~H)=0.3. Posterior = 0.8*0.5/(0.8*0.5+0.3*0.5) = 0.4/0.55 = 0.727",
     tier=4, domain="probability",
     source="Wikipedia contributors, 'Bayesian inference', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Bayesian_inference",
@@ -20,6 +21,7 @@ register_atom(Atom(atom_type="definition", name="conditional_independence",
     content="Events A and B are conditionally independent given C if P(A∩B|C) = P(A|C)*P(B|C). "
     "This does NOT imply marginal independence. Example: two symptoms may be correlated in the "
     "population but conditionally independent given the disease.",
+    example="P(A|C)=0.3, P(B|C)=0.4. If A,B independent given C: P(A,B|C) = 0.3*0.4 = 0.12. Check: P(A|B,C) should equal P(A|C) = 0.3",
     tier=4, domain="probability",
     source="Wikipedia contributors, 'Conditional independence', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Conditional_independence",

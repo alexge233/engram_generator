@@ -22,6 +22,7 @@ register_atom(Atom(atom_type="algorithm", name="stoichiometry",
 register_atom(Atom(atom_type="formula", name="molarity",
     content="Molarity M = moles of solute / litres of solution. "
     "To dilute: M1*V1 = M2*V2. A 0.5 M NaCl solution contains 0.5 moles of NaCl per litre.",
+    example="5g NaCl (MW=58.44) in 0.5L: moles = 5/58.44 = 0.0855. M = 0.0855/0.5 = 0.171 mol/L",
     tier=3, domain="chemistry",
     source="Wikipedia contributors, 'Molar concentration', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Molar_concentration",

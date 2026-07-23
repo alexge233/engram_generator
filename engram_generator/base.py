@@ -118,6 +118,56 @@ class StepGenerator(ABC):
         except (KeyError, ImportError):
             return None
 
+    @property
+    def is_verified(self) -> bool:
+        """Return True if this generator has independent verification.
+
+        A generator is verified if it has either a library-based handler
+        (third-party recomputation) or a double-blind textbook example
+        handler. Formula-only and unverifiable generators return False.
+        """
+        try:
+            from engram_generator.validation.registry import VERIFICATION_REGISTRY
+            from engram_generator.validation.library_verifier import LibraryVerifier
+            from engram_generator.validation.example_verifier import ExampleVerifier
+        except ImportError:
+            return False
+        entry = VERIFICATION_REGISTRY.get(self.task_name)
+        if not entry:
+            return False
+        if entry.method == "library":
+            verifier = LibraryVerifier()
+            return self.task_name in verifier.supported_tasks()
+        if entry.method == "formula":
+            ev = ExampleVerifier()
+            return ev.can_verify(self.task_name)
+        return False
+
+    @property
+    def verification_method(self) -> str:
+        """Return the verification method for this generator.
+
+        Returns:
+            One of: 'library', 'double_blind', 'formula_only',
+            'reference', 'classification', or 'unmapped'.
+        """
+        try:
+            from engram_generator.validation.registry import VERIFICATION_REGISTRY
+            from engram_generator.validation.example_verifier import ExampleVerifier
+        except ImportError:
+            return "unmapped"
+        entry = VERIFICATION_REGISTRY.get(self.task_name)
+        if not entry:
+            return "unmapped"
+        if entry.method == "library":
+            return "library"
+        if entry.method == "formula":
+            ev = ExampleVerifier()
+            if ev.can_verify(self.task_name):
+                return "double_blind"
+            return "formula_only"
+        return entry.method
+
     @abstractmethod
     def task_description(self, difficulty: int) -> str:
         """Generate the natural language input for this task.

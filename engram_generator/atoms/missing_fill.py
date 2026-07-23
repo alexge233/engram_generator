@@ -62,6 +62,7 @@ register_atom(Atom(atom_type="formula", name="percentage",
     content="A percentage expresses a number as a fraction of 100: x% = x/100. "
     "To find x% of n: result = n * x / 100. To find what percentage a is of b: "
     "(a / b) * 100%. Percentage change: ((new - old) / old) * 100%.",
+    example="25% of 80: 80 * 25/100 = 20. Percentage change from 50 to 65: (65-50)/50 * 100 = 30%",
     tier=1, domain="arithmetic",
     source="Wikipedia contributors, 'Percentage', Wikipedia.",
     source_url="https://en.wikipedia.org/wiki/Percentage"))

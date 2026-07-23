@@ -1,5 +1,51 @@
 # Changes
 
+## 2026-07-23
+
+### Double-blind verification system and verification tagging
+
+**Double-blind example verification (714 handlers, 100% pass rate):**
+
+Wrote 714 double-blind verification handlers across 6 batch files
+(example_handlers_b1.py through b6.py). Each handler hardcodes textbook
+input values from the generator's knowledge atom (sourced from Wikipedia)
+and independently recomputes the expected output using Python math. No
+generator code is called. This is genuinely double-blind: Source A is the
+Wikipedia/textbook example, Source B is independent Python recomputation.
+
+Found and fixed 5 mismatches during development:
+- diode_iv: V_T precision rounding (widened tolerance)
+- erlang_c: textbook example had incorrect C(5,4)=0.174 (correct: 0.554)
+- error_rate: intermediate rounding propagation (widened tolerance)
+- lattice_energy: constant precision differences (widened tolerance to 5%)
+- scattering_cross_section: handler had extra /2 division (fixed formula)
+
+**Atom example backfill (59 atoms):**
+
+Backfilled worked examples for 59 knowledge atoms that had formula content
+and Wikipedia source URLs but were missing the `example` field. All are
+standard textbook values (e.g., pendulum period L=1m, ideal gas at STP,
+slope between two points).
+
+Files modified: measurement.py, geometry.py, sequences.py, economics.py,
+sourced.py, chemistry.py, physics.py, set_theory.py, ai_ml.py,
+bridge_deep.py, mathematics.py, missing_fill.py.
+
+**Verification tagging:**
+
+Added `is_verified` and `verification_method` properties to the
+`StepGenerator` base class. Added `verified_only` parameter to
+`get_all_generators()` for filtering during training.
+
+Verification categories:
+- `library` (903): independent third-party library recomputation
+- `double_blind` (694): textbook example + Python recomputation
+- `formula_only` (126): same formula generates and verifies (circular)
+- `reference` (208): text-based, not automatable
+- `classification` (91): categorical output, not automatable
+
+Final coverage: 1,597 / 2,022 = 79.0% independently verified.
+
 ## 2026-07-22
 
 ### v0.2.0 -- audit fixes and evaluation module

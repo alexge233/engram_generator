@@ -961,6 +961,7 @@ register_atom(Atom(
         "Vigenere cipher: E(m_i) = (m_i + k_{i mod len(k)}) mod 26. "
         "Polyalphabetic substitution using a repeating keyword."
     ),
+    example="Plaintext 'HELLO', key 'KEY': H+K=R, E+E=I, L+Y=J, L+K=V, O+E=S. Ciphertext = 'RIJVS'",
     tier=5,
     domain="cryptography",
     prerequisites=["caesar", "modular"],
@@ -1213,6 +1214,7 @@ register_atom(Atom(
         "0/1 Knapsack DP: dp[i][w] = max(dp[i-1][w], dp[i-1][w-w_i] + v_i). "
         "Maximise total value without exceeding weight capacity W."
     ),
+    example="Capacity W=10. Items: (w=5,v=10), (w=4,v=40), (w=6,v=30). Optimal: (w=4,v=40)+(w=6,v=30) = v=70",
     tier=6,
     domain="dynamic_programming",
     prerequisites=["addition"],
@@ -1225,6 +1227,7 @@ register_atom(Atom(
         "Longest Common Subsequence DP: if s[i]=t[j], dp[i][j] = dp[i-1][j-1]+1; "
         "else dp[i][j] = max(dp[i-1][j], dp[i][j-1]). Backtrack to recover the LCS."
     ),
+    example="X='ABCBDAB', Y='BDCAB': LCS = 'BCAB', length 4",
     tier=6,
     domain="dynamic_programming",
     prerequisites=["edit_distance"],
@@ -1237,6 +1240,7 @@ register_atom(Atom(
         "Longest Increasing Subsequence: dp[i] = max(dp[j]+1) for j < i "
         "where a[j] < a[i]. O(n^2) DP, O(n log n) with patience sorting."
     ),
+    example="Sequence [10,9,2,5,3,7,101,18]: LIS = [2,3,7,101] or [2,5,7,101], length 4",
     tier=6,
     domain="dynamic_programming",
     prerequisites=["sorting"],
@@ -1319,6 +1323,7 @@ register_atom(Atom(
         "Equivalently: (r(cos theta + i sin theta))^n = "
         "r^n (cos(n theta) + i sin(n theta))."
     ),
+    example="(cos 30 + i sin 30)^6 = cos(180) + i sin(180) = -1 + 0i = -1",
     tier=6,
     domain="complex_analysis",
     prerequisites=["complex_modulus", "exponentiation"],
@@ -1385,6 +1390,7 @@ register_atom(Atom(
         "theta = 2 arccos(|alpha|), phi = arg(beta) - arg(alpha). "
         "Maps any single-qubit pure state to a point on S^2."
     ),
+    example="|psi> = cos(pi/6)|0> + e^(i*pi/4)*sin(pi/6)|1>. theta=pi/3, phi=pi/4. Bloch coords: (sin(pi/3)*cos(pi/4), sin(pi/3)*sin(pi/4), cos(pi/3)) = (0.612, 0.612, 0.5)",
     tier=6,
     domain="quantum",
     prerequisites=["complex_modulus", "euler_formula"],
