@@ -62,14 +62,14 @@ def register_handlers(h: dict) -> None:
 
     def _reflection_2d(d):
         x, y = d["x"], d["y"]
-        axis = d["axis"]
-        if axis == "x":
+        axis = d["axis"].lower()
+        if "x" in axis and "y" not in axis:
             return 1 if (d["rx"] == x and d["ry"] == -y) else -1
-        if axis == "y":
+        if "y" in axis and "x" not in axis:
             return 1 if (d["rx"] == -x and d["ry"] == y) else -1
-        if axis == "origin":
+        if "origin" in axis:
             return 1 if (d["rx"] == -x and d["ry"] == -y) else -1
-        return None
+        return (d.get("rx"), d.get("ry"))
     h["reflection_2d"] = _reflection_2d
 
     def _reflection_line(d):

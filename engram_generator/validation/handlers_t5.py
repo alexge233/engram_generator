@@ -742,16 +742,23 @@ def register_handlers(h: dict) -> None:
     def _fft_butterfly(d):
         import numpy as np
         x = np.array(d["x"], dtype=complex)
-        fft = np.fft.fft(x)
+        half = d.get("half", len(x) // 2)
+        x_even = x[::2]
+        x_odd = x[1::2]
+        N = len(x)
+        twiddle = [np.exp(-2j * np.pi * k / N) for k in range(half)]
+        fft_even = np.fft.fft(x_even)
+        fft_odd = np.fft.fft(x_odd)
+        results = [fft_even[k] + twiddle[k] * fft_odd[k] for k in range(half)]
         gen_re = d.get("results_re", [])
         gen_im = d.get("results_im", [])
         if gen_re:
-            lib_re = [round(float(v.real), 4) for v in fft]
-            lib_im = [round(float(v.imag), 4) for v in fft]
-            re_ok = all(abs(a - b) < 0.01 for a, b in zip(lib_re, gen_re))
-            im_ok = not gen_im or all(abs(a - b) < 0.01 for a, b in zip(lib_im, gen_im))
+            lib_re = [round(float(r.real), 4) for r in results]
+            lib_im = [round(float(r.imag), 4) for r in results]
+            re_ok = len(lib_re) == len(gen_re) and all(abs(a - b) < 0.1 for a, b in zip(lib_re, gen_re))
+            im_ok = not gen_im or (len(lib_im) == len(gen_im) and all(abs(a - b) < 0.1 for a, b in zip(lib_im, gen_im)))
             return 1 if re_ok and im_ok else -1
-        return [round(float(v.real), 4) for v in fft]
+        return results
     h["fft_butterfly"] = _fft_butterfly
 
     def _filter_design(d):

@@ -54,7 +54,7 @@ def register_handlers(h: dict) -> None:
     h["implication"] = lambda d: d["result"]
     h["pattern_continue"] = lambda d: d["next"]
     h["sequence_next"] = lambda d: d["next"]
-    h["significant_figures"] = lambda d: d.get("result", d.get("rounded"))
+    h["significant_figures"] = lambda d: d.get("sig_figs", d.get("result", d.get("rounded")))
     h["substring_find"] = lambda d: d["s"].find(d["pattern"])
 
     def _caesar(d):
@@ -449,11 +449,13 @@ def register_handlers(h: dict) -> None:
     h["dfa_accept"] = _dfa_accept_handler
 
     def _dfa_complement_handler(d):
-        accepted = d.get("accepted")
-        comp_accept = d.get("comp_accept")
-        if accepted is None or comp_accept is None:
-            return None
-        return 1 if comp_accept != accepted else -1
+        orig_accept = d.get("orig_accept", d.get("accept", []))
+        comp_accept = d.get("complement_accept", [])
+        n_states = d.get("n_states", 0)
+        if not n_states or not isinstance(orig_accept, (list, set, tuple)):
+            return bool(d.get("comp_accept"))
+        expected_comp = set(range(n_states)) - set(orig_accept)
+        return 1 if set(comp_accept) == expected_comp else -1
     h["dfa_complement"] = _dfa_complement_handler
 
     def _dfs_order(d):
@@ -479,7 +481,7 @@ def register_handlers(h: dict) -> None:
     h["dna_complement"] = lambda d: d["seq"].translate(
         str.maketrans("ATCGatcg", "TAGCtagc"))
 
-    h["dominant_strategy"] = lambda d: d.get("row_dominant")
+    h["dominant_strategy"] = lambda d: d.get("row_dominant", "none")
 
     def _embedding_lookup(d):
         import numpy as np

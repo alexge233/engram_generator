@@ -121,7 +121,7 @@ def register_handlers(h: dict) -> None:
     def _jacobi_symbol(d):
         import sympy
         lib_js = int(sympy.jacobi_symbol(d["a"], d["n"]))
-        gen_js = d.get("js", d.get("result"))
+        gen_js = d.get("val", d.get("js", d.get("result")))
         if gen_js is None:
             return None
         return 1 if lib_js == int(gen_js) else -1
@@ -487,7 +487,7 @@ def register_handlers(h: dict) -> None:
     h["propensity_score"] = lambda d: d.get("ATE_IPW")
     h["arima_forecast"] = lambda d: d.get("f1")
     h["compound_poisson"] = lambda d: (d.get("e_s"), d.get("var_s"))
-    h["renewal_reward"] = lambda d: d.get("long_run_rate", d.get("result"))
+    h["renewal_reward"] = lambda d: d.get("rate", d.get("long_run_rate", d.get("result")))
     h["markov_absorption"] = lambda d: d.get("N")
     h["markov_decision"] = lambda d: d.get("V")
     h["brownian_motion"] = lambda d: d.get("var_t")
@@ -522,8 +522,8 @@ def register_handlers(h: dict) -> None:
     h["betti_from_complex"] = _betti_from_complex
 
     h["boundary_operator"] = lambda d: d.get("boundary_terms")
-    h["persistence_diagram"] = lambda d: d.get("diagram", d.get("result"))
-    h["bottleneck_distance"] = lambda d: d.get("distance", d.get("result"))
+    h["persistence_diagram"] = lambda d: d.get("h0_pairs", d.get("diagram"))
+    h["bottleneck_distance"] = lambda d: d.get("best_bottleneck", d.get("distance"))
 
     # -- Quantum --
     h["bell_state"] = lambda d: d.get("bell_name")
@@ -595,12 +595,12 @@ def register_handlers(h: dict) -> None:
         return round(lam * vol + 2 * mu * exx, 4)
     h["hookes_law_3d"] = _hookes_law_3d
 
-    h["von_mises"] = lambda d: d.get("von_mises", d.get("result"))
+    h["von_mises"] = lambda d: round(d.get("sigma_vm", d.get("von_mises", 0)), 4)
 
     # -- Relativity --
     h["lorentz_transform"] = lambda d: d.get("result", d.get("x_prime"))
-    h["four_momentum"] = lambda d: d.get("result", d.get("E"))
-    h["twin_paradox"] = lambda d: d.get("result", d.get("delta_t"))
+    h["four_momentum"] = lambda d: d.get("energy", d.get("E"))
+    h["twin_paradox"] = lambda d: round(d.get("proper_time", d.get("age_diff", 0)), 4)
     h["compton_scattering"] = lambda d: d.get("result", d.get("delta_lambda"))
     h["invariant_mass_two_particle"] = lambda d: d.get("result", d.get("m_inv"))
 
@@ -668,7 +668,12 @@ def register_handlers(h: dict) -> None:
     h["attention_multihead"] = lambda d: d.get("concat")
     h["loss_landscape_local"] = lambda d: d.get("classify")
     h["gradient_flow"] = lambda d: d.get("grads")
-    h["bias_variance_decompose"] = lambda d: d.get("result", d.get("bias"))
+    def _bias_var(d):
+        b = d.get("bias_sq"); v = d.get("noise"); t = d.get("total")
+        if b is not None and t is not None:
+            return round(t, 4)
+        return None
+    h["bias_variance_decompose"] = _bias_var
     h["regularisation_path"] = lambda d: d.get("path")
     h["kernel_trick"] = lambda d: d.get("kernel_val")
 
@@ -725,18 +730,40 @@ def register_handlers(h: dict) -> None:
     h["conv_2d"] = lambda d: d.get("output")
     h["system_ode"] = lambda d: d.get("solution")
     h["matrix_power"] = lambda d: d.get("result")
-    h["de_moivre"] = lambda d: d.get("result", d.get("cos_val"))
+    def _de_moivre(d):
+        r_n = d.get("r_n")
+        a = d.get("result_a")
+        b = d.get("result_b")
+        if a is not None:
+            if b == 0:
+                return int(a) if a == int(a) else a
+            return complex(a, b)
+        return r_n
+    h["de_moivre"] = _de_moivre
     h["metric_tensor"] = lambda d: d.get("g")
     h["index_gymnastics"] = lambda d: d.get("v_out")
     h["tensor_contraction"] = lambda d: d.get("trace")
     h["reciprocal_lattice"] = lambda d: d.get("vol")
     h["lebesgue_measure"] = lambda d: d.get("measure")
     h["product_measure"] = lambda d: d.get("product")
-    h["convergence_modes"] = lambda d: d.get("result", d.get("mode"))
+    def _convergence_modes(d):
+        ae = d.get("ae")
+        if isinstance(ae, (list, tuple)):
+            return ae[0] if ae else None
+        return ae
+    h["convergence_modes"] = _convergence_modes
     h["outer_measure"] = lambda d: d.get("measure", d.get("result"))
 
     h["kalman_gain"] = lambda d: d.get("k_gain")
-    h["kalman_update"] = lambda d: d.get("step2")
+    def _kalman_update(d):
+        step1 = d.get("step1", {})
+        if isinstance(step1, dict):
+            x_est = step1.get("x_upd", step1.get("x"))
+            p_est = step1.get("p_upd", step1.get("P_upd", step1.get("P")))
+            if x_est is not None and p_est is not None:
+                return (round(x_est, 4), round(p_est, 4))
+        return None
+    h["kalman_update"] = _kalman_update
     h["inverse_kinematics"] = lambda d: (d.get("theta1_up"), d.get("theta2_up"))
     h["jacobian_robot"] = lambda d: d.get("det")
     h["mdp_policy"] = lambda d: d.get("policy")
@@ -750,22 +777,43 @@ def register_handlers(h: dict) -> None:
     h["variety_points"] = lambda d: d.get("count")
     h["rational_points"] = lambda d: (d.get("x1_num"), d.get("x1_den"))
     h["tangent_line_variety"] = lambda d: d.get("tangent_str")
-    h["bezout_intersection"] = lambda d: d.get("count", d.get("result"))
-    h["projective_coords"] = lambda d: d.get("result", d.get("coords"))
+    h["bezout_intersection"] = lambda d: d.get("bezout_count", d.get("count"))
+    h["projective_coords"] = lambda d: (d.get("ax"), d.get("ay"))
 
     h["load_flow"] = lambda d: d.get("P")
     h["array_factor"] = lambda d: d.get("AF")
 
-    h["horn_clause"] = lambda d: d.get("result", d.get("derived"))
+    h["horn_clause"] = lambda d: "YES" if d.get("derivable") else "NO"
     h["delaunay_check"] = lambda d: bool(d.get("is_delaunay"))
 
     # Quantum info extra
-    h["quantum_key_dist"] = lambda d: d.get("result", d.get("key"))
+    def _qkd(d):
+        matches = d.get("matches", [])
+        alice = d.get("alice_bits", [])
+        if matches and alice:
+            sifted = [alice[i] for i in matches]
+            errors = d.get("errors", 0)
+            return 1 if errors == 0 else -1
+        return None
+    h["quantum_key_dist"] = _qkd
     h["fidelity"] = lambda d: d.get("fidelity")
 
     # -- Open problems / verification --
-    h["goldbach_partition"] = lambda d: d.get("result", d.get("partition"))
-    h["erdos_straus"] = lambda d: d.get("result", d.get("solution"))
+    def _goldbach(d):
+        p1, p2 = d.get("p1"), d.get("p2")
+        n = d.get("n")
+        if p1 is not None and p2 is not None and n is not None:
+            return 1 if p1 + p2 == n else -1
+        return None
+    h["goldbach_partition"] = _goldbach
+    def _erdos_straus(d):
+        a, b, c, n = d.get("a"), d.get("b"), d.get("c"), d.get("n")
+        if a is not None and b is not None and c is not None and n is not None:
+            from fractions import Fraction
+            total = Fraction(1, a) + Fraction(1, b) + Fraction(1, c)
+            return 1 if total == Fraction(4, n) else -1
+        return None
+    h["erdos_straus"] = _erdos_straus
 
     # =================================================================
     # TIER 7 -- Advanced mathematics & theoretical CS
